@@ -1,27 +1,55 @@
 package b22.metro2033.Entity;
 
+import b22.metro2033.Entity.Army.Soldier;
+
 import javax.persistence.*;
+
+enum Role {
+    GENERAL,
+    SOLDIER,
+    ENGINEER,
+    HEAD_ENGINEER,
+    COURIER,
+    HEAD_COURIER
+}
 
 @Entity
 @Table(name = "metro_user")
 public class User {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    @Column(unique = true)
     private String login;
     private String password;
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
     private String name;
     private String surname;
     private String patronymic;
 
-    public User(){}
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "soldier_id")
+    private Soldier soldier;
 
-    public User(String login, String password, String role, String name, String surname, String patronymic) {
+    public User() {
+    }
+
+    public User(String login, String password, Role role, String name, String surname, String patronymic) {
         this.login = login;
         this.password = password;
         this.role = role;
         this.name = name;
         this.surname = surname;
         this.patronymic = patronymic;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getLogin() {
@@ -40,11 +68,11 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
