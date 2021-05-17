@@ -1,27 +1,28 @@
-package b22.metro2033.Entity;
+package b22.metro2033.Entity.Army;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
-@Table(name = "security_post")
-public class Post {
+@Table(name = "movement_sensor")
+public class MovementSensor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
     private String location;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<User> users;
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private Post post;
 
-    public Post() {
+    public MovementSensor() {
     }
 
-    public Post(int id, String name, String location) {
+    public MovementSensor(int id, String name, String location, Post post) {
         this.id = id;
         this.name = name;
         this.location = location;
+        this.post = post;
     }
 
     public int getId() {
@@ -46,5 +47,13 @@ public class Post {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
     }
 }
