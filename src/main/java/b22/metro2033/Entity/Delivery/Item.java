@@ -11,8 +11,12 @@ public class Item {
     private int id;
     private String name;
 
-    //@OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    //private List<Curier> curierList;
+    @OneToMany(mappedBy = "item_in_order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> orderItemList;
+
+    @OneToMany(mappedBy = "item_in_storage", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StorageItem> storageItemList;
+
 
     Item(){}
 

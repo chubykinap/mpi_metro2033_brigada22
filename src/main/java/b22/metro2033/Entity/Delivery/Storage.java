@@ -12,8 +12,8 @@ public class Storage {
     private String name;
     private String location;
 
-//    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Curier> curierList;
+    @OneToMany(mappedBy = "item_in_storage", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StorageItem> storageItemList;
 
     public Storage(){};
 

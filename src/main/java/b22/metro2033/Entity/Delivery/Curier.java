@@ -7,12 +7,16 @@ import java.util.List;
 @Table(name = "curier")
 public class Curier {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String login;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Curier> curierList;
+    @OneToOne(mappedBy = "metro_user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<User> userList;
+
+    @OneToMany(mappedBy = "curier_order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CurierOrder> curierOrderList;
+
 
     public Curier() {
     }

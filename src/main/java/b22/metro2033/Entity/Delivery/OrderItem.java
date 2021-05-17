@@ -15,6 +15,13 @@ public class OrderItem {
 //    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<Curier> curierList;
 
+    @ManyToOne(mappedBy = "delivery_order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DeliveryOrder> deliveryOrderList;
+
+    @ManyToOne(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Item> itemList;
+
+
     public OrderItem() {
     }
 

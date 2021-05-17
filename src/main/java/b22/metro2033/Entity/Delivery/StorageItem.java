@@ -16,6 +16,12 @@ public class StorageItem {
 //    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<Curier> curierList;
 
+    @ManyToOne(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Item> itemList;
+
+    @ManyToOne(mappedBy = "storage", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Storage> storageList;
+
     public StorageItem() {
     }
 

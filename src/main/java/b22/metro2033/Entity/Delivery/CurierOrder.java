@@ -11,8 +11,11 @@ public class CurierOrder {
     private int orderId;
     private int curierId;
 
-    //@OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    //private List<Curier> curierList;
+    @OneToMany(mappedBy = "curier", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Curier> curierList;
+
+    @ManyToOne(mappedBy = "delivery_order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DeliveryOrder> deliveryOrderList;
 
     public CurierOrder() {
     }
