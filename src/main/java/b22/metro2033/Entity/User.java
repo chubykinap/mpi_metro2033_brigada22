@@ -1,6 +1,7 @@
 package b22.metro2033.Entity;
 
 import b22.metro2033.Entity.Army.Soldier;
+import b22.metro2033.Entity.Delivery.Courier;
 import b22.metro2033.Entity.Engineering.Engineer;
 
 import javax.persistence.*;
@@ -29,17 +30,14 @@ public class User {
     private String surname;
     private String patronymic;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "soldier_id")
+    @OneToOne(mappedBy = "user")
     private Soldier soldier;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "engineer_id")
+    @OneToOne(mappedBy = "user")
     private Engineer engineer;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "courier_id")
-    private Engineer courier;
+    @OneToOne(mappedBy = "user")
+    private Courier courier;
 
     public User() {
     }

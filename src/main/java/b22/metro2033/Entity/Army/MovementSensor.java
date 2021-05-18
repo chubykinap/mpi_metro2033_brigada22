@@ -7,7 +7,7 @@ import javax.persistence.*;
 public class MovementSensor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
     private String name;
     private String location;
 
@@ -18,18 +18,18 @@ public class MovementSensor {
     public MovementSensor() {
     }
 
-    public MovementSensor(int id, String name, String location, Post post) {
+    public MovementSensor(long id, String name, String location, Post post) {
         this.id = id;
         this.name = name;
         this.location = location;
         this.post = post;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

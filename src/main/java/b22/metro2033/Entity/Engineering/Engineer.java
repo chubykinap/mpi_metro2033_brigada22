@@ -16,11 +16,12 @@ enum Qualification{
 public class Engineer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
     @Enumerated(EnumType.STRING)
     private Qualification qualification;
 
-    @OneToOne(mappedBy = "engineer")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToMany(cascade = { CascadeType.ALL })
@@ -34,17 +35,17 @@ public class Engineer {
     public Engineer() {
     }
 
-    public Engineer(int id, Qualification qualification, User user) {
+    public Engineer(long id, Qualification qualification, User user) {
         this.id = id;
         this.qualification = qualification;
         this.user = user;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

@@ -8,7 +8,7 @@ import java.util.List;
 public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
     private String problem;
     private int priority;
     private String description;
@@ -21,7 +21,7 @@ public class Request {
     public Request() {
     }
 
-    public Request(int id, String problem, int priority, String description, String location, String commentary) {
+    public Request(long id, String problem, int priority, String description, String location, String commentary) {
         this.id = id;
         this.problem = problem;
         this.priority = priority;
@@ -30,11 +30,11 @@ public class Request {
         this.commentary = commentary;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

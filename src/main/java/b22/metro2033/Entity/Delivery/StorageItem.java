@@ -7,10 +7,10 @@ import java.util.List;
 @Embeddable
 class StorageItemPK implements Serializable {
     @Column(name = "storage_id")
-    private int storage_id;
+    private long storage_id;
 
     @Column(name = "item_id")
-    private int item_id;
+    private long item_id;
 }
 
 @Entity
