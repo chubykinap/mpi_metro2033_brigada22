@@ -20,10 +20,10 @@ public class Engineer {
     @Enumerated(EnumType.STRING)
     private Qualification qualification;
 
-    @OneToOne(mappedBy = "soldier")
+    @OneToOne(mappedBy = "engineer")
     private User user;
 
-    @ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
             name = "engineer_request",
             joinColumns = { @JoinColumn(name = "engineer_id") },

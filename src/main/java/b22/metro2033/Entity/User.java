@@ -37,6 +37,10 @@ public class User {
     @JoinColumn(name = "engineer_id")
     private Engineer engineer;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "courier_id")
+    private Engineer courier;
+
     public User() {
     }
 
