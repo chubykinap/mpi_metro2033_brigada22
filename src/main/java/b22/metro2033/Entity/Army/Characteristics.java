@@ -1,20 +1,19 @@
 package b22.metro2033.Entity.Army;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "soldier_characteristics")
 public class Characteristics {
     @Id
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     private int agility;
     private int strength;
     private int stamina;
 
-    @OneToOne(mappedBy = "characteristics")
+    @OneToOne
+    @JoinColumn(name = "soldier_id")
     private Soldier soldier;
 
     public Characteristics() {
@@ -24,6 +23,14 @@ public class Characteristics {
         this.agility = agility;
         this.strength = strength;
         this.stamina = stamina;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public int getAgility() {
@@ -49,4 +56,13 @@ public class Characteristics {
     public void setStamina(int stamina) {
         this.stamina = stamina;
     }
+
+    public Soldier getSoldier() {
+        return soldier;
+    }
+
+    public void setSoldier(Soldier soldier) {
+        this.soldier = soldier;
+    }
+
 }

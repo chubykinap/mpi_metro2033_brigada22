@@ -4,38 +4,31 @@ import b22.metro2033.Entity.User;
 
 import javax.persistence.*;
 
-enum Rank {
-    CADET,
-    LIEUTENANT,
-    CAPTAIN,
-    MAJOR
-}
-
 @Entity
 @Table(name = "soldier")
 public class Soldier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
     @Enumerated(EnumType.STRING)
     private Rank rank;
     private String health_state;
 
-    @OneToOne(mappedBy = "soldier")
+    @OneToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "characteristics_id")
+    @OneToOne(mappedBy = "soldier")
     private Characteristics characteristics;
 
     public Soldier() {
     }
 
-    public Soldier(int id, Rank rank, String health_state, User user, Post post, Characteristics characteristics) {
+    public Soldier(long id, Rank rank, String health_state, User user, Post post, Characteristics characteristics) {
         this.id = id;
         this.rank = rank;
         this.health_state = health_state;
@@ -44,11 +37,11 @@ public class Soldier {
         this.characteristics = characteristics;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

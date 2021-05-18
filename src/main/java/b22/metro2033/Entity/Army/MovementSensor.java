@@ -1,35 +1,43 @@
 package b22.metro2033.Entity.Army;
 
+import b22.metro2033.Entity.Engineering.Request;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "movement_sensor")
 public class MovementSensor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
     private String name;
     private String location;
 
-    @ManyToOne
-    @JoinColumn(name = "post_id")
-    private Post post;
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "sensor_message",
+            joinColumns = { @JoinColumn(name = "sensor_id") },
+            inverseJoinColumns = { @JoinColumn(name = "message_id") }
+    )
+    private List<SensorMessages> sensorMessages;
 
-    public MovementSensor() {
+    public MovementSensor(){
+
     }
 
-    public MovementSensor(int id, String name, String location, Post post) {
+    public MovementSensor(long id, String name, String location, List<SensorMessages> sensorMessages) {
         this.id = id;
         this.name = name;
         this.location = location;
-        this.post = post;
+        this.sensorMessages = sensorMessages;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -49,11 +57,11 @@ public class MovementSensor {
         this.location = location;
     }
 
-    public Post getPost() {
-        return post;
+    public List<SensorMessages> getSensorMessages() {
+        return sensorMessages;
     }
 
-    public void setPost(Post post) {
-        this.post = post;
+    public void setSensorMessages(List<SensorMessages> sensorMessages) {
+        this.sensorMessages = sensorMessages;
     }
 }

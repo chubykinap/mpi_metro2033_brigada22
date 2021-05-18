@@ -8,7 +8,7 @@ import java.util.List;
 public class Storage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
     private String name;
     private String location;
 
@@ -17,17 +17,17 @@ public class Storage {
 
     public Storage(){};
 
-    public Storage(int id, String name, String location){
+    public Storage(long id, String name, String location){
         this.id = id;
         this.name= name;
         this.location = location;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

@@ -9,7 +9,7 @@ import java.util.List;
 public class DeliveryOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
     private String departureStation;
     private String arrivalStation;
     private String state;
@@ -23,7 +23,7 @@ public class DeliveryOrder {
 
     DeliveryOrder() {}
 
-    DeliveryOrder(int id, String departureStation, String arrivalStation, String state, Date date){
+    DeliveryOrder(long id, String departureStation, String arrivalStation, String state, Date date){
         this.id = id;
         this.departureStation = departureStation;
         this.arrivalStation = arrivalStation;
@@ -31,11 +31,11 @@ public class DeliveryOrder {
         this.date = date;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
