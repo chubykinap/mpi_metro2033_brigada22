@@ -13,6 +13,7 @@ public class SensorMessages {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String messages;
+    private Boolean error;
 
     @Column(updatable = false)
     private LocalDateTime messages_date;
@@ -32,11 +33,20 @@ public class SensorMessages {
 
     }
 
-    public SensorMessages(long id, String messages, LocalDateTime messages_date, List<MovementSensor> movementSensors) {
+    public SensorMessages(long id, String messages, Boolean error, LocalDateTime messages_date, List<MovementSensor> movementSensors) {
         this.id = id;
         this.messages = messages;
+        this.error = error;
         this.messages_date = messages_date;
         this.movementSensors = movementSensors;
+    }
+
+    public Boolean getError() {
+        return error;
+    }
+
+    public void setError(Boolean error) {
+        this.error = error;
     }
 
     public long getId() {

@@ -72,7 +72,7 @@ public class PostController {
 
     @GetMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('army:write')")
-    public String enable(@PathVariable Long id) {
+    public String delete(@PathVariable Long id) {
 
         Post post = postRepository.findById(id).orElse(null);
 

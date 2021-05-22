@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <div th:replace="fragments/fragment :: head"></div>
+
+  <title id="pageTitle">Метро 2033 датчики</title>
+</head>
+<body>
+<div th:replace="fragments/fragment :: nav"></div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-xs-12 col-sm-4 col-lg-3 col-md-4 py-3 sidebar border-right">
+      <div th:replace="fragments/fragment :: menu"></div>
+    </div>
+    <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
+      <h1>Датчики</h1>
+      <a href="/sensors/create" class="btn btn-primary my-3" sec:authorize="${hasAuthority('army:write')}">Create</a>
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Название</th>
+          <th scope="col">Местоположение</th>
+          <th scope="col">Пост</th>
+          <th scope="col">Изменить</th>
+          <th scope="col">Удалить</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="sensor : ${sensors}">
+          <th scope="row" th:text="${sensor.id}">id</th>
+          <td th:text="${sensor.name}">name</td>
+          <td th:text="${sensor.location}">location</td>
+          <td scope="row" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
+                                               'Расположение: ' + sensor.post.location + '<br>'}">post</td>
+
+          <td scope="row"><div><a th:href="@{/sensors/change/{id}(id=${sensor.id})}" class="btn-primary btn" id="change">Изменить</a></div></td>
+          <td scope="row"><div><a th:href="@{/sensors/delete/{id}(id=${sensor.id})}" class="btn-primary btn" id="delete">Удалить</a></div></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</body>
+</html>

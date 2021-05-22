@@ -152,6 +152,7 @@ public class ArmyController {
 
         System.out.print(stamina);
 
+        //Переделать в 1 запрос (хз как)
         Soldier soldier = soldierRepository.findById(soldier_id).orElse(null);
         if(soldier == null) {
             return "redirect:/army";

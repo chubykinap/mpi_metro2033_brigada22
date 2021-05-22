@@ -22,15 +22,24 @@ public class MovementSensor {
     )
     private List<SensorMessages> sensorMessages;
 
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private Post post;
+
+    @Enumerated(value = EnumType.STRING)
+    private SensorStatus sensorStatus;
+
     public MovementSensor(){
 
     }
 
-    public MovementSensor(long id, String name, String location, List<SensorMessages> sensorMessages) {
+    public MovementSensor(long id, String name, String location, List<SensorMessages> sensorMessages, Post post, SensorStatus sensorStatus) {
         this.id = id;
         this.name = name;
         this.location = location;
         this.sensorMessages = sensorMessages;
+        this.post = post;
+        this.sensorStatus = sensorStatus;
     }
 
     public long getId() {
@@ -63,5 +72,21 @@ public class MovementSensor {
 
     public void setSensorMessages(List<SensorMessages> sensorMessages) {
         this.sensorMessages = sensorMessages;
+    }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
+
+    public SensorStatus getSensorStatus() {
+        return sensorStatus;
+    }
+
+    public void setSensorStatus(SensorStatus sensorStatus) {
+        this.sensorStatus = sensorStatus;
     }
 }
