@@ -135,4 +135,25 @@ public class SensorController {
         return "redirect:/sensors";
     }
 
+    @GetMapping("/messages/{id}")
+    @PreAuthorize("hasAuthority('army:write')")
+    public String messages(Model model, Authentication authentication, @PathVariable Long id){
+
+        MovementSensor movementSensor = movementSensorRepository.findById(id).orElse(null);
+        if(movementSensor == null){
+            return "redirect:/sensors";
+        }
+
+        model.addAttribute("sensor", movementSensor);
+        model.addAttribute("action", "change");
+        List<Post> posts = postRepository.findAll();
+        if (posts.size() == 0){
+            return "sensors/form";
+        }
+
+        model.addAttribute("posts", posts);
+
+        return "sensors/messages";
+    }
+
 }

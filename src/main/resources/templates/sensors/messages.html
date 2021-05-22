@@ -13,8 +13,8 @@
       <div th:replace="fragments/fragment :: menu"></div>
     </div>
     <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
-      <h1>Датчики</h1>
-      <a href="/sensors/create" class="btn btn-primary my-3" sec:authorize="${hasAuthority('army:write')}">Create</a>
+      <!--<a href="/sensors/create" class="btn btn-primary my-3" sec:authorize="${hasAuthority('army:write')}">Create</a>-->
+      <h3>Информация о датчике</h3>
       <table class="table table-striped">
         <thead>
         <tr>
@@ -22,25 +22,39 @@
           <th scope="col">Название</th>
           <th scope="col">Местоположение</th>
           <th scope="col">Пост</th>
-          <th scope="col">Сообщения</th>
-          <th scope="col">Изменить</th>
-          <th scope="col">Удалить</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="sensor : ${sensors}">
+        <tr>
           <th scope="row" th:text="${sensor.id}">id</th>
           <td th:text="${sensor.name}">name</td>
           <td th:text="${sensor.location}">location</td>
           <td scope="row" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
                                                'Расположение: ' + sensor.post.location + '<br>'}">post</td>
-
-          <td scope="row"><div><a th:href="@{/sensors/messages/{id}(id=${sensor.id})}" class="btn-primary btn" id="messages">Показать сообщения</a></div></td>
-          <td scope="row"><div><a th:href="@{/sensors/change/{id}(id=${sensor.id})}" class="btn-primary btn" id="change">Изменить</a></div></td>
-          <td scope="row"><div><a th:href="@{/sensors/delete/{id}(id=${sensor.id})}" class="btn-primary btn" id="delete">Удалить</a></div></td>
         </tr>
         </tbody>
       </table>
+
+      <h3>Сообщения</h3>
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Время</th>
+          <th scope="col">Текст сообщения</th>
+          <th scope="col">Состояние</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="message : ${sensor.sensorMessages}">
+          <th scope="row" th:text="${message.id}">id</th>
+          <td th:text="${message.messages_date}">name</td>
+          <td th:text="${sensor.messages}">location</td>
+          <td th:text="${sensor.error}">location</td>
+        </tr>
+        </tbody>
+      </table>
+
     </div>
   </div>
 </div>
