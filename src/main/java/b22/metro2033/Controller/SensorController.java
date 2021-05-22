@@ -6,6 +6,8 @@ import b22.metro2033.Repository.MovementSensorRepository;
 import b22.metro2033.Repository.PostRepository;
 import b22.metro2033.Repository.SensorMessagesRepository;
 import b22.metro2033.Repository.UserRepository;
+import b22.metro2033.Service.SensorService;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Random;
 
 @Controller
 @RequestMapping("/sensors")
@@ -28,6 +31,9 @@ public class SensorController {
     private final MovementSensorRepository movementSensorRepository;
 
     private final SensorMessagesRepository sensorMessagesRepository;
+
+    @Autowired
+    private SensorService sensorService;
 
     @Autowired
     public SensorController(PostRepository postRepository,
@@ -49,6 +55,7 @@ public class SensorController {
         }
 
         model.addAttribute("sensors", movementSensorRepository.findAll());
+        createMessage();
         return "sensors/index";
     }
 
@@ -156,4 +163,21 @@ public class SensorController {
         return "sensors/messages";
     }
 
+    public void createMessage(){
+        Random random = new Random();
+
+        new Thread(new Runnable() {
+            @SneakyThrows
+            @Override
+            public void run() {
+                List<MovementSensor> movementSensors = movementSensorRepository.findAll();
+                if (movementSensors.size() != 0) {
+                    //random.nextInt(max - min) + min;
+                    int index = random.nextInt(movementSensors.size());
+                    sensorService.createError(movementSensors.get(index));
+                }
+                Thread.sleep(600);
+            }
+        }).start();
+    }
 }

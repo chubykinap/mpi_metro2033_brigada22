@@ -46,11 +46,11 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="message : ${sensor.sensorMessages}">
-          <th scope="row" th:text="${message.id}">id</th>
-          <td th:text="${message.messages_date}">name</td>
-          <td th:text="${sensor.messages}">location</td>
-          <td th:text="${sensor.error}">location</td>
+        <tr th:each="sensorMessage : ${sensor.sensorMessages}">
+          <th scope="row" th:text="${sensorMessage.id}">id</th>
+          <td th:text="${sensorMessage.messages_date}">name</td>
+          <td th:text="${sensorMessage.messages}">location</td>
+          <td th:text="${sensorMessage.error}">location</td>
         </tr>
         </tbody>
       </table>

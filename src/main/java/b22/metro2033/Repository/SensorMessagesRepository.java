@@ -14,6 +14,6 @@ import java.util.Optional;
 @Repository
 public interface SensorMessagesRepository extends JpaRepository<SensorMessages, Long> {
     Optional<SensorMessages> findById(long id);
-    List<SensorMessages> findAllByMovementSensors(MovementSensor movementSensor);
-    List<SensorMessages> findAllByMovementSensorsId(long id);
+    List<SensorMessages> findAllByMovementSensor(MovementSensor movementSensor);
+    List<SensorMessages> findAllByMovementSensorId(long id);
 }

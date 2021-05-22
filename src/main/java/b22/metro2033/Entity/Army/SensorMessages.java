@@ -26,27 +26,20 @@ public class SensorMessages {
     /*@OneToMany(mappedBy = "messages", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MovementSensor> sensors;*/
 
-    @ManyToMany(mappedBy = "sensorMessages")
-    private List<MovementSensor> movementSensors;
+    @ManyToOne
+    @JoinColumn(name = "message_id")
+    private MovementSensor movementSensor;
 
     public SensorMessages(){
 
     }
 
-    public SensorMessages(long id, String messages, Boolean error, LocalDateTime messages_date, List<MovementSensor> movementSensors) {
+    public SensorMessages(long id, String messages, Boolean error, LocalDateTime messages_date, MovementSensor movementSensor) {
         this.id = id;
         this.messages = messages;
         this.error = error;
         this.messages_date = messages_date;
-        this.movementSensors = movementSensors;
-    }
-
-    public Boolean getError() {
-        return error;
-    }
-
-    public void setError(Boolean error) {
-        this.error = error;
+        this.movementSensor = movementSensor;
     }
 
     public long getId() {
@@ -65,6 +58,14 @@ public class SensorMessages {
         this.messages = messages;
     }
 
+    public Boolean getError() {
+        return error;
+    }
+
+    public void setError(Boolean error) {
+        this.error = error;
+    }
+
     public LocalDateTime getMessages_date() {
         return messages_date;
     }
@@ -73,11 +74,11 @@ public class SensorMessages {
         this.messages_date = messages_date;
     }
 
-    public List<MovementSensor> getMovementSensors() {
-        return movementSensors;
+    public MovementSensor getMovementSensor() {
+        return movementSensor;
     }
 
-    public void setMovementSensors(List<MovementSensor> movementSensors) {
-        this.movementSensors = movementSensors;
+    public void setMovementSensor(MovementSensor movementSensor) {
+        this.movementSensor = movementSensor;
     }
 }

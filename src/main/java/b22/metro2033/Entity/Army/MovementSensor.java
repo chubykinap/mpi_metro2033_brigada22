@@ -14,12 +14,7 @@ public class MovementSensor {
     private String name;
     private String location;
 
-    @ManyToMany(cascade = { CascadeType.ALL })
-    @JoinTable(
-            name = "sensor_message",
-            joinColumns = { @JoinColumn(name = "sensor_id") },
-            inverseJoinColumns = { @JoinColumn(name = "message_id") }
-    )
+    @OneToMany(mappedBy = "movementSensor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SensorMessages> sensorMessages;
 
     @ManyToOne
