@@ -2,6 +2,7 @@ package b22.metro2033.Service;
 
 import b22.metro2033.Entity.Army.MovementSensor;
 import b22.metro2033.Entity.Army.SensorMessages;
+import b22.metro2033.Entity.Army.SensorStatus;
 import b22.metro2033.Repository.MovementSensorRepository;
 import b22.metro2033.Repository.SensorMessagesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,8 @@ public class SensorService {
         if(chosenMessage == 1){
             sensorMessages.setMessages("НАРУШЕНИЙ НЕТ");
             sensorMessages.setError(true);
+            movementSensor.setSensorStatus(SensorStatus.ERROR);
+            movementSensorRepository.save(movementSensor);
         }
 
         sensorMessagesRepository.save(sensorMessages);

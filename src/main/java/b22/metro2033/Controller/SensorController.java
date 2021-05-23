@@ -163,6 +163,21 @@ public class SensorController {
         return "sensors/messages";
     }
 
+    @GetMapping("/done/{id}")
+    @PreAuthorize("hasAuthority('army:write')")
+    public String problemDone(@PathVariable Long id) {
+
+        MovementSensor movementSensor = movementSensorRepository.findById(id).orElse(null);
+        if(movementSensor == null){
+            return "redirect:/sensors";
+        }
+
+        movementSensor.setSensorStatus(SensorStatus.NORMAL);
+        movementSensorRepository.save(movementSensor);
+
+        return "redirect:/sensors";
+    }
+
     public void createMessage(){
         Random random = new Random();
 
@@ -176,7 +191,7 @@ public class SensorController {
                     int index = random.nextInt(movementSensors.size());
                     sensorService.createError(movementSensors.get(index));
                 }
-                Thread.sleep(600);
+                Thread.sleep(200000);
             }
         }).start();
     }

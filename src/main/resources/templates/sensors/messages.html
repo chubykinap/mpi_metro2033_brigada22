@@ -13,7 +13,7 @@
       <div th:replace="fragments/fragment :: menu"></div>
     </div>
     <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
-      <!--<a href="/sensors/create" class="btn btn-primary my-3" sec:authorize="${hasAuthority('army:write')}">Create</a>-->
+      <a href="/sensors" class="btn btn-primary my-3">Назад</a>
       <h3>Информация о датчике</h3>
       <table class="table table-striped">
         <thead>
@@ -29,12 +29,15 @@
           <th scope="row" th:text="${sensor.id}">id</th>
           <td th:text="${sensor.name}">name</td>
           <td th:text="${sensor.location}">location</td>
+          <td th:text="${sensor.sensorStatus}">location</td>
           <td scope="row" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
                                                'Расположение: ' + sensor.post.location + '<br>'}">post</td>
+
         </tr>
         </tbody>
       </table>
 
+      <a th:href="@{/sensors/done/{id}(id=${sensor.id})}" class="btn btn-primary my-3" th:if="${#strings.equals(sensor.sensorStatus, 'ERROR')}">Проблема решена</a>
       <h3>Сообщения</h3>
       <table class="table table-striped">
         <thead>
