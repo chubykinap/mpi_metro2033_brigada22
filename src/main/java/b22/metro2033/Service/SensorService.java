@@ -37,13 +37,13 @@ public class SensorService {
         if (chosenMessage == 0){
             sensorMessages.setMessages("ЗАМЕЧЕНО ДВИЖЕНИЕ");
             sensorMessages.setError(true);
+            movementSensor.setSensorStatus(SensorStatus.ERROR);
+            movementSensorRepository.save(movementSensor);
         }
 
         if(chosenMessage == 1){
             sensorMessages.setMessages("НАРУШЕНИЙ НЕТ");
-            sensorMessages.setError(true);
-            movementSensor.setSensorStatus(SensorStatus.ERROR);
-            movementSensorRepository.save(movementSensor);
+            sensorMessages.setError(false);
         }
 
         sensorMessagesRepository.save(sensorMessages);

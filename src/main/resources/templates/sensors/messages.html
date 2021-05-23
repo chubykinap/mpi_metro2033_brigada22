@@ -22,16 +22,29 @@
           <th scope="col">Название</th>
           <th scope="col">Местоположение</th>
           <th scope="col">Пост</th>
+          <th scope="col">Состояние</th>
         </tr>
         </thead>
         <tbody>
         <tr>
-          <th scope="row" th:text="${sensor.id}">id</th>
-          <td th:text="${sensor.name}">name</td>
-          <td th:text="${sensor.location}">location</td>
-          <td th:text="${sensor.sensorStatus}">location</td>
-          <td scope="row" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
+
+          <div th:if="${#strings.equals(sensor.sensorStatus, 'ERROR')}">
+            <th scope="row" th:text="${sensor.id}" bgcolor="#FF0000">id</th>
+            <td th:text="${sensor.name}" bgcolor="#FF0000">name</td>
+            <td th:text="${sensor.location}" bgcolor="#FF0000">location</td>
+            <td scope="row" bgcolor="#FF0000" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
                                                'Расположение: ' + sensor.post.location + '<br>'}">post</td>
+            <td bgcolor="#FF0000" th:text="${sensor.sensorStatus}">location</td>
+          </div>
+
+          <div th:if="${!#strings.equals(sensor.sensorStatus, 'ERROR')}">
+            <th scope="row" th:text="${sensor.id}">id</th>
+            <td th:text="${sensor.name}">name</td>
+            <td th:text="${sensor.location}">location</td>
+            <td scope="row" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
+                                                 'Расположение: ' + sensor.post.location + '<br>'}">post</td>
+            <td th:text="${sensor.sensorStatus}">location</td>
+          </div>
 
         </tr>
         </tbody>
@@ -45,15 +58,21 @@
           <th scope="col">#</th>
           <th scope="col">Время</th>
           <th scope="col">Текст сообщения</th>
-          <th scope="col">Состояние</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="sensorMessage : ${sensor.sensorMessages}">
-          <th scope="row" th:text="${sensorMessage.id}">id</th>
-          <td th:text="${sensorMessage.messages_date}">name</td>
-          <td th:text="${sensorMessage.messages}">location</td>
-          <td th:text="${sensorMessage.error}">location</td>
+          <div th:if="${sensorMessage.error}">
+            <th scope="row" th:text="${sensorMessage.id}" bgcolor="#FF0000">id</th>
+            <td th:text="${sensorMessage.messages_date}" bgcolor="#FF0000">date</td>
+            <td th:text="${sensorMessage.messages}" bgcolor="#FF0000">messages</td>
+          </div>
+
+          <div th:if="${!sensorMessage.error}">
+            <th scope="row" th:text="${sensorMessage.id}">id</th>
+            <td th:text="${sensorMessage.messages_date}">date</td>
+            <td th:text="${sensorMessage.messages}">messages</td>
+          </div>
         </tr>
         </tbody>
       </table>

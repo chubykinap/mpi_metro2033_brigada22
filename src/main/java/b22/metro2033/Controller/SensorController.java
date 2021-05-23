@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -74,6 +75,16 @@ public class SensorController {
         return "sensors/form";
     }
 
+    @GetMapping("/sensors_table")
+    @PreAuthorize("hasAuthority('army:read')")
+    public ModelAndView getSensors() {
+
+        List<MovementSensor> sensors = movementSensorRepository.findAll();
+        ModelAndView modelAndView = new ModelAndView("sensors/index::sensors_table");
+        modelAndView.addObject("sensors", sensors);
+        return modelAndView;
+    }
+
     @PostMapping
     @PreAuthorize("hasAuthority('army:write')")
     public String create(@ModelAttribute("sensor") @Valid MovementSensor movementSensor, BindingResult bindingResult,
@@ -83,7 +94,7 @@ public class SensorController {
             model.addAttribute("sensors", movementSensorRepository.findAll());
             return "sensors/form";
         }
-
+        movementSensor.setSensorStatus(SensorStatus.NORMAL);
         movementSensorRepository.save(movementSensor);
 
         return "redirect:/sensors";
@@ -191,7 +202,7 @@ public class SensorController {
                     int index = random.nextInt(movementSensors.size());
                     sensorService.createError(movementSensors.get(index));
                 }
-                Thread.sleep(200000);
+                Thread.sleep(2000);
             }
         }).start();
     }
