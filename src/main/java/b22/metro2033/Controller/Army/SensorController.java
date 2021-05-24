@@ -1,15 +1,14 @@
-package b22.metro2033.Controller;
+package b22.metro2033.Controller.Army;
 
 import b22.metro2033.Entity.Army.*;
 import b22.metro2033.Entity.User;
-import b22.metro2033.Repository.MovementSensorRepository;
-import b22.metro2033.Repository.PostRepository;
-import b22.metro2033.Repository.SensorMessagesRepository;
+import b22.metro2033.Repository.Army.MovementSensorRepository;
+import b22.metro2033.Repository.Army.PostRepository;
+import b22.metro2033.Repository.Army.SensorMessagesRepository;
 import b22.metro2033.Repository.UserRepository;
 import b22.metro2033.Service.SensorService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;

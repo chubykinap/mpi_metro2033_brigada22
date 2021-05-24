@@ -12,19 +12,19 @@ public class DeliveryOrder {
     private long id;
     private String departureStation;
     private String arrivalStation;
-    private String state;
+    @Enumerated(EnumType.STRING)
+    private DeliveryState state;
     private Date date;
 
     @ManyToMany(mappedBy = "orders")
     private List<Courier> couriers;
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItemList;
+    @OneToMany(mappedBy = "id.order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> orders;
 
     DeliveryOrder() {}
 
-    DeliveryOrder(long id, String departureStation, String arrivalStation, String state, Date date){
-        this.id = id;
+    DeliveryOrder(String departureStation, String arrivalStation, DeliveryState state, Date date){
         this.departureStation = departureStation;
         this.arrivalStation = arrivalStation;
         this.state = state;
@@ -55,11 +55,11 @@ public class DeliveryOrder {
         this.arrivalStation = arrivalStation;
     }
 
-    public String getState() {
+    public DeliveryState getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(DeliveryState state) {
         this.state = state;
     }
 

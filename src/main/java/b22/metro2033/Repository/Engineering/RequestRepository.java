@@ -1,4 +1,4 @@
-package b22.metro2033.Repository;
+package b22.metro2033.Repository.Engineering;
 
 import b22.metro2033.Entity.Engineering.Request;
 import org.springframework.data.jpa.repository.JpaRepository;

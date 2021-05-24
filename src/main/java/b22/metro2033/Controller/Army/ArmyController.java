@@ -1,4 +1,4 @@
-package b22.metro2033.Controller;
+package b22.metro2033.Controller.Army;
 
 import b22.metro2033.Entity.Army.Characteristics;
 import b22.metro2033.Entity.Army.Post;
@@ -6,9 +6,9 @@ import b22.metro2033.Entity.Army.Rank;
 import b22.metro2033.Entity.Army.Soldier;
 import b22.metro2033.Entity.Role;
 import b22.metro2033.Entity.User;
-import b22.metro2033.Repository.CharacteristicsRepository;
-import b22.metro2033.Repository.PostRepository;
-import b22.metro2033.Repository.SoldierRepository;
+import b22.metro2033.Repository.Army.CharacteristicsRepository;
+import b22.metro2033.Repository.Army.PostRepository;
+import b22.metro2033.Repository.Army.SoldierRepository;
 import b22.metro2033.Repository.UserRepository;
 import org.json.JSONException;
 import org.json.JSONObject;

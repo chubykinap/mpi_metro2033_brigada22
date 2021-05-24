@@ -6,31 +6,74 @@ import java.util.List;
 
 @Embeddable
 class StorageItemPK implements Serializable {
-    @Column(name = "storage_id")
-    private long storage_id;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Storage storage;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Item item;
 
-    @Column(name = "item_id")
-    private long item_id;
+    public Storage getStorage() {
+        return storage;
+    }
+
+    public void setStorage(Storage storage) {
+        this.storage = storage;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+    }
 }
 
 @Entity
 @Table(name = "item_in_storage")
+@AssociationOverrides({
+        @AssociationOverride(name = "id.item", joinColumns = @JoinColumn(name = "item_id")),
+        @AssociationOverride(name = "id.storage", joinColumns = @JoinColumn(name = "storage_id"))
+})
 public class StorageItem {
     @EmbeddedId
-    private StorageItemPK id;
+    private StorageItemPK id = new StorageItemPK();
 
     private int quantity;
 
-    @ManyToOne
-    @MapsId("item_id")
-    @JoinColumn(name = "item_id")
-    private Item item;
-
-    @ManyToOne
-    @MapsId("storage_id")
-    @JoinColumn(name = "storage_id")
-    private Storage storage;
-
     public StorageItem() {
+    }
+
+    public StorageItemPK getId() {
+        return id;
+    }
+
+    public void setId(StorageItemPK id) {
+        this.id = id;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    @Transient
+    public Item getItem() {
+        return id.getItem();
+    }
+
+    public void setItem(Item item) {
+        this.id.setItem(item);
+    }
+
+    @Transient
+    public Storage getStorage() {
+        return id.getStorage();
+    }
+
+    public void setStorage(Storage storage) {
+        this.id.setStorage(storage);
     }
 }

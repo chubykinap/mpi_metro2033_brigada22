@@ -12,13 +12,12 @@ public class Storage {
     private String name;
     private String location;
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "id.storage", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StorageItem> storageItemList;
 
     public Storage(){};
 
-    public Storage(long id, String name, String location){
-        this.id = id;
+    public Storage(String name, String location){
         this.name= name;
         this.location = location;
     }

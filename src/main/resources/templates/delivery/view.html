@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <div th:replace="fragments/fragment :: head"></div>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <title id="pageTitle">Метро 2033 Список полученныз заказов</title>
+</head>
+<body>
+<script type="application/javascript">
+    $(document).ready(function() {
+        $(function() {
+            $("#change").click(function() {
+                var send_state = {
+                    "id":$("#order_id").val(),
+                    "state":$("#state").val()
+                };
+                console.log($("#state").html());
+                $.ajax({
+                    type: "POST",
+                    url: "/delivery/changeState",
+                    contentType: "application/json",
+                    data: JSON.stringify(send_state),
+                    // dataType: "dataType",
+                    success: function (data) {
+                      console.log("success");
+                      window.location.href = '/delivery';
+                    }
+                });
+            });
+        })
+    });
+
+</script>
+<div th:replace="fragments/fragment :: nav"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 col-sm-4 col-lg-3 col-md-4 py-3 sidebar border-right">
+            <div th:replace="fragments/fragment :: menu"></div>
+        </div>
+        <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
+            <h1>Информация о заказе</h1>
+            <form th:method="POST" th:action="@{changeState}" th:object="${order}">
+                <div class="form-group">
+                    <label>Номер заказа</label><label th:text="*{id}"></label>
+                    <div class="form-group">
+                        <label>Станция отправления</label><input type="text" disabled="disabled"
+                                                                 th:field="*{departureStation}">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Станция доставки</label><input type="text" disabled="disabled"
+                                                              th:field="*{arrivalStation}">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Дата заказа</label><input type="text" disabled="disabled" th:field="*{date}">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Статус заказа</label>
+                        <input type="text" disabled="disabled">
+                        <select id="state" class="custom-select" th:field="*{state}">
+                            <option th:each="state : ${states}" th:value="${state.name}" th:text="${state.name}">State
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="button" id="change" class="btn-primary btn" value="Сохранить"/>
+                        <a href="/delivery" class="btn-primary btn">Назад</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,12 +1,8 @@
 package b22.metro2033.Controller;
 
 import b22.metro2033.Entity.Army.Post;
-import b22.metro2033.Entity.Army.Rank;
-import b22.metro2033.Entity.Army.Soldier;
 import b22.metro2033.Entity.User;
-import b22.metro2033.Repository.CharacteristicsRepository;
-import b22.metro2033.Repository.PostRepository;
-import b22.metro2033.Repository.SoldierRepository;
+import b22.metro2033.Repository.Army.PostRepository;
 import b22.metro2033.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,7 +13,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @Controller
 @RequestMapping("/posts")

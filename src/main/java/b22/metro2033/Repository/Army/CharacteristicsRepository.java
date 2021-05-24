@@ -1,4 +1,4 @@
-package b22.metro2033.Repository;
+package b22.metro2033.Repository.Army;
 
 import b22.metro2033.Entity.Army.Characteristics;
 import b22.metro2033.Entity.Army.Soldier;

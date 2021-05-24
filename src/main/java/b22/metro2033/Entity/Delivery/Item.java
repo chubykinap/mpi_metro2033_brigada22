@@ -11,16 +11,15 @@ public class Item {
     private long id;
     private String name;
 
-    @OneToMany(mappedBy = "deliveryOrder", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "id.item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItemList;
 
-    @OneToMany(mappedBy = "storage", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "id.item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StorageItem> storageItemList;
 
-    Item(){}
+    public Item(){}
 
-    Item(long id, String name){
-        this.id = id;
+    public Item(String name){
         this.name = name;
     }
 

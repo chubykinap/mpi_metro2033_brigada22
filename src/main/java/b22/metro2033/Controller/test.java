@@ -1,22 +1,25 @@
 package b22.metro2033.Controller;
 
-import b22.metro2033.Entity.Army.Characteristics;
 import b22.metro2033.Entity.Army.Soldier;
-import b22.metro2033.Repository.CharacteristicsRepository;
+import b22.metro2033.Entity.Delivery.DeliveryOrder;
+import b22.metro2033.Repository.Army.CharacteristicsRepository;
+import b22.metro2033.Repository.Delivery.OrderRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.security.Principal;
+import java.util.List;
 
 @Controller
 public class test {
     private final CharacteristicsRepository repository;
+    private final OrderRepository repositoryOrder;
 
-    public test(CharacteristicsRepository repository) {
+    public test(CharacteristicsRepository repository, OrderRepository repositoryOrder) {
         this.repository = repository;
+        this.repositoryOrder = repositoryOrder;
     }
 
 
@@ -34,7 +37,8 @@ public class test {
 
     @PostMapping("/add")
     public String add(@RequestParam("text") String text) {
-        int i = Integer.parseInt(text);
+        List<DeliveryOrder> orderList =
+                repositoryOrder.findAllByCouriersId(Integer.parseInt(text));
         return "/add";
     }
 

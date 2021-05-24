@@ -1,6 +1,5 @@
 package b22.metro2033.Repository;
 
-import b22.metro2033.Entity.Army.Characteristics;
 import b22.metro2033.Entity.Role;
 import b22.metro2033.Entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;

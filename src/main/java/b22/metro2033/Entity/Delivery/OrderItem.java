@@ -6,32 +6,49 @@ import java.util.List;
 
 @Embeddable
 class OrderItemPK implements Serializable {
-    @Column(name = "order_id")
-    private long order_id;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private DeliveryOrder order;
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Item item;
 
-    @Column(name = "item_id")
-    private long item_id;
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+    }
+
+    public DeliveryOrder getOrder() {
+        return order;
+    }
+
+    public void setOrder(DeliveryOrder order) {
+        this.order = order;
+    }
 }
 
 @Entity
 @Table(name = "item_in_order")
+@AssociationOverrides({
+        @AssociationOverride(name = "id.item", joinColumns = @JoinColumn(name = "item_id")),
+        @AssociationOverride(name = "id.order", joinColumns = @JoinColumn(name = "order_id"))
+})
 public class OrderItem {
     @EmbeddedId
-    private OrderItemPK id;
+    private OrderItemPK id = new OrderItemPK();
 
     private int quantity;
 
-    @ManyToOne
-    @MapsId("order_id")
-    @JoinColumn(name = "order_id")
-    private DeliveryOrder deliveryOrder;
-
-    @ManyToOne
-    @MapsId("item_id")
-    @JoinColumn(name = "item_id")
-    private Item item;
-
     public OrderItem() {
+    }
+
+    public OrderItemPK getId() {
+        return id;
+    }
+
+    public void setId(OrderItemPK id) {
+        this.id = id;
     }
 
     public int getQuantity() {
@@ -40,5 +57,23 @@ public class OrderItem {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    @Transient
+    public Item getItem() {
+        return id.getItem();
+    }
+
+    public void setItem(Item item) {
+        this.id.setItem(item);
+    }
+
+    @Transient
+    public DeliveryOrder getOrder() {
+        return id.getOrder();
+    }
+
+    public void setOrder(DeliveryOrder order) {
+        this.id.setOrder(order);
     }
 }

@@ -1,10 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <div th:replace="fragments/fragment :: head"></div>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <title id="pageTitle">Метро 2033 Список полученныз заказов</title>
 </head>
 <body>
-This is delivery index page
+<div th:replace="fragments/fragment :: nav"></div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 col-sm-4 col-lg-3 col-md-4 py-3 sidebar border-right">
+            <div th:replace="fragments/fragment :: menu"></div>
+        </div>
+        <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
+            <h1>Заказы на доставку</h1>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Дата</th>
+                    <th scope="col">Откуда</th>
+                    <th scope="col">Куда</th>
+                    <th scope="col">Статус</th>
+                    <th scope="col">Подробнее</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="order : ${orders}">
+                    <th scope="row" id="order_id" th:text="${order.id}">id</th>
+                    <td scope="row" th:text="${order.date}">date</td>
+                    <td scope="row" th:text="${order.departureStation}">departureStation</td>
+                    <td scope="row" th:text="${order.arrivalStation}">arrivalStation</td>
+                    <td scope="row" th:text="${order.state}">state</td>
+                    <td scope="row">
+                        <div><a th:href="@{/delivery/view/{id}(id=${order.id})}" class="btn-primary btn">Открыть</a></div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 </body>
 </html>
