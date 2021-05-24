@@ -5,12 +5,6 @@ import b22.metro2033.Entity.User;
 import javax.persistence.*;
 import java.util.List;
 
-enum Qualification{
-    THIRD,
-    SECOND,
-    FIRST
-}
-
 @Entity
 @Table(name = "engineer")
 public class Engineer {

@@ -20,11 +20,11 @@ public class test {
     }
 
 
-    @GetMapping("/test")
+ /*   @GetMapping("/test")
     public void test() {
         Characteristics characteristics = repository.findBySoldier_id(1);
         System.out.println(characteristics.getAgility());
-    }
+    }*/
 
     @GetMapping("/add")
     public String load() {

@@ -3,32 +3,42 @@ package b22.metro2033.Entity;
 import b22.metro2033.Entity.Army.Soldier;
 import b22.metro2033.Entity.Delivery.Courier;
 import b22.metro2033.Entity.Engineering.Engineer;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 
-enum Role {
-    GENERAL,
-    SOLDIER,
-    ENGINEER,
-    HEAD_ENGINEER,
-    COURIER,
-    HEAD_COURIER
-}
-
+@Data
 @Entity
 @Table(name = "metro_user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
+
     @Column(unique = true)
+    @NotEmpty(message = "Login should not be empty")
     private String login;
+
+    @NotEmpty(message = "Password should not be empty")
     private String password;
-    @Enumerated(EnumType.STRING)
-    private Role role;
+
+    @NotEmpty(message = "Name should not be empty")
+    @Size(min = 2, max = 30, message = "Name should be between 2 and 30 characters")
     private String name;
+
+    @NotEmpty(message = "Surname should not be empty")
+    @Size(min = 2, max = 30, message = "Surname should be between 2 and 30 characters")
     private String surname;
+
+    @NotEmpty(message = "Patronymic should not be empty")
+    @Size(min = 2, max = 30, message = "Surname should be between 2 and 30 characters")
     private String patronymic;
+
+    @Enumerated(value = EnumType.STRING)
+    private Role role;
 
     @OneToOne(mappedBy = "user")
     private Soldier soldier;
@@ -39,23 +49,13 @@ public class User {
     @OneToOne(mappedBy = "user")
     private Courier courier;
 
-    public User() {
-    }
+    private boolean enabled = true;
 
-    public User(String login, String password, Role role, String name, String surname, String patronymic) {
-        this.login = login;
-        this.password = password;
-        this.role = role;
-        this.name = name;
-        this.surname = surname;
-        this.patronymic = patronymic;
-    }
-
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -73,14 +73,6 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
     }
 
     public String getName() {
@@ -106,4 +98,60 @@ public class User {
     public void setPatronymic(String patronymic) {
         this.patronymic = patronymic;
     }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public Soldier getSoldier() {
+        return soldier;
+    }
+
+    public void setSoldier(Soldier soldier) {
+        this.soldier = soldier;
+    }
+
+    public Engineer getEngineer() {
+        return engineer;
+    }
+
+    public void setEngineer(Engineer engineer) {
+        this.engineer = engineer;
+    }
+
+    public Courier getCourier() {
+        return courier;
+    }
+
+    public void setCourier(Courier courier) {
+        this.courier = courier;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public User(int id, String login, String password, String name, String surname, String patronymic, Role role, Soldier soldier, Engineer engineer, Courier courier, boolean enabled) {
+        this.id = id;
+        this.login = login;
+        this.password = password;
+        this.name = name;
+        this.surname = surname;
+        this.patronymic = patronymic;
+        this.role = role;
+        this.soldier = soldier;
+        this.engineer = engineer;
+        this.courier = courier;
+        this.enabled = enabled;
+    }
+
+    public User(){}
 }

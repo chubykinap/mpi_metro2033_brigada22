@@ -12,7 +12,7 @@ public class Characteristics {
     private int strength;
     private int stamina;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "soldier_id")
     private Soldier soldier;
 
@@ -56,4 +56,13 @@ public class Characteristics {
     public void setStamina(int stamina) {
         this.stamina = stamina;
     }
+
+    public Soldier getSoldier() {
+        return soldier;
+    }
+
+    public void setSoldier(Soldier soldier) {
+        this.soldier = soldier;
+    }
+
 }

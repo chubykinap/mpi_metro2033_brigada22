@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <div th:replace="fragments/fragment :: head"></div>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <title id="pageTitle">Метро 2033 Военный персонал</title>
+</head>
+<body>
+<script type="application/javascript">
+        $(document).ready(function() {
+            $(function(){
+                $(document).on('click', '#delete2', function(event)
+                {
+                    event.preventDefault();
+                    var tbl_row = $(this).closest('tr');
+                    var soldier_id = $(tbl_row).find("#soldier_id").text();
+
+                    //Проверить
+                    if (soldier_id == '') {
+                      alert("Не найден ID солдата");
+                    }
+
+                    var soldier = {
+                        "soldier_id":soldier_id
+                    };
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/army/delete",
+                        contentType: "application/json",
+                        data: JSON.stringify(soldier),
+                        success: function (data) {
+                          console.log("success");
+                          console.log(data);
+                          window.location.href = data;
+                        }
+                    });
+                });
+            })
+        });
+</script>
+
+
+<div th:replace="fragments/fragment :: nav"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 col-sm-4 col-lg-3 col-md-4 py-3 sidebar border-right">
+            <div th:replace="fragments/fragment :: menu"></div>
+        </div>
+        <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
+            <h1>Военный персонал</h1>
+            <a href="/army/create" class="btn btn-primary my-3" sec:authorize="${hasAuthority('army:write')}">Добавить нового военного</a>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Имя</th>
+                    <th scope="col">Фамилия</th>
+                    <th scope="col">Отчество</th>
+                    <th scope="col">Пост</th>
+                    <th scope="col">Характеристики</th>
+                    <th scope="col">Здоровье</th>
+                    <th scope="col">Изменить</th>
+                    <th scope="col">Удалить</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="soldier : ${soldiers}">
+                    <th scope="row" id="soldier_id" th:text="${soldier.id}">id</th>
+                    <td scope="row" th:text="${soldierStat.index}">index</td>
+                    <td scope="row" th:text="${soldier.user.name}">name</td>
+                    <td scope="row" th:text="${soldier.user.surname}">surname</td>
+                    <td scope="row" th:text="${soldier.user.patronymic}">patronymic</td>
+                    <td scope="row" th:utext="'Название: ' + ${soldier.post.name + '<br>' +
+                                               'Расположение: ' + soldier.post.location + '<br>'}">characteristics</td>
+                    <td scope="row" th:utext="'Ловкость: ' + ${soldier.characteristics.agility + '<br>' +
+                                               'Сила: ' + soldier.characteristics.strength + '<br>' +
+                                               'Выносливость: ' + soldier.characteristics.stamina}">characteristics</td>
+                    <td scope="row" th:text="${soldier.health_state}">health</td>
+                    <td scope="row"><div><a th:href="@{/army/change/{id}(id=${soldier.id})}" class="btn-primary btn">Изменить</a></div></td>
+                    <td scope="row"><div><a th:href="@{/army/delete/{id}(id=${soldier.id})}" class="btn-primary btn" id="delete">Удалить</a></div></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

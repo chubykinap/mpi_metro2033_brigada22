@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="fragments/fragment :: head"></div>
+
+    <title id="pageTitle">Метро 2033 Датчики</title>
+</head>
+<body>
+<div th:replace="fragments/fragment :: nav"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 col-sm-4 col-lg-3 col-md-4 py-3 sidebar border-right">
+            <div th:replace="fragments/fragment :: menu"></div>
+        </div>
+        <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
+            <h1>Добавление датчика</h1>
+            <form th:method="POST" th:action="@{/sensors}" th:object="${sensor}">
+                <div class="form-group">
+                    <label for="name">Название</label>
+                    <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="Sensor name">
+                </div>
+
+                <div class="form-group">
+                    <label for="surname">Местоположение</label>
+                    <input type="text" id="surname" th:field="*{location}" class="form-control" placeholder="Sensor location">
+                </div>
+
+                <div class="form-group">
+                    <label for="post">Пост</label>
+                    <select id="post" class="custom-select" th:field="*{post} ">
+                        <option value="">Выбрать пост...</option>
+                        <option th:each="post : ${posts}" th:value="${post.id}"
+                                th:text="${post.name}">Post</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <input type="hidden" name="action" th:value="${action}">
+                    <button type="submit" class="btn-primary btn">Save</button>
+                    <a href="/sensors" class="btn-primary btn">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

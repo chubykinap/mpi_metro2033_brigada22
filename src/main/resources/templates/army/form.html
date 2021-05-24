@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <div th:replace="fragments/fragment :: head"></div>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+  <title id="pageTitle">Метро 2033 Военный персонал</title>
+</head>
+<body>
+
+<script type="application/javascript">
+        $(document).ready(function() {
+            $(function(){
+
+                $("#change").click(function(){
+
+                  check = false;
+                  if ($("#user")[0].selectedIndex <= 0) {
+                      check = true;
+                      alert("Не все данные заполнены!");
+                  }
+
+                  $('#ajax_create_soldier *').filter(':input').each(function(){
+                      if($(this).val() == ''){
+                        check = true;
+                      }
+                  });
+
+                  if (check == true){
+                    alert("Не все данные заполнены!");
+                    return;
+                  }
+
+                  console.log($("#user").val());
+                  console.log($("#post").val());
+                  console.log($("#rank").val());
+                  console.log($("#health_state").val());
+                  console.log($("#agility").val());
+                  console.log($("#strength").val());
+                  console.log($("#stamina").val());
+
+                  var new_soldier = {
+                    "user_id":$("#user").val(),
+                    "post_id":$("#post").val(),
+                    "rank": $("#rank").val(),
+                    "health_state": $("#health_state").val(),
+                    "agility": $("#agility").val(),
+                    "strength": $("#strength").val(),
+                    "stamina": $("#stamina").val()
+                  };
+
+                  $.ajax({
+                    type: "POST",
+                    url: "/army",
+                    contentType: "application/json",
+                    data: JSON.stringify(new_soldier),
+                    // dataType: "dataType",
+                    success: function (data) {
+                      console.log("success");
+                      console.log(data);
+                      window.location.href = '/army';
+                    }
+                  });
+                  console.log(new_soldier);
+                });
+            })
+        });
+</script>
+
+
+<div th:replace="fragments/fragment :: nav"></div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-xs-12 col-sm-4 col-lg-3 col-md-4 py-3 sidebar border-right">
+      <div th:replace="fragments/fragment :: menu"></div>
+    </div>
+    <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
+      <h1>Добавление нового военного</h1>
+      <form th:method="POST" th:action="@{/army}" th:object="${soldier}" id="ajax_create_soldier">
+        <div class="form-group">
+          <label for="user">Пользователь</label>
+          <select id="user" class="custom-select" th:field="*{user}">
+            <option value="">Выбрать пользователя...</option>
+            <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}">Пользователь</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="post">Пост</label>
+          <select id="post" class="custom-select" th:field="*{post}">
+            <option value="">Выбрать пост...</option>
+            <option th:each="post : ${posts}" th:value="${post.id}"
+                    th:text="${post.name}">Post</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="rank">Звание</label>
+          <select id="rank" class="custom-select" th:field="*{rank}">
+            <option value="">Выбрать звание...</option>
+            <option th:each="rank : ${ranks}" th:value="${rank.name}" th:text="${rank.name}">Звание</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="health_state">Здоровье</label>
+          <input type="text" id="health_state" class="form-control" placeholder="Здоровье">
+        </div>
+
+        <div class="form-group">
+          <label for="agility">Ловкость</label>
+          <input type="number" id="agility"  class="form-control" placeholder="Ловкость">
+        </div>
+
+        <div class="form-group">
+          <label for="strength">Сила</label>
+          <input type="number" id="strength" class="form-control" placeholder="Сила">
+        </div>
+
+        <div class="form-group">
+          <label for="stamina">Выносливость</label>
+          <input type="number" id="stamina"  class="form-control" placeholder="Выносливость">
+        </div>
+
+        <div class="form-group">
+          <input type="button" id="change"  class="btn-primary btn" value="Создать"/>
+          <a href="/army" class="btn-primary btn">Назад</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>

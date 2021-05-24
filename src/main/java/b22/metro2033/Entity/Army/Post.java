@@ -17,8 +17,19 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Soldier> soldier;
 
+    /*@OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MovementSensor> sensors;*/
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MovementSensor> sensors;
+    private List<MovementSensor> movementSensors;
+
+    /*@ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(
+            name = "post_sensor",
+            joinColumns = { @JoinColumn(name = "post_id") },
+            inverseJoinColumns = { @JoinColumn(name = "sensor_id") }
+    )
+    private List<SensorMessages> sensorMessages;*/
 
     public Post() {
     }

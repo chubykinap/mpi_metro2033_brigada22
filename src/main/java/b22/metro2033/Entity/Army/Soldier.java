@@ -4,13 +4,6 @@ import b22.metro2033.Entity.User;
 
 import javax.persistence.*;
 
-enum Rank {
-    CADET,
-    LIEUTENANT,
-    CAPTAIN,
-    MAJOR
-}
-
 @Entity
 @Table(name = "soldier")
 public class Soldier {
@@ -21,14 +14,13 @@ public class Soldier {
     private Rank rank;
     private String health_state;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
-
 
     @OneToOne(mappedBy = "soldier")
     private Characteristics characteristics;
