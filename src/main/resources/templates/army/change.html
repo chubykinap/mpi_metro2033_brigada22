@@ -70,7 +70,7 @@
 </script>
 
 
-<div th:replace="fragments/fragment :: nav"></div>
+<div th:replace="fragments/fragment :: nav-all"></div>
 <div class="container-fluid">
     <div class="row">
         <div class="col-xs-12 col-sm-4 col-lg-3 col-md-4 py-3 sidebar border-right">
@@ -107,21 +107,25 @@
                 <div class="form-group">
                     <label for="health_state">Здоровье</label>
                     <input type="text" id="health_state" th:field="*{health_state}" class="form-control" placeholder="Health state">
+                    <label th:if="${#fields.hasErrors('health_state')}" th:errors="*{health_state}">Health state</label>
                 </div>
 
                 <div class="form-group">
                     <label for="agility">Ловкость</label>
                     <input type="number" id="agility"  th:field="${soldier.characteristics.agility}" class="form-control" placeholder="Agility">
+                    <label th:if="${#fields.hasErrors('characteristics.agility')}" th:errors="*{characteristics.agility}">Agility</label>
                 </div>
 
                 <div class="form-group">
                     <label for="strength">Сила</label>
                     <input type="number" id="strength" th:field="${soldier.characteristics.strength}" class="form-control" placeholder="Strength">
+                    <label th:if="${#fields.hasErrors('characteristics.strength')}" th:errors="*{characteristics.strength}">Strength</label>
                 </div>
 
                 <div class="form-group">
                     <label for="stamina">Выносливость</label>
                     <input type="number" id="stamina" th:field="${soldier.characteristics.stamina}" class="form-control" placeholder="Stamina">
+                    <label th:if="${#fields.hasErrors('characteristics.stamina')}" th:errors="*{characteristics.stamina}">Stamina</label>
                 </div>
 
                 <div class="form-group">

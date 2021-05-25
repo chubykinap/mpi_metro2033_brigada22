@@ -3,6 +3,8 @@ package b22.metro2033.Entity.Army;
 import b22.metro2033.Entity.User;
 
 import javax.persistence.*;
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name = "soldier")
@@ -12,6 +14,7 @@ public class Soldier {
     private long id;
     @Enumerated(EnumType.STRING)
     private Rank rank;
+    @NotEmpty(message = "Health state should not be empty")
     private String health_state;
 
     @OneToOne
@@ -22,14 +25,14 @@ public class Soldier {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    @Valid
     @OneToOne(mappedBy = "soldier")
     private Characteristics characteristics;
 
     public Soldier() {
     }
 
-    public Soldier(long id, Rank rank, String health_state, User user, Post post, Characteristics characteristics) {
-        this.id = id;
+    public Soldier(Rank rank, String health_state, User user, Post post, Characteristics characteristics) {
         this.rank = rank;
         this.health_state = health_state;
         this.user = user;

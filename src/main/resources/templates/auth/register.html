@@ -1,50 +1,57 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title id="pageTitle">Looper Service Register as Customer</title>
+    <div th:replace="fragments/fragment :: head"></div>
+    <title id="pageTitle">Регистрация в системе метро</title>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
 <body>
+<div th:replace="fragments/fragment :: nav-login"></div>
 <div class="container">
     <form class="form-signin" th:method="POST" th:action="@{/auth/register}" th:object="${user}">
-
-        <h2 class="form-signin-heading text-center">Looper Service</h2>
-        <h3 class="form-signin-heading text-center">Customer registration</h3>
+        <h2 class="form-signin-heading text-center">Регистрация нового пользователя</h2>
         <div th:if="${success == null || success == false}">
             <div class="form-group">
-                <label for="login" class="sr-only">Login</label>
-                <input type="text" id="login" th:field="*{login}" class="form-control" placeholder="Your login">
+                <label for="login" class="sr-only">Логин</label>
+                <input type="text" id="login" th:field="*{login}" class="form-control" placeholder="Логин">
+                <label th:if="${#fields.hasErrors('login')}" th:errors="*{login}">Login</label>
             </div>
             <div class="form-group">
-                <label for="name" class="sr-only">Name</label>
-                <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="Your Name">
+                <label for="name" class="sr-only">Имя</label>
+                <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="Имя">
+                <label th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name</label>
             </div>
             <div class="form-group">
-                <label for="surname" class="sr-only">Surname</label>
-                <input type="text" id="surname" th:field="*{surname}" class="form-control" placeholder="Your Surname">
+                <label for="surname" class="sr-only">Фамилия</label>
+                <input type="text" id="surname" th:field="*{surname}" class="form-control" placeholder="Фамилия">
+                <label th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}">Name</label>
             </div>
             <div class="form-group">
-                <label for="patronymic" class="sr-only">Patronymic</label>
-                <input type="text" id="patronymic" th:field="*{patronymic}" class="form-control" placeholder="Your Patronymic">
+                <label for="patronymic" class="sr-only">Отчество</label>
+                <input type="text" id="patronymic" th:field="*{patronymic}" class="form-control" placeholder="Отчество">
+                <label th:if="${#fields.hasErrors('patronymic')}" th:errors="*{patronymic}">Name</label>
             </div>
             <div class="form-group">
-                <label for="password" class="sr-only">Password</label>
-                <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="Password">
+                <label for="password" class="sr-only">Пароль</label>
+                <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="Пароль">
+                <label th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Name</label>
             </div>
 
             <div class="form-group">
                 <label for="role">Роль</label>
                 <select id="role" class="custom-select" th:field="*{role}">
-                    <option value="">Choose...</option>
+                    <option value="">Выбор</option>
                     <option th:each="role : ${roles}" th:value="${role.name}"
                             th:text="${role.name}">Role</option>
                 </select>
+                <label th:if="${#fields.hasErrors('role')}" th:errors="*{role}">Name</label>
             </div>
 
-            <button class="btn btn-lg btn-primary btn-block mb-3" type="submit">Register</button>
+            <button class="btn btn-lg btn-primary btn-block mb-3" type="submit">Регистрация</button>
         </div>
-        <div class="alert alert-success" role="alert" th:if="${success != null && success == true}">You successfully registered</div>
+        <div class="alert alert-success" role="alert" th:if="${success != null && success == true}">Аккаунт создан</div>
         <div class="text-center">
-            <p><a th:href="@{/auth/login}">Go to Sing in</a></p>
+            <p><a th:href="@{/auth/login}">Вернуться к аутентификации</a></p>
         </div>
     </form>
 </div>

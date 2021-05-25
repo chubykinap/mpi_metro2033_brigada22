@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title id="pageTitle">Looper Service Auth</title>
-</head>
+    <div th:replace="fragments/fragment :: head"></div>
+    <title id="pageTitle">Аутентификация в системе метро</title></head>
 <body>
-<div class="container">
-    <form class="form-signin" th:method="POST" th:action="@{/auth/login}">
-        <div class="form-group">
-            <label for="username" class="sr-only">Login</label>
-            <input type="text" id="username" name="username" class="form-control" placeholder="Login" required autofocus>
+<div th:replace="fragments/fragment :: nav-login"></div>
+<div class="container" align="center">
+    <form class="form-group" th:method="POST" th:action="@{/auth/login}">
+        <div class="col-xs-2">
+            <label for="username" class="sr-only">Логин</label><br>
+            <input type="text" id="username" name="username" class="form-control" placeholder="Логин" required autofocus>
         </div>
         <div class="form-group">
-            <label for="password" class="sr-only">Password</label>
-            <input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+            <label for="password" class="sr-only">Пароль</label><br>
+            <input type="password" id="password" name="password" class="form-control" placeholder="Пароль" required>
         </div>
-        <button class="btn btn-lg btn-primary btn-block mb-3" type="submit">Sign in</button>
+        <button class="btn btn-lg btn-primary btn-block mb-3" type="submit">Вход</button>
 
         <div class="text-center">
-            <h2>or</h2>
-            <p><a th:href="@{/auth/register}">Register as Customer</a></p>
+            <p><a th:href="@{/auth/register}">Регистрация</a></p>
         </div>
     </form>
 </div>

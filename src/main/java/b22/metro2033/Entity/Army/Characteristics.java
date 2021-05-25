@@ -1,6 +1,9 @@
 package b22.metro2033.Entity.Army;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "soldier_characteristics")
@@ -8,8 +11,14 @@ public class Characteristics {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @Min(value = 0,message = "value should not be less than 0")
+    @Max(value = 100,message = "value should not be more than 100 ")
     private int agility;
+    @Min(value = 0,message = "value should not be less than 0")
+    @Max(value = 100,message = "value should not be more than 100 ")
     private int strength;
+    @Min(value = 0,message = "value should not be less than 0")
+    @Max(value = 100,message = "value should not be more than 100 ")
     private int stamina;
 
     @OneToOne

@@ -1,6 +1,8 @@
 package b22.metro2033.Entity.Delivery;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -10,9 +12,12 @@ public class DeliveryOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @NotNull(message = "Departure station should not be empty")
     private String departureStation;
+    @NotNull(message = "Arrival station should not be empty")
     private String arrivalStation;
     @Enumerated(EnumType.STRING)
+    @NotNull(message = "State should not be empty")
     private DeliveryState state;
     private Date date;
 

@@ -1,6 +1,7 @@
 package b22.metro2033.Entity.Delivery;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
@@ -9,7 +10,9 @@ public class Storage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @NotNull(message = "Name should not be empty")
     private String name;
+    @NotNull(message = "Location should not be empty")
     private String location;
 
     @OneToMany(mappedBy = "id.storage", cascade = CascadeType.ALL, orphanRemoval = true)

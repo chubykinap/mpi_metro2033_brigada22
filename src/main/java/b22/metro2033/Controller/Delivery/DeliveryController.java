@@ -6,6 +6,7 @@ import b22.metro2033.Entity.Delivery.DeliveryState;
 import b22.metro2033.Entity.Delivery.OrderItem;
 import b22.metro2033.Entity.Role;
 import b22.metro2033.Entity.User;
+import b22.metro2033.Entity.Utility.OrderUtility;
 import b22.metro2033.Repository.Delivery.CourierRepository;
 import b22.metro2033.Repository.Delivery.OrderItemRepository;
 import b22.metro2033.Repository.Delivery.OrderRepository;
@@ -53,7 +54,7 @@ public class DeliveryController {
             orders = orderRepository.findAllByCouriersId(courier.getId());
         else
             orders = orderRepository.findAll();
-        model.addAttribute("orders", orders);
+        model.addAttribute("orders", OrderUtility.toOrderUtility(orders));
         return "delivery/index";
     }
 
@@ -70,8 +71,9 @@ public class DeliveryController {
             return "/delivery";
         }
         List<OrderItem> list = repository.findAllByIdOrderId(order.getId());
-        model.addAttribute("order", order);
-        model.addAttribute("states", DeliveryState.values());
+        model.addAttribute("order", new OrderUtility(order));
+        model.addAttribute("states", DeliveryState.getHigher(order.getState()));
+        model.addAttribute("items", list);
         return "/delivery/view";
     }
 

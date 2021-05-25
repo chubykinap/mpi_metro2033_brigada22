@@ -3,6 +3,7 @@ package b22.metro2033.Entity.Army;
 import b22.metro2033.Entity.Engineering.Request;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Entity
@@ -11,7 +12,9 @@ public class MovementSensor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @NotEmpty(message = "Name should not be empty")
     private String name;
+    @NotEmpty(message = "Location should not be empty")
     private String location;
 
     @OneToMany(mappedBy = "movementSensor", cascade = CascadeType.ALL, orphanRemoval = true)

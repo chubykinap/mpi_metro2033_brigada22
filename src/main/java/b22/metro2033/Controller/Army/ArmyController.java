@@ -18,8 +18,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,8 +58,8 @@ public class ArmyController {
         if(user == null){
             return "redirect:/auth/login";
         }
-
-        model.addAttribute("soldiers", soldierRepository.findAll());
+        List<Soldier> soldiers = soldierRepository.findAll();
+        model.addAttribute("soldiers", soldiers);
         return "army/index";
     }
 
@@ -79,7 +81,7 @@ public class ArmyController {
 
     @PreAuthorize("hasAuthority('army:write')")
     @RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
-    public String create(@RequestBody String response) throws JSONException, ParseException { //ParesException type?
+    public String create(@RequestBody @Valid String response) throws JSONException, ParseException { //ParesException type?
 
         JSONObject json = new JSONObject(response);
 
@@ -97,16 +99,17 @@ public class ArmyController {
         Post post = postRepository.findById(post_id).orElse(null);
         Rank rank = Rank.valueOf(rank_string);
 
+        Characteristics characteristics = new Characteristics();
+        characteristics.setAgility(agility);
+        characteristics.setStrength(strength);
+        characteristics.setStamina(stamina);
+
         soldier.setUser(user);
         soldier.setPost(post);
         soldier.setRank(rank);
         soldier.setHealth_state(health_state);
         soldierRepository.save(soldier);
 
-        Characteristics characteristics = new Characteristics();
-        characteristics.setAgility(agility);
-        characteristics.setStrength(strength);
-        characteristics.setStamina(stamina);
         characteristics.setSoldier(soldier);
         characteristicsRepository.save(characteristics);
 

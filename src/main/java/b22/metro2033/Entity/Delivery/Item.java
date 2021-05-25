@@ -1,6 +1,7 @@
 package b22.metro2033.Entity.Delivery;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
@@ -9,6 +10,7 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+    @NotNull(message = "Name should not be empty")
     private String name;
 
     @OneToMany(mappedBy = "id.item", cascade = CascadeType.ALL, orphanRemoval = true)

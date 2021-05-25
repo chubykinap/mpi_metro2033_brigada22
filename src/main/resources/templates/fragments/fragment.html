@@ -6,44 +6,55 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/metro.png">
   <link rel="manifest" href="/site.webmanifest">
   <link href="/webjars/bootstrap/4.6.0/css/bootstrap.min.css" rel="stylesheet">
   <link href="/webjars/font-awesome/5.15.2/css/all.min.css" rel="stylesheet">
   <script src="/webjars/jquery/3.6.0/jquery.min.js" type="application/javascript"></script>
   <script src="/webjars/momentjs/2.29.1/min/moment.min.js" type="application/javascript"></script>
 </div>
-<div th:fragment="nav" th:remove="tag" xmlns:th="http://www.thymeleaf.org">
+
+<div th:fragment="nav-all" th:remove="tag" xmlns:th="http://www.thymeleaf.org">
   <nav class="navbar navbar-dark bg-dark navbar-expand-md">
     <a class="navbar-brand mr-auto" href="/">
-      <img src="/images/favicon-32x32.png" width="30" height="30" class="d-inline-block align-top" alt="">
-      Looper Service
+      <img src="/images/metro.png" width="30" height="30" class="d-inline-block align-top" alt="">
+      Система станции метро
     </a>
-    <a class="btn btn-outline-light" href="/auth/logout">Logout</a>
+    <a class="btn btn-outline-light" href="/auth/logout">Выйти из системы</a>
+  </nav>
+</div>
+
+<div th:fragment="nav-login" th:remove="tag" xmlns:th="http://www.thymeleaf.org">
+  <nav class="navbar navbar-dark bg-dark navbar-expand-md">
+    <a class="navbar-brand mr-auto" href="/">
+      <img src="/images/metro.png" width="30" height="30" class="d-inline-block align-top" alt="">
+      Система станции метро
+    </a>
   </nav>
 </div>
 
 <div th:fragment="menu" th:remove="tag" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <ul class="list-unstyled">
     <li class="">
-      <a href="/"><span class="fas fa-home fa-fw"></span> Home</a>
+      <a href="/"><span class="fas fa-home fa-fw"></span> Главная</a>
     </li>
     <li class="" sec:authorize="${hasAuthority('users:read')}">
-      <a href="/users"><span class="fas fa-user-friends fa-fw"></span> Users</a>
+      <a href="/users"><span class="fas fa-user-friends fa-fw"></span> Пользователи</a>
     </li>
     <li class="" sec:authorize="${hasAuthority('delivery:read')}">
-      <a href="/delivery"><span class="fas fa-clipboard-list fa-fw"></span> Delivery</a>
+      <a href="/delivery"><span class="fas fa-clipboard-list fa-fw"></span> Доставка</a>
     </li>
     <li class=""  sec:authorize="${hasAuthority('engineering:read')}">
-      <a href="/engineering"><span class="fas fa-skull-crossbones fa-fw"></span> Engineering</a>
+      <a href="/engineering"><span class="fas fa-skull-crossbones fa-fw"></span> Ремонт</a>
     </li>
     <li class=""  sec:authorize="${hasAuthority('army:read')}">
-      <a href="/army"><span class="fas fa-skull-crossbones fa-fw"></span> Army</a>
+      <a href="/army"><span class="fas fa-skull-crossbones fa-fw"></span> Армия</a>
     </li>
     <li class=""  sec:authorize="${hasAuthority('army:read')}">
-      <a href="/posts"><span class="fas fa-skull-crossbones fa-fw"></span> Posts</a>
+      <a href="/posts"><span class="fas fa-skull-crossbones fa-fw"></span> Посты охраны</a>
     </li>
     <li class=""  sec:authorize="${hasAuthority('army:read')}">
-      <a href="/sensors"><span class="fas fa-skull-crossbones fa-fw"></span> Sensors</a>
+      <a href="/sensors"><span class="fas fa-skull-crossbones fa-fw"></span> Сенсоры</a>
     </li>
   </ul>
 </div>

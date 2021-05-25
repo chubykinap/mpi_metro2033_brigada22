@@ -3,19 +3,19 @@
 <head>
     <div th:replace="fragments/fragment :: head"></div>
 
-    <title id="pageTitle">Looper Service</title>
+    <title id="pageTitle">Система станции метро</title>
 </head>
 <body>
-<div th:replace="fragments/fragment :: nav"></div>
+<div th:replace="fragments/fragment :: nav-all"></div>
 <div class="container-fluid">
     <div class="row">
         <div class="col-xs-12 col-sm-4 col-lg-3 col-md-4 py-3 sidebar border-right">
             <div th:replace="fragments/fragment :: menu"></div>
         </div>
         <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
-            <h1>Welcome, [[${login}]]</h1>
-            <h4>Your ROLE: [[${role}]]</h4>
-            <h6>Your Permissions: [[${permissions}]]</h6>
+            <h1>Добро пожаловать в систему метро, [[${login}]]</h1>
+            <h4>Вы зашли как: [[${role}]]</h4>
+            <h6>Ваши возможности: [[${permissions}]]</h6>
         </div>
     </div>
 </div>

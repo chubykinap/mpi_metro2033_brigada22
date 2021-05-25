@@ -35,7 +35,7 @@
     });
 
 </script>
-<div th:replace="fragments/fragment :: nav"></div>
+<div th:replace="fragments/fragment :: nav-all"></div>
 <div class="container-fluid">
     <div class="row">
         <div class="col-xs-12 col-sm-4 col-lg-3 col-md-4 py-3 sidebar border-right">
@@ -45,28 +45,44 @@
             <h1>Информация о заказе</h1>
             <form th:method="POST" th:action="@{changeState}" th:object="${order}">
                 <div class="form-group">
-                    <label>Номер заказа</label><label th:text="*{id}"></label>
+                    <label>Номер заказа:&nbsp&nbsp</label><label th:text="*{id}"></label>
+                    <input type="hidden" id="order_id" th:field="*{id}">
                     <div class="form-group">
-                        <label>Станция отправления</label><input type="text" disabled="disabled"
-                                                                 th:field="*{departureStation}">
+                        <label>Станция отправления:&nbsp&nbsp </label><label th:text="*{departureStation}"></label>
                     </div>
 
                     <div class="form-group">
-                        <label>Станция доставки</label><input type="text" disabled="disabled"
-                                                              th:field="*{arrivalStation}">
+                        <label>Станция доставки:&nbsp&nbsp </label><label th:text="*{arrivalStation}"></label>
                     </div>
 
                     <div class="form-group">
-                        <label>Дата заказа</label><input type="text" disabled="disabled" th:field="*{date}">
+                        <label>Дата заказа:&nbsp&nbsp </label><label th:text=="*{date}"></label>
                     </div>
 
                     <div class="form-group">
-                        <label>Статус заказа</label>
-                        <input type="text" disabled="disabled">
+                        <label>Текущий статус заказа: </label>
                         <select id="state" class="custom-select" th:field="*{state}">
                             <option th:each="state : ${states}" th:value="${state.name}" th:text="${state.name}">State
                             </option>
                         </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Предметы для доставки</label>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">Предмет</th>
+                                <th scope="col">Количество</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="item : ${items}">
+                                <th scope="row" th:text="${item.id.item.name}">id</th>
+                                <th scope="row" th:text="${item.quantity}">quantity</th>
+                            </tr>
+                            </tbody>
+                        </table>
                     </div>
 
                     <div class="form-group">
