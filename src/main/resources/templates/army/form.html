@@ -32,6 +32,19 @@
                     return;
                   }
 
+                  if ($("#agility").val() < 0 || $("#agility").val() > 100) {
+                    alert("Ловкость должна быть в границах от 0 до 100");
+                    return;
+                  }
+                  if ($("#strength").val() < 0 || $("#strength").val() > 100) {
+                    alert("Сила должна быть в границах от 0 до 100");
+                    return;
+                  }
+                  if ($("#stamina").val() < 0 || $("#stamina").val() > 100) {
+                    alert("Выносливость должна быть в границах от 0 до 100");
+                    return;
+                  }
+
                   console.log($("#user").val());
                   console.log($("#post").val());
                   console.log($("#rank").val());
@@ -110,20 +123,17 @@
 
         <div class="form-group">
           <label for="agility">Ловкость</label>
-          <input type="number" id="agility"  class="form-control" placeholder="Ловкость">
-          <label th:if="${#fields.hasErrors('characteristics.agility')}" th:errors="*{characteristics.agility}">Agility</label>
+          <input type="number" id="agility"  class="form-control" placeholder="Ловкость" min="0" max="100">
         </div>
 
         <div class="form-group">
           <label for="strength">Сила</label>
           <input type="number" id="strength" class="form-control" placeholder="Сила">
-          <label th:if="${#fields.hasErrors('characteristics.strength')}" th:errors="*{characteristics.strength}">Strength</label>
         </div>
 
         <div class="form-group">
           <label for="stamina">Выносливость</label>
           <input type="number" id="stamina"  class="form-control" placeholder="Выносливость">
-          <label th:if="${#fields.hasErrors('characteristics.stamina')}" th:errors="*{characteristics.stamina}">Stamina</label>
         </div>
 
         <div class="form-group">

@@ -13,7 +13,7 @@
         $(document).ready(function() {
             $(function(){
 
-                $(".change").click(function(){
+                $("#change").click(function(){
 
                   check = false;
                   if ($("#user")[0].selectedIndex <= 0) {
@@ -29,6 +29,19 @@
 
                   if (check == true){
                     alert("Не все данные заполнены!");
+                    return;
+                  }
+
+                  if ($("#agility").val() < 0 || $("#agility").val() > 100) {
+                    alert("Ловкость должна быть в границах от 0 до 100");
+                    return;
+                  }
+                  if ($("#strength").val() < 0 || $("#strength").val() > 100) {
+                    alert("Сила должна быть в границах от 0 до 100");
+                    return;
+                  }
+                  if ($("#stamina").val() < 0 || $("#stamina").val() > 100) {
+                    alert("Выносливость должна быть в границах от 0 до 100");
                     return;
                   }
 
@@ -107,26 +120,22 @@
                 <div class="form-group">
                     <label for="health_state">Здоровье</label>
                     <input type="text" id="health_state" th:field="*{health_state}" class="form-control" placeholder="Health state">
-                    <label th:if="${#fields.hasErrors('health_state')}" th:errors="*{health_state}">Health state</label>
-                </div>
+               </div>
 
                 <div class="form-group">
                     <label for="agility">Ловкость</label>
                     <input type="number" id="agility"  th:field="${soldier.characteristics.agility}" class="form-control" placeholder="Agility">
-                    <label th:if="${#fields.hasErrors('characteristics.agility')}" th:errors="*{characteristics.agility}">Agility</label>
                 </div>
 
                 <div class="form-group">
                     <label for="strength">Сила</label>
                     <input type="number" id="strength" th:field="${soldier.characteristics.strength}" class="form-control" placeholder="Strength">
-                    <label th:if="${#fields.hasErrors('characteristics.strength')}" th:errors="*{characteristics.strength}">Strength</label>
                 </div>
 
                 <div class="form-group">
                     <label for="stamina">Выносливость</label>
                     <input type="number" id="stamina" th:field="${soldier.characteristics.stamina}" class="form-control" placeholder="Stamina">
-                    <label th:if="${#fields.hasErrors('characteristics.stamina')}" th:errors="*{characteristics.stamina}">Stamina</label>
-                </div>
+                 </div>
 
                 <div class="form-group">
                     <input type="hidden" id="soldier_id" th:field="${soldier.id}" class="form-control" placeholder="Soldier id">
