@@ -14,8 +14,8 @@ public class Soldier {
     private long id;
     @Enumerated(EnumType.STRING)
     private Rank rank;
-    @NotEmpty(message = "Health state should not be empty")
-    private String health_state;
+    @Enumerated(EnumType.STRING)
+    private HealthState health_state;
 
     @OneToOne
     @JoinColumn(name = "user_id")
@@ -32,7 +32,7 @@ public class Soldier {
     public Soldier() {
     }
 
-    public Soldier(Rank rank, String health_state, User user, Post post, Characteristics characteristics) {
+    public Soldier(Rank rank, HealthState health_state, User user, Post post, Characteristics characteristics) {
         this.rank = rank;
         this.health_state = health_state;
         this.user = user;
@@ -56,11 +56,11 @@ public class Soldier {
         this.rank = rank;
     }
 
-    public String getHealth_state() {
+    public HealthState getHealth_state() {
         return health_state;
     }
 
-    public void setHealth_state(String health_state) {
+    public void setHealth_state(HealthState health_state) {
         this.health_state = health_state;
     }
 

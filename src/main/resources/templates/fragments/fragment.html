@@ -17,7 +17,6 @@
 <div th:fragment="nav-all" th:remove="tag" xmlns:th="http://www.thymeleaf.org">
   <nav class="navbar navbar-dark bg-dark navbar-expand-md">
     <a class="navbar-brand mr-auto" href="/">
-      <img src="/images/metro.png" width="30" height="30" class="d-inline-block align-top" alt="">
       Система станции метро
     </a>
     <a class="btn btn-outline-light" href="/auth/logout">Выйти из системы</a>
@@ -27,7 +26,6 @@
 <div th:fragment="nav-login" th:remove="tag" xmlns:th="http://www.thymeleaf.org">
   <nav class="navbar navbar-dark bg-dark navbar-expand-md">
     <a class="navbar-brand mr-auto" href="/">
-      <img src="/images/metro.png" width="30" height="30" class="d-inline-block align-top" alt="">
       Система станции метро
     </a>
   </nav>
@@ -43,9 +41,6 @@
     </li>
     <li class="" sec:authorize="${hasAuthority('delivery:read')}">
       <a href="/delivery"><span class="fas fa-clipboard-list fa-fw"></span> Доставка</a>
-    </li>
-    <li class=""  sec:authorize="${hasAuthority('engineering:read')}">
-      <a href="/engineering"><span class="fas fa-skull-crossbones fa-fw"></span> Ремонт</a>
     </li>
     <li class=""  sec:authorize="${hasAuthority('army:read')}">
       <a href="/army"><span class="fas fa-skull-crossbones fa-fw"></span> Армия</a>

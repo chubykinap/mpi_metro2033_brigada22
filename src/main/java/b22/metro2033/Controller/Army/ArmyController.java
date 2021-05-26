@@ -1,16 +1,13 @@
 package b22.metro2033.Controller.Army;
 
-import b22.metro2033.Entity.Army.Characteristics;
-import b22.metro2033.Entity.Army.Post;
-import b22.metro2033.Entity.Army.Rank;
-import b22.metro2033.Entity.Army.Soldier;
+import b22.metro2033.Entity.Army.*;
 import b22.metro2033.Entity.Role;
 import b22.metro2033.Entity.User;
+import b22.metro2033.Entity.Utility.SoldierUtility;
 import b22.metro2033.Repository.Army.CharacteristicsRepository;
 import b22.metro2033.Repository.Army.PostRepository;
 import b22.metro2033.Repository.Army.SoldierRepository;
 import b22.metro2033.Repository.UserRepository;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -18,11 +15,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,7 +54,8 @@ public class ArmyController {
             return "redirect:/auth/login";
         }
         List<Soldier> soldiers = soldierRepository.findAll();
-        model.addAttribute("soldiers", soldiers);
+        model.addAttribute("soldiers", SoldierUtility.toSoldierUtility(soldiers));
+
         return "army/index";
     }
 
@@ -73,7 +69,8 @@ public class ArmyController {
             return "army/form";
         }
         model.addAttribute("users",  users);
-        model.addAttribute("ranks", Rank.values());
+        model.addAttribute("ranks", Rank.getRankListRU());
+        model.addAttribute("health",HealthState.getStateListRU());
         model.addAttribute("posts", postRepository.findAll());
 
         return "army/form";
@@ -81,12 +78,12 @@ public class ArmyController {
 
     @PreAuthorize("hasAuthority('army:write')")
     @RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
-    public String create(@RequestBody @Valid String response) throws JSONException, ParseException { //ParesException type?
+    public String create(@RequestBody @Valid String response) throws Exception { //ParesException type?
 
         JSONObject json = new JSONObject(response);
 
-        String rank_string = json.getString("rank");
-        String health_state = json.getString("health_state");
+        Rank rank = Rank.findState(json.getString("rank"));
+        HealthState health_state = HealthState.findState(json.getString("health_state"));
         long user_id = Long.parseLong(json.getString("user_id"));
         long post_id =  Long.parseLong(json.getString("post_id"));
         int agility =  Integer.parseInt(json.getString("agility"));
@@ -97,7 +94,6 @@ public class ArmyController {
 
         User user = userRepository.findById(user_id).orElse(null);
         Post post = postRepository.findById(post_id).orElse(null);
-        Rank rank = Rank.valueOf(rank_string);
 
         Characteristics characteristics = new Characteristics();
         characteristics.setAgility(agility);
@@ -125,14 +121,15 @@ public class ArmyController {
             return "redirect:/army";
         }
 
-        model.addAttribute("soldier", soldier);
+        model.addAttribute("soldier", new SoldierUtility(soldier));
         model.addAttribute("action", "change");
         List<User> users = userRepository.findAllByRoleIn(getRolesForSelect(authentication));
         if (users.size() == 0){
             return "army/form";
         }
         model.addAttribute("users", users);
-        model.addAttribute("ranks", Rank.values());
+        model.addAttribute("ranks", Rank.getRankListRU());
+        model.addAttribute("health",HealthState.getStateListRU());
         model.addAttribute("posts", postRepository.findAll());
 
         return "army/change";
@@ -140,12 +137,12 @@ public class ArmyController {
 
     @PreAuthorize("hasAuthority('army:write')")
     @RequestMapping(value = "/change", consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
-    public String change(@RequestBody String response) throws JSONException, ParseException { //ParesException type?
+    public String change(@RequestBody String response) throws Exception { //ParesException type?
 
         JSONObject json = new JSONObject(response);
 
-        String rank_string = json.getString("rank");
-        String health_state = json.getString("health_state");
+        Rank rank = Rank.findState(json.getString("rank"));
+        HealthState health_state = HealthState.findState(json.getString("health_state"));
         long soldier_id = Long.parseLong(json.getString("soldier_id"));
         long user_id = Long.parseLong(json.getString("user_id"));
         long post_id =  Long.parseLong(json.getString("post_id"));
@@ -167,7 +164,6 @@ public class ArmyController {
         }
         //Проверить на пустоту
         Post post = postRepository.findById(post_id).orElse(null);
-        Rank rank = Rank.valueOf(rank_string);
 
         soldier.setUser(user);
         soldier.setPost(post);

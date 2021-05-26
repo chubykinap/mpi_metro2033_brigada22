@@ -18,7 +18,6 @@
                   check = false;
                   if ($("#user")[0].selectedIndex <= 0) {
                       check = true;
-                      alert("Не все данные заполнены!");
                   }
 
                   $('#ajax_create_soldier *').filter(':input').each(function(){
@@ -112,13 +111,16 @@
           <label for="rank">Звание</label>
           <select id="rank" class="custom-select" th:field="*{rank}">
             <option value="">Выбрать звание...</option>
-            <option th:each="rank : ${ranks}" th:value="${rank.name}" th:text="${rank.name}">Звание</option>
+            <option th:each="rank : ${ranks}" th:value="${rank}" th:text="${rank}">Звание</option>
           </select>
         </div>
 
         <div class="form-group">
           <label for="health_state">Здоровье</label>
-          <input type="text" id="health_state" class="form-control" placeholder="Здоровье">
+          <select id="health_state" class="custom-select" th:field="*{health_state}">
+            <option value="">Состояние здоровья солдата...</option>
+            <option th:each="state : ${health}" th:value="${state}" th:text="${state}">Здоровье</option>
+          </select>
         </div>
 
         <div class="form-group">
