@@ -40,16 +40,16 @@
       <a href="/users"><span class="fas fa-user-friends fa-fw"></span> Пользователи</a>
     </li>
     <li class="" sec:authorize="${hasAuthority('delivery:read')}">
-      <a href="/delivery"><span class="fas fa-clipboard-list fa-fw"></span> Доставка</a>
+      <a href="/delivery"><span class="fas fa-truck fa-fw"></span> Доставка</a>
     </li>
     <li class=""  sec:authorize="${hasAuthority('army:read')}">
-      <a href="/army"><span class="fas fa-skull-crossbones fa-fw"></span> Армия</a>
+      <a href="/army"><span class="fas fa-flag fa-fw"></span> Армия</a>
     </li>
     <li class=""  sec:authorize="${hasAuthority('army:read')}">
-      <a href="/posts"><span class="fas fa-skull-crossbones fa-fw"></span> Посты охраны</a>
+      <a href="/posts"><span class="fas fa-flag fa-fw"></span> Посты охраны</a>
     </li>
     <li class=""  sec:authorize="${hasAuthority('army:read')}">
-      <a href="/sensors"><span class="fas fa-skull-crossbones fa-fw"></span> Сенсоры</a>
+      <a href="/sensors"><span class="fas fa-wifi fa-fw"></span> Сенсоры</a>
     </li>
   </ul>
 </div>

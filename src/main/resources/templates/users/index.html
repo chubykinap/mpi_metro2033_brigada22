@@ -13,8 +13,8 @@
             <div th:replace="fragments/fragment :: menu"></div>
         </div>
         <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
-            <h1>Personal</h1>
-            <a href="/users/create" class="btn btn-primary my-3" sec:authorize="${hasAuthority('users:write')}">Create</a>
+            <h1>Пользователи</h1>
+            <a href="/users/create" class="btn btn-primary my-3" sec:authorize="${hasAuthority('users:write')}">Создать</a>
             <table class="table table-striped">
                 <thead>
                 <tr>
@@ -24,6 +24,7 @@
                     <th scope="col">Отчество</th>
                     <th scope="col">Login</th>
                     <th scope="col">Роль</th>
+                    <th scope="col">Удалить</th>
                 </tr>
                 </thead>
                 <tbody>

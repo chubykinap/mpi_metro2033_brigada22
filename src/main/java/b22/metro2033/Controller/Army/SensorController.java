@@ -201,7 +201,7 @@ public class SensorController {
                     int index = random.nextInt(movementSensors.size());
                     sensorService.createError(movementSensors.get(index));
                 }
-                Thread.sleep(2000);
+                Thread.sleep(5000);
             }
         }).start();
     }
