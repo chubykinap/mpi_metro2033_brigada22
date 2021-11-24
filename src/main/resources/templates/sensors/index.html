@@ -14,7 +14,7 @@
     </div>
     <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
       <h1>Датчики</h1>
-      <a href="/sensors/create" class="btn btn-primary my-3" sec:authorize="${hasAuthority('army:write')}">Create</a>
+      <a href="/sensors/create" class="btn btn-primary my-3" sec:authorize="${hasAuthority('army:write')}">Создать</a>
         <table th:fragment="sensors_table" class="table table-striped">
           <thead>
           <tr>
@@ -59,7 +59,7 @@
 
 
 <script type="application/javascript">
-      $(document).ready(function() {
+      /*$(document).ready(function() {
 
           var delay = 1000;
 
@@ -78,7 +78,7 @@
           }
 
           update_table();
-      });
+      });*/
 </script>
 
 

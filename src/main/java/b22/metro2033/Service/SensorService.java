@@ -32,16 +32,16 @@ public class SensorService {
         sensorMessages.setMessages_date(time);
 
         //random.nextInt(max - min) + min;
-        int chosenMessage = random.nextInt(2) ;
+        int chosenMessage = random.nextInt(100) ;
 
-        if (chosenMessage == 0){
+        if (chosenMessage >= 80){
             sensorMessages.setMessages("ЗАМЕЧЕНО ДВИЖЕНИЕ");
             sensorMessages.setError(true);
             movementSensor.setSensorStatus(SensorStatus.ERROR);
             movementSensorRepository.save(movementSensor);
         }
 
-        if(chosenMessage == 1){
+        if(chosenMessage < 80){
             sensorMessages.setMessages("НАРУШЕНИЙ НЕТ");
             sensorMessages.setError(false);
         }

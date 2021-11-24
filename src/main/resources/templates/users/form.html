@@ -17,41 +17,41 @@
       <form th:method="POST" th:action="@{/users}" th:object="${user}">
         <div class="form-group">
           <label for="name">Имя</label>
-          <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="User name">
+          <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="Имя">
         </div>
 
         <div class="form-group">
           <label for="surname">Фамилия</label>
-          <input type="text" id="surname" th:field="*{surname}" class="form-control" placeholder="User surname">
+          <input type="text" id="surname" th:field="*{surname}" class="form-control" placeholder="Фамилия">
         </div>
 
         <div class="form-group">
           <label for="patronymic">Отчество</label>
-          <input type="text" id="patronymic" th:field="*{patronymic}" class="form-control" placeholder="User patronymic">
+          <input type="text" id="patronymic" th:field="*{patronymic}" class="form-control" placeholder="Отчество">
         </div>
 
         <div class="form-group">
           <label for="login">Логин</label>
-          <input type="text" id="login" th:field="*{login}" class="form-control" placeholder="Personal login">
+          <input type="text" id="login" th:field="*{login}" class="form-control" placeholder="Логин">
         </div>
 
         <div class="form-group">
           <label for="password">Пароль</label>
-          <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="Password">
+          <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="Пароль">
         </div>
 
         <div class="form-group">
           <label for="role">Роль</label>
           <select id="role" class="custom-select" th:field="*{role}">
-            <option value="">Choose...</option>
-            <option th:each="role : ${roles}" th:value="${role}" th:text="${role.name()}">Role</option>
+            <option value="">Выбрать...</option>
+            <option th:each="role : ${roles}" th:value="${role}" th:text="${role.name()}">Роль</option>
           </select>
         </div>
 
         <div class="form-group">
           <input type="hidden" name="action" th:value="${action}">
-          <button type="submit" class="btn-primary btn">Save</button>
-          <a href="/users" class="btn-primary btn">Cancel</a>
+          <button type="submit" class="btn-primary btn">Сохранить</button>
+          <a href="/users" class="btn-primary btn">Назад</a>
         </div>
       </form>
     </div>

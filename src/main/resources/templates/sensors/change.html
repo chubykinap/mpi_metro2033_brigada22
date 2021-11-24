@@ -22,12 +22,12 @@
 
                 <div class="form-group">
                     <label for="name">Название</label>
-                    <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="Sensor name">
+                    <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="Название">
                 </div>
 
                 <div class="form-group">
                     <label for="surname">Местоположение</label>
-                    <input type="text" id="surname" th:field="*{location}" class="form-control" placeholder="Sensor location">
+                    <input type="text" id="surname" th:field="*{location}" class="form-control" placeholder="Местоположение">
                 </div>
 
                 <div class="form-group">
@@ -41,8 +41,8 @@
 
                 <div class="form-group">
                     <input type="hidden" name="action" th:value="${action}">
-                    <button type="submit" class="btn-primary btn">Save</button>
-                    <a href="/sensors" class="btn-primary btn">Cancel</a>
+                    <button type="submit" class="btn-primary btn">Сохранить</button>
+                    <a href="/sensors" class="btn-primary btn">Назад</a>
                 </div>
             </form>
         </div>

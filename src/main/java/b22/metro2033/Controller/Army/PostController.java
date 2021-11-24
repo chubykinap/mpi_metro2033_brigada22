@@ -1,4 +1,4 @@
-package b22.metro2033.Controller;
+package b22.metro2033.Controller.Army;
 
 import b22.metro2033.Entity.Army.Post;
 import b22.metro2033.Entity.User;
