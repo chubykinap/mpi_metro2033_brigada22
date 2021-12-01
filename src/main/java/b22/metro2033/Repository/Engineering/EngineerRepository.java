@@ -8,5 +8,6 @@ import java.util.List;
 
 @Repository
 public interface EngineerRepository extends JpaRepository<Engineer, Long> {
+    Engineer findByLogin(long id);
     List<Engineer> findAll();
 }
