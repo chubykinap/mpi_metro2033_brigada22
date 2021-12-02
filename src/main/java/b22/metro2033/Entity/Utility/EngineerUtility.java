@@ -40,7 +40,64 @@ public class EngineerUtility {
         return id;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setQualification(String qualification) {
+        this.qualification = qualification;
+    }
+
+    public void setAgility(int agility) {
+        this.agility = agility;
+    }
+
+    public void setStrength(int strength) {
+        this.strength = strength;
+    }
+
+    public void setStamina(int stamina) {
+        this.stamina = stamina;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
+
+    public void setPost_location(String post_location) {
+        this.post_location = post_location;
+    }
+
     public void setId(long id) {
         this.id = id;
     }
+
+    public User getUser() {
+        return user;
+    }
+
+    public String getQualification() {
+        return qualification;
+    }
+
+    public int getAgility() {
+        return agility;
+    }
+
+    public int getStrength() {
+        return strength;
+    }
+
+    public int getStamina() {
+        return stamina;
+    }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public String getPost_location() {
+        return post_location;
+    }
+
 }

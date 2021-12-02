@@ -13,34 +13,30 @@
             <div th:replace="fragments/fragment :: menu"></div>
         </div>
         <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
-            <h1>Engineering</h1>
-            <a href="/personal/create" class="btn btn-primary my-3" sec:authorize="${hasAuthority('users:write')}">Create</a>
+            <h1>Инженеры</h1>
+            <a href="/engineering/create" class="btn btn-primary my-3" sec:authorize="${hasAuthority('engineering:write')}">Добавить нового инженера</a>
+
             <table class="table table-striped">
                 <thead>
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Username</th>
-                    <th scope="col">Created</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Role</th>
-                    <th scope="col">Enabled</th>
-                    <th scope="col">Action</th>
+                    <th scope="col">Имя</th>
+                    <th scope="col">Фамилия</th>
+                    <th scope="col">Отчество</th>
+                    <th scope="col">Квалификация</th>
+                    <th scope="col">Изменить</th>
+                    <th scope="col">Удалить</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="user : ${users}">
-                    <th scope="row" th:text="${user.id}">id</th>
-                    <td th:text="${user.username}">username</td>
-                    <td th:text="${#temporals.format(user.created,'dd.MM.yyyy')}">created</td>
-                    <td th:text="${user.email}">email</td>
-                    <td th:text="${user.role}">role</td>
-                    <td th:text="${user.enabled}">enabled</td>
-                    <td>
-                        <ul class="list-unstyled">
-                            <li th:if="${user.enabled == false}"><a th:href="@{/personal/enable/{id}(id=${user.id})}" class="text-success">set enabled</a></li>
-                            <li th:if="${user.enabled == true}"><a th:href="@{/personal/disable/{id}(id=${user.id})}" class="text-danger">set disabled</a></li>
-                        </ul>
-                    </td>
+                <tr th:each="engineer : ${engineers}">
+                    <th scope="row" id="engineer_id" th:text="${engineer.id}">id</th>
+                    <td scope="row" th:text="${engineer.user.name}">name</td>
+                    <td scope="row" th:text="${engineer.user.surname}">surname</td>
+                    <td scope="row" th:text="${engineer.user.patronymic}">patronymic</td>
+                    <td scope="row" th:text="${engineer.qualification}">qualification</td>
+                    <td scope="row"><div><a th:href="@{/engineering/change/{id}(id=${soldier.id})}" class="btn-primary btn">Изменить</a></div></td>
+                    <td scope="row"><div><a th:href="@{/engineering/delete/{id}(id=${soldier.id})}" class="btn-primary btn" id="delete">Удалить</a></div></td>
                 </tr>
                 </tbody>
             </table>

@@ -51,6 +51,12 @@
     <li class=""  sec:authorize="${hasAuthority('army:read')}">
       <a href="/sensors"><span class="fas fa-wifi fa-fw"></span> Сенсоры</a>
     </li>
+    <li class=""  sec:authorize="${hasAuthority('engineering:read')}">
+      <a href="/engineering"><span class="fas fa-wifi fa-fw"></span> Инженеры</a>
+    </li>
+    <li class=""  sec:authorize="${hasAuthority('engineering:read')}">
+      <a href="/requests"><span class="fas fa-wifi fa-fw"></span> Заявки</a>
+    </li>
   </ul>
 </div>
 
