@@ -25,7 +25,7 @@ public class MovementSensor {
     private SensorStatus sensorStatus;
 
     public MovementSensor(){
-        Errorrororo
+
     }
 
     public MovementSensor(long id, String name, String location, List<SensorMessages> sensorMessages, Post post, SensorStatus sensorStatus) {
