@@ -33,16 +33,16 @@
               <th bgcolor="#FF0000" scope="row" th:text="${sensor.id}">id</th>
               <td bgcolor="#FF0000" th:text="${sensor.name}">name</td>
               <td bgcolor="#FF0000" :text="${sensor.location}">location</td>
-              <td bgcolor="#FF0000" scope="row" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
-                                               'Расположение: ' + sensor.post.location + '<br>'}">post</td>
+              <td bgcolor="#FF0000" scope="row" th:utext="'Название: ' + ${sensor.post.name + '<br />' +
+                                               'Расположение: ' + sensor.post.location + '<br />'}">post</td>
             </div>
 
             <div th:if="${!#strings.equals(sensor.sensorStatus, 'ERROR')}">
               <th scope="row" th:text="${sensor.id}">id</th>
               <td th:text="${sensor.name}">name</td>
               <td :text="${sensor.location}">location</td>
-              <td scope="row" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
-                                               'Расположение: ' + sensor.post.location + '<br>'}">post</td>
+              <td scope="row" th:utext="'Название: ' + ${sensor.post.name + '<br />' +
+                                               'Расположение: ' + sensor.post.location + '<br />'}">post</td>
             </div>
 
             <td scope="row"><div><a th:href="@{/sensors/messages/{id}(id=${sensor.id})}" class="btn-primary btn" id="messages">Показать сообщения</a></div></td>

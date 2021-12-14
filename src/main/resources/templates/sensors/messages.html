@@ -32,8 +32,8 @@
             <th scope="row" th:text="${sensor.id}" bgcolor="#FF0000">id</th>
             <td th:text="${sensor.name}" bgcolor="#FF0000">name</td>
             <td th:text="${sensor.location}" bgcolor="#FF0000">location</td>
-            <td scope="row" bgcolor="#FF0000" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
-                                               'Расположение: ' + sensor.post.location + '<br>'}">post</td>
+            <td scope="row" bgcolor="#FF0000" th:utext="'Название: ' + ${sensor.post.name + '<br />' +
+                                               'Расположение: ' + sensor.post.location + '<br />'}">post</td>
             <td bgcolor="#FF0000" th:text="${sensor.sensorStatus}">location</td>
           </div>
 
@@ -41,8 +41,8 @@
             <th scope="row" th:text="${sensor.id}">id</th>
             <td th:text="${sensor.name}">name</td>
             <td th:text="${sensor.location}">location</td>
-            <td scope="row" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
-                                                 'Расположение: ' + sensor.post.location + '<br>'}">post</td>
+            <td scope="row" th:utext="'Название: ' + ${sensor.post.name + '<br />' +
+                                                 'Расположение: ' + sensor.post.location + '<br />'}">post</td>
             <td th:text="${sensor.sensorStatus}">location</td>
           </div>
 
