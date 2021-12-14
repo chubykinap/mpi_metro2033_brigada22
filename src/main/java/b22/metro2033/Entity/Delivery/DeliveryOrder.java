@@ -27,9 +27,9 @@ public class DeliveryOrder {
     @OneToMany(mappedBy = "id.order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orders;
 
-    DeliveryOrder() {}
+    public DeliveryOrder() {}
 
-    DeliveryOrder(String departureStation, String arrivalStation, DeliveryState state, Date date){
+    public DeliveryOrder(String departureStation, String arrivalStation, DeliveryState state, Date date){
         this.departureStation = departureStation;
         this.arrivalStation = arrivalStation;
         this.state = state;

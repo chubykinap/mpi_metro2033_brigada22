@@ -13,16 +13,16 @@ public class Item {
     @NotNull(message = "Name should not be empty")
     private String name;
 
+    private int quantity_in_storage;
+
     @OneToMany(mappedBy = "id.item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItemList;
 
-    @OneToMany(mappedBy = "id.item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<StorageItem> storageItemList;
-
     public Item(){}
 
-    public Item(String name){
+    public Item(String name, int quantity_in_storage){
         this.name = name;
+        this.quantity_in_storage = quantity_in_storage;
     }
 
     public long getId() {
@@ -39,5 +39,13 @@ public class Item {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getQuantity() {
+        return quantity_in_storage;
+    }
+
+    public void setQuantity(int quantity_in_storage) {
+        this.quantity_in_storage = quantity_in_storage;
     }
 }
