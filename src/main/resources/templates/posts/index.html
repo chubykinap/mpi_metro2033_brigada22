@@ -21,7 +21,7 @@
                     <th scope="col">#</th>
                     <th scope="col">Название</th>
                     <th scope="col">Местоположение</th>
-                    <th scope="col">Удалить</th>
+                    <th scope="col" sec:authorize="${hasAuthority('army:write')}">Удалить</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -29,7 +29,7 @@
                     <th scope="row" th:text="${post.id}">id</th>
                     <td th:text="${post.name}">name</td>
                     <td th:text="${post.location}">location</td>
-                    <td scope="row"><div><a th:href="@{/posts/delete/{id}(id=${post.id})}" class="btn-primary btn" id="delete">Удалить</a></div></td>
+                    <td scope="row"><div><a th:href="@{/posts/delete/{id}(id=${post.id})}" class="btn-primary btn" id="delete" sec:authorize="${hasAuthority('army:write')}">Удалить</a></div></td>
                 </tr>
                 </tbody>
             </table>

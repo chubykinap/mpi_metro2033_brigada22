@@ -63,24 +63,25 @@
                     <th scope="col">Пост</th>
                     <th scope="col">Характеристики</th>
                     <th scope="col">Здоровье</th>
-                    <th scope="col">Изменить</th>
-                    <th scope="col">Удалить</th>
+                    <th scope="col" sec:authorize="${hasAuthority('army:write')}">Изменить</th>
+                    <th scope="col" sec:authorize="${hasAuthority('army:write')}">Удалить</th>
                 </tr>
                 </thead>
                 <tbody>
+
                 <tr th:each="soldier : ${soldiers}">
                     <th scope="row" id="soldier_id" th:text="${soldier.id}">id</th>
                     <td scope="row" th:text="${soldier.user.name}">name</td>
                     <td scope="row" th:text="${soldier.user.surname}">surname</td>
                     <td scope="row" th:text="${soldier.user.patronymic}">patronymic</td>
-                    <td scope="row" th:utext="'Название: ' + ${soldier.post + '<br>' +
-                                               'Расположение: ' + soldier.post_location + '<br>'}">post</td>
+                    <td scope="row" th:utext="'Название: ' + ${soldier.post.name + '<br>' +
+                                               'Расположение: ' + soldier.post.location + '<br>'}">post</td>
                     <td scope="row" th:utext="'Ловкость: ' + ${soldier.agility + '<br>' +
                                                'Сила: ' + soldier.strength + '<br>' +
                                                'Выносливость: ' + soldier.stamina}">characteristics</td>
                     <td scope="row" th:text="${soldier.health_state}">health</td>
-                    <td scope="row"><div><a th:href="@{/army/change/{id}(id=${soldier.id})}" class="btn-primary btn">Изменить</a></div></td>
-                    <td scope="row"><div><a th:href="@{/army/delete/{id}(id=${soldier.id})}" class="btn-primary btn" id="delete">Удалить</a></div></td>
+                    <td scope="row"><div><a th:href="@{/army/change/{id}(id=${soldier.id})}" class="btn-primary btn" sec:authorize="${hasAuthority('army:write')}">Изменить</a></div></td>
+                    <td scope="row"><div><a th:href="@{/army/delete/{id}(id=${soldier.id})}" class="btn-primary btn" id="delete" sec:authorize="${hasAuthority('army:write')}">Удалить</a></div></td>
                 </tr>
                 </tbody>
             </table>

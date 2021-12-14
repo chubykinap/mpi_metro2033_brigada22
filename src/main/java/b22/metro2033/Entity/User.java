@@ -1,5 +1,7 @@
 package b22.metro2033.Entity;
 
+import b22.metro2033.Entity.Alerts.AlertMessages;
+import b22.metro2033.Entity.Army.SensorMessages;
 import b22.metro2033.Entity.Army.Soldier;
 import b22.metro2033.Entity.Delivery.Courier;
 import b22.metro2033.Entity.Engineering.Engineer;
@@ -9,6 +11,7 @@ import lombok.EqualsAndHashCode;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Data
 @Entity
@@ -50,6 +53,17 @@ public class User {
     private Courier courier;
 
     private boolean enabled = true;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AlertMessages> alertMessages;
+
+    public List<AlertMessages> getAlertMessages() {
+        return alertMessages;
+    }
+
+    public void setAlertMessages(List<AlertMessages> alertMessages) {
+        this.alertMessages = alertMessages;
+    }
 
     public long getId() {
         return id;

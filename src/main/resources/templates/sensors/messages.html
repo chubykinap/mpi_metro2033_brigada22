@@ -50,7 +50,7 @@
         </tbody>
       </table>
 
-      <a th:href="@{/sensors/done/{id}(id=${sensor.id})}" class="btn btn-primary my-3" th:if="${#strings.equals(sensor.sensorStatus, 'ERROR')}">Проблема решена</a>
+      <a th:href="@{/sensors/done/{id}(id=${sensor.id})}" class="btn btn-primary my-3" th:if="${#strings.equals(sensor.sensorStatus, 'ERROR')}" sec:authorize="${hasAuthority('army:write')}">Проблема решена</a>
       <h3>Сообщения</h3>
       <table class="table table-striped">
         <thead>

@@ -153,7 +153,7 @@ public class SensorController {
     }
 
     @GetMapping("/messages/{id}")
-    @PreAuthorize("hasAuthority('army:write')")
+    @PreAuthorize("hasAuthority('army:read')")
     public String messages(Model model, Authentication authentication, @PathVariable Long id){
 
         MovementSensor movementSensor = movementSensorRepository.findById(id).orElse(null);

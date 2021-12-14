@@ -1,5 +1,6 @@
 package b22.metro2033.Entity;
 
+import javassist.NotFoundException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collections;
@@ -42,4 +43,27 @@ public enum Role {
         Collections.addAll(set, permissions);
         return set;
     }
+
+    public static Role findState(String state) throws Exception {
+        switch (state) {
+            case "ADMIN":
+                return ADMIN;
+            case "GENERAL":
+                return GENERAL;
+            case "SOLDIER":
+                return SOLDIER;
+            case "HEAD_ENGINEER":
+                return HEAD_ENGINEER;
+            case "ENGINEER":
+                return ENGINEER;
+            case "HEAD_COURIER":
+                return HEAD_COURIER;
+            case "COURIER":
+                return COURIER;
+            case "GUEST":
+                return GUEST;
+        }
+        throw new NotFoundException("STATE NOT FOUND");
+    }
+
 }

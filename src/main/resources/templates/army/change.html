@@ -16,9 +16,9 @@
                 $("#change").click(function(){
 
                   check = false;
-                  if ($("#user")[0].selectedIndex <= 0) {
+                  /*if ($("#user")[0].selectedIndex <= 0) {
                       check = true;
-                  }
+                  }*/
 
                   $('#ajax_create_soldier *').filter(':input').each(function(){
                       if($(this).val() == ''){
@@ -94,10 +94,11 @@
                 <div class="form-group">
                     <label for="user">Пользователь</label>
                     <select id="user" class="custom-select" th:field="*{user}">
-                        <option value="">Выбрать пользователя...</option>
-                        <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}">User</option>
+                        <option th:value="${user.id}" th:text="${user.name}">User</option>
                     </select>
                 </div>
+
+                <p>[[${user.id}]]</p>
 
                 <div class="form-group">
                     <label for="post">Пост</label>

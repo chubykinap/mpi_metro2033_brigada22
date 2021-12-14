@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
   <div th:replace="fragments/fragment :: head"></div>
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
@@ -80,8 +81,8 @@
         });
 </script>
 
-
 <div th:replace="fragments/fragment :: nav-all"></div>
+
 <div class="container-fluid">
   <div class="row">
     <div class="col-xs-12 col-sm-4 col-lg-3 col-md-4 py-3 sidebar border-right">
@@ -92,9 +93,12 @@
       <form th:method="POST" th:action="@{/army}" th:object="${soldier}" id="ajax_create_soldier">
         <div class="form-group">
           <label for="user">Пользователь</label>
+
           <select id="user" class="custom-select" th:field="*{user}">
             <option value="">Выбрать пользователя...</option>
+
             <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}">Пользователь</option>
+
           </select>
         </div>
 

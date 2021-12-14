@@ -23,8 +23,8 @@
             <th scope="col">Местоположение</th>
             <th scope="col">Пост</th>
             <th scope="col">Сообщения</th>
-            <th scope="col">Изменить</th>
-            <th scope="col">Удалить</th>
+            <th scope="col" sec:authorize="${hasAuthority('army:write')}">Изменить</th>
+            <th scope="col" sec:authorize="${hasAuthority('army:write')}">Удалить</th>
           </tr>
           </thead>
           <tbody>
@@ -46,8 +46,8 @@
             </div>
 
             <td scope="row"><div><a th:href="@{/sensors/messages/{id}(id=${sensor.id})}" class="btn-primary btn" id="messages">Показать сообщения</a></div></td>
-            <td scope="row"><div><a th:href="@{/sensors/change/{id}(id=${sensor.id})}" class="btn-primary btn" id="change">Изменить</a></div></td>
-            <td scope="row"><div><a th:href="@{/sensors/delete/{id}(id=${sensor.id})}" class="btn-primary btn" id="delete">Удалить</a></div></td>
+            <td scope="row"><div><a th:href="@{/sensors/change/{id}(id=${sensor.id})}" class="btn-primary btn" id="change" sec:authorize="${hasAuthority('army:write')}"> Изменить</a></div></td>
+            <td scope="row"><div><a th:href="@{/sensors/delete/{id}(id=${sensor.id})}" class="btn-primary btn" id="delete" sec:authorize="${hasAuthority('army:write')}">Удалить</a></div></td>
 
           </tr>
           </tbody>

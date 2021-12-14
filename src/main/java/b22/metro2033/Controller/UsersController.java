@@ -1,12 +1,15 @@
 package b22.metro2033.Controller;
 
-import b22.metro2033.Entity.Army.Characteristics;
-import b22.metro2033.Entity.Army.Soldier;
+import b22.metro2033.Entity.Army.*;
 import b22.metro2033.Entity.Permission;
 import b22.metro2033.Entity.Role;
 import b22.metro2033.Entity.User;
+import b22.metro2033.Entity.Utility.SoldierUtility;
+import b22.metro2033.Entity.Utility.UserUtility;
 import b22.metro2033.Repository.UserRepository;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -96,6 +100,59 @@ public class UsersController {
         return "redirect:/users";
     }
 
+    @GetMapping("/change/{id}")
+    @PreAuthorize("hasAuthority('users:write')")
+    public String changeForm(Model model, Authentication authentication, @PathVariable Long id){
+
+        User user = userRepository.findById(id).orElse(null);
+        if(user == null){
+            return "redirect:/users";
+        }
+
+        model.addAttribute("user", new UserUtility(user));
+        model.addAttribute("action", "change");
+        List<User> users = userRepository.findAllByRoleIn(getRolesForSelect(authentication));
+        if (users.size() == 0){
+            return "army/form";
+        }
+
+        model.addAttribute("roles", getRoles());
+
+        return "users/change";
+    }
+
+    @PreAuthorize("hasAuthority('users:write')")
+    @RequestMapping(value = "/change", consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
+    public String change(@RequestBody String response) throws Exception { //ParesException type?
+
+        JSONObject json = new JSONObject(response);
+
+        long user_id = Long.parseLong(json.getString("user_id"));
+        String login = json.getString("login");
+        String password = passwordEncoder.encode(json.getString("password"));
+        String name = json.getString("name");
+        String surname = json.getString("surname");
+        String patronymic = json.getString("patronymic");
+        Role role = Role.findState(json.getString("role"));
+
+        //Переделать в 1 запрос (хз как)
+        User user = userRepository.findById(user_id).orElse(null);
+        if(user == null) {
+            return "redirect:/users";
+        }
+
+        user.setLogin(login);
+        user.setPassword(password);
+        user.setName(name);
+        user.setSurname(surname);
+        user.setPatronymic(patronymic);
+        user.setRole(role);
+
+        userRepository.save(user);
+
+        return "redirect:/users";
+    }
+
     private List<Role> getRolesForSelect(Authentication authentication){
         User user = userRepository.findByLogin(authentication.getName()).orElse(null);
 
@@ -113,6 +170,11 @@ public class UsersController {
                 break;
         }
 
+        return roles;
+    }
+
+    private List<Role> getRoles(){
+        List<Role> roles = Arrays.asList(Role.values());
         return roles;
     }
 
