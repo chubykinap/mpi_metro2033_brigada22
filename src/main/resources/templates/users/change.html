@@ -17,7 +17,7 @@
 
                   check = false;
                   $('#ajax_create_soldier *').filter(':input').each(function(){
-                      if($(this).val() == ''){
+                      if($(this).val() == '' && $(this)[0].getAttribute('type') !== 'password' ){
                         check = true;
                       }
                   });
@@ -94,7 +94,7 @@
 
         <div class="form-group">
           <label for="password">Пароль</label>
-          <input type="password" id="password"  th:field="${user.password}" class="form-control" placeholder="Password">
+          <input type="password" id="password" th:value="${user.password}" th:field="${user.password}" class="form-control" placeholder="Password">
         </div>
 
         <div class="form-group">

@@ -81,7 +81,13 @@ public class UsersController {
             return "users/form";
         }
 
+        if (userRepository.findByLogin(user.getLogin()).isPresent()){
+            model.addAttribute("error", "Пользователь с таким логином уже существует!");
+            return "error";
+        }
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         userRepository.save(user);
 
         return "redirect:/users";
@@ -127,9 +133,15 @@ public class UsersController {
 
         JSONObject json = new JSONObject(response);
 
+        boolean change_pass = true;
+
         long user_id = Long.parseLong(json.getString("user_id"));
         String login = json.getString("login");
-        String password = passwordEncoder.encode(json.getString("password"));
+
+        String password = json.getString("password");
+        if (password.equals("")) change_pass = false;
+
+        String encoded_password = passwordEncoder.encode(password);
         String name = json.getString("name");
         String surname = json.getString("surname");
         String patronymic = json.getString("patronymic");
@@ -141,8 +153,11 @@ public class UsersController {
             return "redirect:/users";
         }
 
+        if(change_pass){
+            user.setPassword(encoded_password);
+        }
+
         user.setLogin(login);
-        user.setPassword(password);
         user.setName(name);
         user.setSurname(surname);
         user.setPatronymic(patronymic);
