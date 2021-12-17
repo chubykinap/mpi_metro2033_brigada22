@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -171,15 +172,29 @@ public class ArmyController {
         if(user == null){
             return "redirect:/army";
         }
-        //Проверить на пустоту
-        Post post = postRepository.findById(post_id).orElse(null);
 
         soldier.setUser(user);
-        if (!soldier.getPost().equals(post)){
-            String message = "Вы назначены на новый пост: " + post.getName() + " " + post.getLocation();
+
+        //Проверить на пустоту
+        if (post_id == -1){
+            soldier.setPost(null);
+            String message = "Вас сняли с поста";
             sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
+        }else{
+            Post post = postRepository.findById(post_id).orElse(null);
+
+            if (post != null && soldier.getPost() != null){
+                if (!soldier.getPost().equals(post)){
+                    String message = "Вы назначены на новый пост: " + post.getName() + " " + post.getLocation();
+                    sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
+                }
+                soldier.setPost(post);
+            }else if(post != null && soldier.getPost() == null) {
+                String message = "Вы назначены на новый пост: " + post.getName() + " " + post.getLocation();
+                sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
+                soldier.setPost(post);
+            }
         }
-        soldier.setPost(post);
 
         if (!soldier.getRank().equals(rank)){
             String message = "Вам изменили звание: " + rank.toString();

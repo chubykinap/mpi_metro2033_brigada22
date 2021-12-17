@@ -28,17 +28,16 @@
                     return;
                   }
 
-                  var change_post = {
+                  var add_soldier_to_post = {
                     "post_id":$("#post_id").val(),
-                    "name":$("#name").val(),
-                    "location":$("#location").val()
+                    "soldier_id":$("#soldier").val()
                   };
 
                   $.ajax({
                     type: "POST",
-                    url: "/posts/change",
+                    url: "/posts/add_soldier_to_post",
                     contentType: "application/json",
-                    data: JSON.stringify(change_post),
+                    data: JSON.stringify(add_soldier_to_post),
                     // dataType: "dataType",
                     success: function (data) {
                       console.log("success");
@@ -46,7 +45,7 @@
                       window.location.href = '/posts';
                     }
                   });
-                  console.log(change_post);
+                  console.log(add_soldier_to_post);
                 });
             })
         });
@@ -59,27 +58,44 @@
             <div th:replace="fragments/fragment :: menu"></div>
         </div>
         <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
-            <h1>Изменение поста</h1>
+            <h1>Добавление солдата на пост</h1>
             <form th:method="POST" th:action="@{/posts/change}" th:object="${post}" id="ajax_change_post">
 
                 <div class="form-group">
-                    <label for="name">Название поста</label>
-                    <input type="text" id="name"  th:field="${post.name}" class="form-control" placeholder="Name">
+                    <label>Название поста: [[${post.name}]]</label>
                 </div>
 
                 <div class="form-group">
-                    <label for="location">Местоположение поста</label>
-                    <input type="text" id="location"  th:field="${post.location}" class="form-control" placeholder="Location">
+                    <label>Местоположение: [[${post.location}]]</label>
                 </div>
 
                 <div class="form-group">
                     <input type="hidden" id="post_id" th:field="${post.id}" class="form-control" placeholder="Post id">
                 </div>
 
-                <div class="form-group">
-                    <input type="button" id="change"  class="btn-primary btn" value="Сохранить"/>
-                    <a href="/posts" class="btn-primary btn">Назад</a>
+                <div th:if="${!#strings.equals(soldiers, 'NoData')}">
+                    <div class="form-group">
+                        <label for="soldier">Солдат</label>
+                        <select id="soldier" class="custom-select" th:field="*{soldier} ">
+                            <option value="">Выбрать солдата...</option>
+                            <option th:each="soldier : ${soldiers}" th:value="${soldier.id}"
+                                    th:text="${soldier.user.name} + ',' + ${soldier.user.surname} + ',' +
+                                ${soldier.user.patronymic} + ',' + ${soldier.rank}">Soldier</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="button" id="change"  class="btn-primary btn" value="Сохранить"/>
+                    </div>
                 </div>
+
+                <div th:unless="${!#strings.equals(soldiers, 'NoData')}">
+                    <h4>Нет свободных солдатов</h4>
+                </div>
+
+                <a th:href="@{/posts/show_soldiers/{id}(id=${post.id})}" class="btn-primary btn">Назад</a>
+
+                <!--${soldier.user.surname}, ${soldier.user.patronymic}, ${soldier.rank}!-->
             </form>
         </div>
     </div>
