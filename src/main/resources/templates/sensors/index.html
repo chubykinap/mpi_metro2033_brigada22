@@ -41,8 +41,15 @@
               <th scope="row" th:text="${sensor.id}">id</th>
               <td th:text="${sensor.name}">name</td>
               <td :text="${sensor.location}">location</td>
-              <td scope="row" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
+
+              <div th:if="${sensor.post ne null}">
+                <td scope="row" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
                                                'Расположение: ' + sensor.post.location + '<br>'}">post</td>
+              </div>
+              <div th:unless="${sensor.post ne null}">
+                <td scope="row" text="Не находится на посту">Не находится на посту</td>
+              </div>
+
             </div>
 
             <td scope="row"><div><a th:href="@{/sensors/messages/{id}(id=${sensor.id})}" class="btn-primary btn" id="messages">Показать сообщения</a></div></td>

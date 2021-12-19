@@ -21,6 +21,9 @@
                     <th scope="col">#</th>
                     <th scope="col">Название</th>
                     <th scope="col">Местоположение</th>
+                    <th scope="col" sec:authorize="${hasAuthority('army:write')}">Изменить</th>
+                    <th scope="col" sec:authorize="${hasAuthority('army:write')}">Солдаты</th>
+                    <th scope="col" sec:authorize="${hasAuthority('army:write')}">Датчики</th>
                     <th scope="col" sec:authorize="${hasAuthority('army:write')}">Удалить</th>
                 </tr>
                 </thead>
@@ -29,6 +32,9 @@
                     <th scope="row" th:text="${post.id}">id</th>
                     <td th:text="${post.name}">name</td>
                     <td th:text="${post.location}">location</td>
+                    <td scope="row"><div><a th:href="@{/posts/change/{id}(id=${post.id})}" class="btn-primary btn" id="change" sec:authorize="${hasAuthority('army:write')}">Изменить</a></div></td>
+                    <td scope="row"><div><a th:href="@{/posts/show_soldiers/{id}(id=${post.id})}" class="btn-primary btn" id="show_soldiers" sec:authorize="${hasAuthority('army:write')}">Солдаты</a></div></td>
+                    <td scope="row"><div><a th:href="@{/posts/show_sensors/{id}(id=${post.id})}" class="btn-primary btn" id="show_sensors" sec:authorize="${hasAuthority('army:write')}">Датчики</a></div></td>
                     <td scope="row"><div><a th:href="@{/posts/delete/{id}(id=${post.id})}" class="btn-primary btn" id="delete" sec:authorize="${hasAuthority('army:write')}">Удалить</a></div></td>
                 </tr>
                 </tbody>

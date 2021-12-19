@@ -73,6 +73,12 @@ public class AuthController {
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         //user.setRole(Role.GUEST);
+
+        if (userRepository.findByLogin(user.getLogin()).isPresent()){
+            model.addAttribute("error", "Пользователь с таким логином уже существует!");
+            return "error";
+        }
+
         userRepository.save(user);
 
         model.addAttribute("success", true);

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="fragments/fragment :: head"></div>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <title id="pageTitle">Метро 2033 Военный персонал</title>
+</head>
+<body>
+
+<script type="application/javascript">
+        $(document).ready(function() {
+            $(function(){
+
+                $("#change").click(function(){
+
+                  check = false;
+
+                  $('#ajax_change_post *').filter(':input').each(function(){
+                      if($(this).val() == ''){
+                        check = true;
+                      }
+                  });
+
+                  if (check == true){
+                    alert("Не все данные заполнены!");
+                    return;
+                  }
+
+                  var add_soldier_to_post = {
+                    "post_id":$("#post_id").val(),
+                    "soldier_id":$("#soldier").val()
+                  };
+
+                  $.ajax({
+                    type: "POST",
+                    url: "/posts/add_soldier_to_post",
+                    contentType: "application/json",
+                    data: JSON.stringify(add_soldier_to_post),
+                    // dataType: "dataType",
+                    success: function (data) {
+                      console.log("success");
+                      console.log(data);
+                      window.location.href = '/posts';
+                    }
+                  });
+                  console.log(add_soldier_to_post);
+                });
+            })
+        });
+</script>
+
+<div th:replace="fragments/fragment :: nav-all"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 col-sm-4 col-lg-3 col-md-4 py-3 sidebar border-right">
+            <div th:replace="fragments/fragment :: menu"></div>
+        </div>
+        <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
+            <h1>Добавление солдата на пост</h1>
+            <form th:method="POST" th:action="@{/posts/change}" th:object="${post}" id="ajax_change_post">
+
+                <div class="form-group">
+                    <label>Название поста: [[${post.name}]]</label>
+                </div>
+
+                <div class="form-group">
+                    <label>Местоположение: [[${post.location}]]</label>
+                </div>
+
+                <div class="form-group">
+                    <input type="hidden" id="post_id" th:field="${post.id}" class="form-control" placeholder="Post id">
+                </div>
+
+                <div th:if="${!#strings.equals(soldiers, 'NoData')}">
+                    <div class="form-group">
+                        <label for="soldier">Солдат</label>
+                        <select id="soldier" class="custom-select" th:field="*{soldier} ">
+                            <option value="">Выбрать солдата...</option>
+                            <option th:each="soldier : ${soldiers}" th:value="${soldier.id}"
+                                    th:text="${soldier.user.name} + ',' + ${soldier.user.surname} + ',' +
+                                ${soldier.user.patronymic} + ',' + ${soldier.rank}">Soldier</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="button" id="change"  class="btn-primary btn" value="Сохранить"/>
+                    </div>
+                </div>
+
+                <div th:unless="${!#strings.equals(soldiers, 'NoData')}">
+                    <h4>Нет свободных солдатов</h4>
+                </div>
+
+                <a th:href="@{/posts/show_soldiers/{id}(id=${post.id})}" class="btn-primary btn">Назад</a>
+
+                <!--${soldier.user.surname}, ${soldier.user.patronymic}, ${soldier.rank}!-->
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

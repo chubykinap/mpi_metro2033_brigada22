@@ -23,5 +23,6 @@ public interface MovementSensorRepository extends JpaRepository<MovementSensor, 
     @Query(value = "SELECT * FROM movement_sensor s LEFT JOIN sensor_messages m ON m.message_id = s.id " +
             "WHERE m.error IS True", nativeQuery = true)
     List<MovementSensor> findSensorsWithErrors();
-
+    List<MovementSensor> findAllByPostIsNotNull();
+    List<MovementSensor> findAllByPostIsNull();
 }

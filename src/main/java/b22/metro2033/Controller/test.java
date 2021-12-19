@@ -38,7 +38,7 @@ public class test {
     @PostMapping("/add")
     public String add(@RequestParam("text") String text) {
         List<DeliveryOrder> orderList =
-                repositoryOrder.findAllByCouriersId(Integer.parseInt(text));
+                repositoryOrder.findAllByCourierId(Integer.parseInt(text));
         return "/add";
     }
 

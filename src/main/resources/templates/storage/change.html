@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="fragments/fragment :: head"></div>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <title id="pageTitle">Метро 2033 Военный персонал</title>
+</head>
+<body>
+
+<script type="application/javascript">
+        $(document).ready(function() {
+            $(function(){
+
+                $("#change").click(function(){
+
+                  check = false;
+
+                  $('#ajax_change_item *').filter(':input').each(function(){
+                      if($(this).val() == ''){
+                        check = true;
+                      }
+                  });
+
+                  if (check == true){
+                    alert("Не все данные заполнены!");
+                    return;
+                  }
+
+                  var item = {
+                    "item_id":$("#item_id").val(),
+                    "name":$("#name").val(),
+                    "quantity":$("#quantity").val()
+                  };
+
+                  $.ajax({
+                    type: "POST",
+                    url: "/storage/change",
+                    contentType: "application/json",
+                    data: JSON.stringify(item),
+                    // dataType: "dataType",
+                    success: function (data) {
+                      console.log("success");
+                      console.log(data);
+                      window.location.href = '/storage';
+                    }
+                  });
+                  console.log(item);
+                });
+            })
+        });
+</script>
+
+<div th:replace="fragments/fragment :: nav-all"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 col-sm-4 col-lg-3 col-md-4 py-3 sidebar border-right">
+            <div th:replace="fragments/fragment :: menu"></div>
+        </div>
+        <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
+            <h1>Изменение поста</h1>
+            <form th:method="POST" th:action="@{/storage/change}" th:object="${item}" id="ajax_change_item">
+
+                <div class="form-group">
+                    <label for="name">Наименование</label>
+                    <input type="text" id="name"  th:field="${item.name}" class="form-control" placeholder="Name">
+                </div>
+
+                <div class="form-group">
+                    <label for="quantity">Количество на складе</label>
+                    <input type="text" id="quantity"  th:field="${item.quantity}" class="form-control" placeholder="Quantity">
+                </div>
+
+                <div class="form-group">
+                    <input type="hidden" id="item_id" th:field="${item.id}" class="form-control" placeholder="Item id">
+                </div>
+
+                <div class="form-group">
+                    <input type="button" id="change"  class="btn-primary btn" value="Сохранить"/>
+                    <a href="/storage" class="btn-primary btn">Назад</a>
+                </div>
+            </form>
+            <form th:method="POST" th:action="@{/storage/delete}" th:object="${item}">
+                <input type="button" id="delete"  class="btn-primary btn" value="Удалить"/>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

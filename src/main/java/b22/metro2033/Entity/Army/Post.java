@@ -66,4 +66,20 @@ public class Post {
     public void setLocation(String location) {
         this.location = location;
     }
+
+    public List<Soldier> getSoldier() {
+        return soldier;
+    }
+
+    public void setSoldier(List<Soldier> soldier) {
+        this.soldier = soldier;
+    }
+
+    public List<MovementSensor> getMovementSensors() {
+        return movementSensors;
+    }
+
+    public void setMovementSensors(List<MovementSensor> movementSensors) {
+        this.movementSensors = movementSensors;
+    }
 }

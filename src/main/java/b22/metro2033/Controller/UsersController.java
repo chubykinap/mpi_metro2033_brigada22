@@ -1,14 +1,14 @@
 package b22.metro2033.Controller;
 
-import b22.metro2033.Entity.Army.*;
-import b22.metro2033.Entity.Permission;
 import b22.metro2033.Entity.Role;
 import b22.metro2033.Entity.User;
-import b22.metro2033.Entity.Utility.SoldierUtility;
 import b22.metro2033.Entity.Utility.UserUtility;
 import b22.metro2033.Repository.UserRepository;
+import b22.metro2033.Service.PaginatedService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -22,7 +22,9 @@ import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Controller
@@ -41,7 +43,20 @@ public class UsersController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('users:read')")
-    public String index(Model model, Authentication authentication){
+    public String index(Model model, Authentication authentication,
+    @RequestParam("page") Optional<Integer> page,
+    @RequestParam("size") Optional<Integer> size,
+                        @RequestParam("start_page") Optional<Integer> start_page,
+                        @RequestParam("number_of_pages") Optional<Integer> number_of_pages){
+
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(10);
+        int startPage = start_page.orElse(1);
+        int numberOfPages = number_of_pages.orElse(10);
+
+        if (startPage < 0) startPage = 1;
+        if (currentPage < 0) currentPage = 1;
+
         User user = userRepository.findByLogin(authentication.getName()).orElse(null);
         if(user == null){
             return "redirect:/auth/login";
@@ -52,12 +67,30 @@ public class UsersController {
         switch (user.getRole()){
             case ADMIN:
                 roles = Stream.of(Role.ADMIN, Role.GENERAL, Role.SOLDIER,
-                                    Role.HEAD_ENGINEER, Role.ENGINEER,
-                                    Role.HEAD_COURIER, Role.COURIER).collect(Collectors.toList());
+                        Role.HEAD_ENGINEER, Role.ENGINEER,
+                        Role.HEAD_COURIER, Role.COURIER).collect(Collectors.toList());
                 break;
         }
 
-        model.addAttribute("users", userRepository.findAllByRoleIn(roles));
+        List<User> users = userRepository.findAllByRoleIn(roles);
+
+        Page<User> bookPage = PaginatedService.findPaginated(PageRequest.of(currentPage - 1, pageSize), users);
+
+        model.addAttribute("usersPage", bookPage);
+        model.addAttribute("start_page", startPage);
+        model.addAttribute("number_of_pages", numberOfPages);
+
+        int totalPages = bookPage.getTotalPages();
+        if (totalPages > 0) {
+
+            List<Integer> pageNumbers = new ArrayList<>();
+            for (int i = startPage; i < startPage + numberOfPages; i++){
+                if (i > totalPages) break;
+                pageNumbers.add(i);
+            }
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+
         return "users/index";
     }
 
@@ -81,7 +114,13 @@ public class UsersController {
             return "users/form";
         }
 
+        if (userRepository.findByLogin(user.getLogin()).isPresent()){
+            model.addAttribute("error", "Пользователь с таким логином уже существует!");
+            return "error";
+        }
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
         userRepository.save(user);
 
         return "redirect:/users";
@@ -127,9 +166,15 @@ public class UsersController {
 
         JSONObject json = new JSONObject(response);
 
+        boolean change_pass = true;
+
         long user_id = Long.parseLong(json.getString("user_id"));
         String login = json.getString("login");
-        String password = passwordEncoder.encode(json.getString("password"));
+
+        String password = json.getString("password");
+        if (password.equals("")) change_pass = false;
+
+        String encoded_password = passwordEncoder.encode(password);
         String name = json.getString("name");
         String surname = json.getString("surname");
         String patronymic = json.getString("patronymic");
@@ -141,8 +186,11 @@ public class UsersController {
             return "redirect:/users";
         }
 
+        if(change_pass){
+            user.setPassword(encoded_password);
+        }
+
         user.setLogin(login);
-        user.setPassword(password);
         user.setName(name);
         user.setSurname(surname);
         user.setPatronymic(patronymic);
