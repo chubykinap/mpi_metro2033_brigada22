@@ -2,6 +2,8 @@
 Проект по методологиям программной инженерии ИТМО 2021/2022
 
 JPA - https://docs.spring.io/spring-data/jpa/docs/1.5.0.RELEASE/reference/html/jpa.repositories.html#jpa.query-methods.query-creation
+Пагинация - https://www.baeldung.com/spring-thymeleaf-pagination
+
 
 <h1>All</h1>
 FIX:
