@@ -1,9 +1,12 @@
 package b22.metro2033.Controller.Army;
 
+import b22.metro2033.Entity.Alerts.AlertMessages;
+import b22.metro2033.Entity.Alerts.TypeOfMessage;
 import b22.metro2033.Entity.Army.*;
 import b22.metro2033.Entity.Role;
 import b22.metro2033.Entity.User;
 import b22.metro2033.Entity.Utility.SoldierUtility;
+import b22.metro2033.Repository.Alerts.AlertsRepository;
 import b22.metro2033.Repository.Army.CharacteristicsRepository;
 import b22.metro2033.Repository.Army.PostRepository;
 import b22.metro2033.Repository.Army.SoldierRepository;
@@ -35,15 +38,18 @@ public class ArmyController {
 
     private final CharacteristicsRepository characteristicsRepository;
 
+    private final AlertsRepository alertsRepository;
+
     @Autowired
     public ArmyController(CharacteristicsRepository characteristicsRepository,
                           SoldierRepository soldierRepository,
                           UserRepository userRepository,
-                          PostRepository postRepository) {
+                          PostRepository postRepository, AlertsRepository alertsRepository) {
         this.userRepository = userRepository;
         this.soldierRepository = soldierRepository;
         this.characteristicsRepository = characteristicsRepository;
         this.postRepository = postRepository;
+        this.alertsRepository = alertsRepository;
     }
 
     @GetMapping
@@ -62,9 +68,14 @@ public class ArmyController {
     @GetMapping("/create")
     @PreAuthorize("hasAuthority('army:write')")
     public String createForm(Model model, Authentication authentication) {
+        User user = userRepository.findByLogin(authentication.getName()).orElse(null);
+        if(user == null)
+            return "redirect:/auth/login";
+
         model.addAttribute("soldier", new Soldier());
         model.addAttribute("action", "Create");
-        List<User> users = userRepository.findAllByRoleIn(getRolesForSelect(authentication));
+        //List<User> users = userRepository.findAllByRoleIn(getRolesForSelect(authentication));
+        List<User> users = userRepository.findFreeSoldiers();
         if (users.size() == 0) {
             return "army/form";
         }
@@ -72,6 +83,8 @@ public class ArmyController {
         model.addAttribute("ranks", Rank.getRankListRU());
         model.addAttribute("health", HealthState.getStateListRU());
         model.addAttribute("posts", postRepository.findAll());
+
+        model.addAttribute("role", user.getRole().toString());
 
         return "army/form";
     }
@@ -123,11 +136,7 @@ public class ArmyController {
 
         model.addAttribute("soldier", new SoldierUtility(soldier));
         model.addAttribute("action", "change");
-        List<User> users = userRepository.findAllByRoleIn(getRolesForSelect(authentication));
-        if (users.size() == 0) {
-            return "army/form";
-        }
-        model.addAttribute("users", users);
+        model.addAttribute("user", soldier.getUser());
         model.addAttribute("ranks", Rank.getRankListRU());
         model.addAttribute("health", HealthState.getStateListRU());
         model.addAttribute("posts", postRepository.findAll());
@@ -162,46 +171,70 @@ public class ArmyController {
         if (user == null) {
             return "redirect:/army";
         }
-        //Проверить на пустоту
-        Post post = postRepository.findById(post_id).orElse(null);
 
         soldier.setUser(user);
-        soldier.setPost(post);
+
+        //Проверить на пустоту
+        if (post_id == -1){
+            soldier.setPost(null);
+            String message = "Вас сняли с поста";
+            sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
+        }else{
+            Post post = postRepository.findById(post_id).orElse(null);
+
+            if (post != null && soldier.getPost() != null){
+                if (!soldier.getPost().equals(post)){
+                    String message = "Вы назначены на новый пост: " + post.getName() + " " + post.getLocation();
+                    sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
+                }
+                soldier.setPost(post);
+            }else if(post != null && soldier.getPost() == null) {
+                String message = "Вы назначены на новый пост: " + post.getName() + " " + post.getLocation();
+                sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
+                soldier.setPost(post);
+            }
+        }
+
+        if (!soldier.getRank().equals(rank)){
+            String message = "Вам изменили звание: " + rank.toString();
+            sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
+        }
         soldier.setRank(rank);
+
+        if (!soldier.getHealth_state().equals(health_state)){
+            String message = "Вам изменили состояние здоровья: " + health_state;
+            sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
+        }
         soldier.setHealth_state(health_state);
+
         soldierRepository.save(soldier);
 
         Characteristics characteristics = characteristicsRepository.findBySoldier_id(soldier_id).orElse(null);
-        if (characteristics == null) {
+        if (characteristics == null){
             return "redirect:/army";
+        }
+
+        if (characteristics.getAgility() != agility ||
+                characteristics.getStamina() != stamina ||
+                characteristics.getStrength() != strength) {
+            String message = "Вам изменили характеристики";
+            sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
         }
 
         characteristics.setAgility(agility);
         characteristics.setStamina(stamina);
         characteristics.setStrength(strength);
-
         characteristicsRepository.save(characteristics);
-
         return "redirect:/army";
     }
 
-    @GetMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority('army:write')")
-    public String enable(@PathVariable Long id) {
+    public void sendAlertMessage(User user, String message, TypeOfMessage type){
+        AlertMessages alertMessages = new AlertMessages();
+        alertMessages.setUser(user);
+        alertMessages.setAlert_message(message);
+        alertMessages.setType_of_message(type);
 
-        Soldier soldier = soldierRepository.findById(id).orElse(null);
-
-        if (soldier != null) {
-            Characteristics characteristics = characteristicsRepository.findBySoldier_id(id).orElse(null);
-            if (characteristics != null) {
-                characteristicsRepository.delete(characteristics);
-            }
-
-            soldierRepository.deleteById(id);
-        }
-
-        //soldierRepository.findById(id).ifPresent(soldierRepository::delete);
-        return "redirect:/army";
+        alertsRepository.save(alertMessages);
     }
 
     private List<Role> getRolesForSelect(Authentication authentication) {
@@ -217,7 +250,7 @@ public class ArmyController {
             case GENERAL:
 
             case ADMIN:
-                roles = Stream.of(Role.GENERAL, Role.SOLDIER).collect(Collectors.toList());
+                roles = Stream.of(Role.SOLDIER).collect(Collectors.toList());
                 break;
         }
 
