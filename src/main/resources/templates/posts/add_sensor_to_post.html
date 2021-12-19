@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="fragments/fragment :: head"></div>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <title id="pageTitle">Метро 2033 Военный персонал</title>
+</head>
+<body>
+
+<script type="application/javascript">
+        $(document).ready(function() {
+            $(function(){
+
+                $("#change").click(function(){
+
+                  check = false;
+
+                  $('#ajax_change_post *').filter(':input').each(function(){
+                      if($(this).val() == ''){
+                        check = true;
+                      }
+                  });
+
+                  if (check == true){
+                    alert("Не все данные заполнены!");
+                    return;
+                  }
+
+                  var add_sensor_to_post = {
+                    "post_id":$("#post_id").val(),
+                    "sensor_id":$("#sensor").val()
+                  };
+
+                  $.ajax({
+                    type: "POST",
+                    url: "/posts/add_sensor_to_post",
+                    contentType: "application/json",
+                    data: JSON.stringify(add_sensor_to_post),
+                    // dataType: "dataType",
+                    success: function (data) {
+                      console.log("success");
+                      console.log(data);
+                      window.location.href = '/posts/show_sensors/' + $("#post_id").val();
+                    }
+                  });
+                  console.log(add_sensor_to_post);
+                });
+            })
+        });
+</script>
+
+<div th:replace="fragments/fragment :: nav-all"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 col-sm-4 col-lg-3 col-md-4 py-3 sidebar border-right">
+            <div th:replace="fragments/fragment :: menu"></div>
+        </div>
+        <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
+            <h1>Добавление датчика на пост</h1>
+            <form th:method="POST" th:action="@{/posts/add_sensor_to_post}" th:object="${post}" id="ajax_change_post">
+
+                <div class="form-group">
+                    <label>Название поста: [[${post.name}]]</label>
+                </div>
+
+                <div class="form-group">
+                    <label>Местоположение: [[${post.location}]]</label>
+                </div>
+
+                <div class="form-group">
+                    <input type="hidden" id="post_id" th:field="${post.id}" class="form-control" placeholder="Post id">
+                </div>
+
+                <div th:if="${!#strings.equals(sensors, 'NoData')}">
+                    <div class="form-group">
+                        <label for="sensor">Солдат</label>
+                        <select id="sensor" class="custom-select" th:field="*{movementSensors} ">
+                            <option value="">Выбрать датчик...</option>
+                            <option th:each="sensor : ${sensors}" th:value="${sensor.id}"
+                                    th:text="${sensor.name}">Sensor</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="button" id="change"  class="btn-primary btn" value="Сохранить"/>
+                    </div>
+                </div>
+
+                <div th:unless="${!#strings.equals(sensors, 'NoData')}">
+                    <h4>Отсутствуют не активные датчики</h4>
+                </div>
+
+                <a th:href="@{/posts/show_sensors/{id}(id=${post.id})}" class="btn-primary btn">Назад</a>
+
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

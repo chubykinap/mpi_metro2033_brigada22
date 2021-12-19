@@ -143,6 +143,10 @@ public class SensorController {
             return "redirect:/sensors";
         }
 
+        if (movementSensor.getPost() != null){
+            change_sensor.setSensorStatus(SensorStatus.NORMAL);
+        }
+
         change_sensor.setPost(movementSensor.getPost());
         change_sensor.setLocation(movementSensor.getLocation());
         change_sensor.setName(movementSensor.getName());
@@ -195,7 +199,7 @@ public class SensorController {
             @SneakyThrows
             @Override
             public void run() {
-                List<MovementSensor> movementSensors = movementSensorRepository.findAll();
+                List<MovementSensor> movementSensors = movementSensorRepository.findAllByPostIsNotNull();
                 if (movementSensors.size() != 0) {
                     //random.nextInt(max - min) + min;
                     int index = random.nextInt(movementSensors.size());

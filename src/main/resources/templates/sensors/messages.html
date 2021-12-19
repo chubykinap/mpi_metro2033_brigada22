@@ -32,18 +32,32 @@
             <th scope="row" th:text="${sensor.id}" bgcolor="#FF0000">id</th>
             <td th:text="${sensor.name}" bgcolor="#FF0000">name</td>
             <td th:text="${sensor.location}" bgcolor="#FF0000">location</td>
-            <td scope="row" bgcolor="#FF0000" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
+
+            <div th:if="${sensor.post ne null}">
+              <td scope="row" bgcolor="#FF0000" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
                                                'Расположение: ' + sensor.post.location + '<br>'}">post</td>
-            <td bgcolor="#FF0000" th:text="${sensor.sensorStatus}">location</td>
+            </div>
+            <div th:unless="${sensor.post ne null}">
+              <td scope="row" bgcolor="#FF0000" text="Не находится на посту">Не находится на посту</td>
+            </div>
+
+            <td bgcolor="#FF0000" th:text="${sensor.sensorStatus}">status</td>
           </div>
 
           <div th:if="${!#strings.equals(sensor.sensorStatus, 'ERROR')}">
             <th scope="row" th:text="${sensor.id}">id</th>
             <td th:text="${sensor.name}">name</td>
             <td th:text="${sensor.location}">location</td>
-            <td scope="row" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
+
+            <div th:if="${sensor.post ne null}">
+              <td scope="row" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
                                                  'Расположение: ' + sensor.post.location + '<br>'}">post</td>
-            <td th:text="${sensor.sensorStatus}">location</td>
+            </div>
+            <div th:unless="${sensor.post ne null}">
+              <td scope="row" text="Не находится на посту">Не находится на посту</td>
+            </div>
+
+            <td th:text="${sensor.sensorStatus}">status</td>
           </div>
 
         </tr>

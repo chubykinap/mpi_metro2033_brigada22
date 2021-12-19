@@ -1,10 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <div th:replace="fragments/fragment :: head"></div>
+
+    <title id="pageTitle">Метро 2033 датчики</title>
 </head>
 <body>
+<div th:replace="fragments/fragment :: nav-all"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 col-sm-4 col-lg-3 col-md-4 py-3 sidebar border-right">
+            <div th:replace="fragments/fragment :: menu"></div>
+        </div>
+        <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
+            <h1>Датчики поста: [[${post.name}]]</h1>
+            <a href="/posts" class="btn btn-primary my-3">Назад</a>
+            <a th:href="@{/posts/add_sensor_to_post/{id}(id=${post.id})}" class="btn-primary btn">Добавить сенсор на пост</a>
+            <table th:fragment="sensors_table" class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Название</th>
+                    <th scope="col">Местоположение</th>
+                    <th scope="col">Пост</th>
+                    <th scope="col">Сообщения</th>
+                    <th scope="col" sec:authorize="${hasAuthority('army:write')}">Удалить</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="sensor : ${sensors}">
+                    <div th:if="${#strings.equals(sensor.sensorStatus, 'ERROR')}">
+                        <th bgcolor="#FF0000" scope="row" th:text="${sensor.id}">id</th>
+                        <td bgcolor="#FF0000" th:text="${sensor.name}">name</td>
+                        <td bgcolor="#FF0000" :text="${sensor.location}">location</td>
+
+                        <div th:if="${#strings.equals(post, 'NoData')}">
+                            <td bgcolor="#FF0000" scope="row" th:text="Не находится на посту">post</td>
+                        </div>
+                        <div th:unless="${#strings.equals(post, 'NoData')}">
+                            <td bgcolor="#FF0000" scope="row" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
+                                               'Расположение: ' + sensor.post.location + '<br>'}">Не находится на посту</td>
+                        </div>
+                    </div>
+
+                    <div th:if="${!#strings.equals(sensor.sensorStatus, 'ERROR')}">
+                        <th scope="row" th:text="${sensor.id}">id</th>
+                        <td th:text="${sensor.name}">name</td>
+                        <td :text="${sensor.location}">location</td>
+                        <td scope="row" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
+                                               'Расположение: ' + sensor.post.location + '<br>'}">post</td>
+                    </div>
+
+                    <td scope="row"><div><a th:href="@{/posts/show_sensor_messages/{id}(id=${sensor.id})}" class="btn-primary btn" id="messages">Показать сообщения</a></div></td>
+                    <td scope="row"><div><a th:href="@{/posts/delete_sensor_post/{id}(id=${sensor.id})}" class="btn-primary btn" id="delete" sec:authorize="${hasAuthority('army:write')}">Удалить</a></div></td>
+
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
 
 </body>
 </html>
