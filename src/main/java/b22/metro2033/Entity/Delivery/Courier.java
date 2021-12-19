@@ -16,6 +16,8 @@ public class Courier {
     @JoinColumn(name = "user_id")
     private User user;
 
+    private boolean working;
+
     @OneToOne
     @JoinColumn(name = "order_id")
     private DeliveryOrder order;
@@ -33,6 +35,14 @@ public class Courier {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public boolean isWorking() {
+        return working;
+    }
+
+    public void setWorking(boolean working) {
+        this.working = working;
     }
 
     public User getUser() {

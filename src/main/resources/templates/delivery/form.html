@@ -100,17 +100,18 @@
                     <label>Список предметов для заказа</label>
                     <table id="t_items" class="table table-striped">
                         <thead>
-                        <tr>
-                            <th scope="col">Предмет</th>
-                            <th scope="col">Количество</th>
-                        </tr>
+                            <tr>
+                                <th scope="col">Предмет</th>
+                                <th scope="col">Количество</th>
+                            </tr>
                         <tbody>
-                        <tr th:each="item : ${items}"></tr>
-                        <td scope="row" th:text="${item.name}"></td>
-                        <td scope="row">
-                            <input type="number" id="quantity" class="form-control"
-                                   placeholder="Количество" min="0" max="${item.quantity_in_storage}">
-                        </td>
+                        <tr th:each="item : ${items}">
+                            <td scope="row" th:utext="${item.name}"></td>
+                            <td scope="row">
+                                <input type="number" id="quantity" class="form-control"
+                                       placeholder="Количество" min="0" max="${item.quantity_in_storage}">
+                            </td>
+                        </tr>
                         </tbody>
                         </thead>
                     </table>
