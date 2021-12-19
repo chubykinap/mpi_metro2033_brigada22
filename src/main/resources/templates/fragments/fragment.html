@@ -42,6 +42,9 @@
     <li class="" sec:authorize="${hasAuthority('delivery:read')}">
       <a href="/delivery"><span class="fas fa-truck fa-fw"></span> Доставка</a>
     </li>
+    <li class="" sec:authorize="${hasAuthority('delivery:read')}">
+      <a href="/storage"><span class="fas fa-cubes fa-fw"></span> Склад</a>
+    </li>
     <li class=""  sec:authorize="${hasAuthority('army:read')}">
       <a href="/army"><span class="fas fa-flag fa-fw"></span> Армия</a>
     </li>
