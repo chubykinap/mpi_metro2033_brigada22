@@ -1,6 +1,7 @@
 package b22.metro2033.Entity.Delivery;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -12,8 +13,8 @@ public class Item {
     private long id;
     @NotNull(message = "Name should not be empty")
     private String name;
-
-    private int quantity_in_storage;
+    @Min(value = 0,message = "value should not be less than 0")
+    public int quantity_in_storage;
 
     @OneToMany(mappedBy = "id.item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItemList;

@@ -19,13 +19,14 @@
         </div>
         <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
             <h1>Заказы на доставку</h1>
+            <a href="/delivery/create" class="btn btn-primary my-3" sec:authorize="${hasAuthority('delivery:write')}">Создать новый заказ</a>
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th scope="col">#</th>
+                    <th scope="col">Номер заказа</th>
                     <th scope="col">Дата</th>
-                    <th scope="col">Откуда</th>
-                    <th scope="col">Куда</th>
+                    <th scope="col">Заказ</th>
+                    <th scope="col">Станция</th>
                     <th scope="col">Статус</th>
                     <th scope="col">Подробнее</th>
                 </tr>
@@ -34,8 +35,8 @@
                 <tr th:each="order : ${orders}">
                     <th scope="row" id="order_id" th:text="${order.id}">id</th>
                     <td scope="row" th:text="${order.date}">date</td>
-                    <td scope="row" th:text="${order.departureStation}">departureStation</td>
-                    <td scope="row" th:text="${order.arrivalStation}">arrivalStation</td>
+                    <td scope="row" th:text="${order.isPointOfDeparture}">isPointOfDeparture</td>
+                    <td scope="row" th:text="${order.station}">station</td>
                     <td scope="row" th:text="${order.state}">state</td>
                     <td scope="row">
                         <div><a th:href="@{/delivery/view/{id}(id=${order.id})}" class="btn-primary btn">Открыть</a></div>

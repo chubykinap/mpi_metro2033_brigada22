@@ -9,15 +9,15 @@ import java.util.List;
 
 public class OrderUtility {
     private long id;
-    private String departureStation;
-    private String arrivalStation;
+    private String station;
+    private boolean isPointOfDeparture;
     private DeliveryState state;
     private String date;
 
     public OrderUtility(DeliveryOrder order) {
         this.id = order.getId();
-        this.departureStation = order.getDepartureStation();
-        this.arrivalStation = order.getArrivalStation();
+        this.station = order.getStation();
+        this.isPointOfDeparture = order.isPointOfDeparture();
         this.state = order.getState();
         SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
         this.date = dt1.format(order.getDate());
@@ -39,20 +39,20 @@ public class OrderUtility {
         this.id = id;
     }
 
-    public String getDepartureStation() {
-        return departureStation;
+    public String getStation() {
+        return station;
     }
 
-    public void setDepartureStation(String departureStation) {
-        this.departureStation = departureStation;
+    public void setStation(String station) {
+        this.station = station;
     }
 
-    public String getArrivalStation() {
-        return arrivalStation;
+    public boolean isPointOfDeparture() {
+        return isPointOfDeparture;
     }
 
-    public void setArrivalStation(String arrivalStation) {
-        this.arrivalStation = arrivalStation;
+    public void setPointOfDeparture(boolean pointOfDeparture) {
+        isPointOfDeparture = pointOfDeparture;
     }
 
     public DeliveryState getState() {

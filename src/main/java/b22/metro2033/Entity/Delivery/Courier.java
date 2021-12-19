@@ -16,13 +16,9 @@ public class Courier {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToMany(cascade = { CascadeType.ALL })
-    @JoinTable(
-            name = "courier_order",
-            joinColumns = { @JoinColumn(name = "courier_id") },
-            inverseJoinColumns = { @JoinColumn(name = "order_id") }
-    )
-    private List<DeliveryOrder> orders;
+    @OneToOne
+    @JoinColumn(name = "order_id")
+    private DeliveryOrder order;
 
     public Courier() {
     }
@@ -45,5 +41,13 @@ public class Courier {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public DeliveryOrder getOrder() {
+        return order;
+    }
+
+    public void setOrder(DeliveryOrder order) {
+        this.order = order;
     }
 }

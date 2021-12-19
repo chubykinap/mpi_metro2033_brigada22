@@ -39,7 +39,7 @@ public class ArmyController {
     public ArmyController(CharacteristicsRepository characteristicsRepository,
                           SoldierRepository soldierRepository,
                           UserRepository userRepository,
-                          PostRepository postRepository){
+                          PostRepository postRepository) {
         this.userRepository = userRepository;
         this.soldierRepository = soldierRepository;
         this.characteristicsRepository = characteristicsRepository;
@@ -48,9 +48,9 @@ public class ArmyController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('army:read')")
-    public String index(Model model, Authentication authentication){
+    public String index(Model model, Authentication authentication) {
         User user = userRepository.findByLogin(authentication.getName()).orElse(null);
-        if(user == null){
+        if (user == null) {
             return "redirect:/auth/login";
         }
         List<Soldier> soldiers = soldierRepository.findAll();
@@ -61,16 +61,16 @@ public class ArmyController {
 
     @GetMapping("/create")
     @PreAuthorize("hasAuthority('army:write')")
-    public String createForm(Model model, Authentication authentication){
+    public String createForm(Model model, Authentication authentication) {
         model.addAttribute("soldier", new Soldier());
         model.addAttribute("action", "Create");
         List<User> users = userRepository.findAllByRoleIn(getRolesForSelect(authentication));
-        if (users.size() == 0){
+        if (users.size() == 0) {
             return "army/form";
         }
-        model.addAttribute("users",  users);
+        model.addAttribute("users", users);
         model.addAttribute("ranks", Rank.getRankListRU());
-        model.addAttribute("health",HealthState.getStateListRU());
+        model.addAttribute("health", HealthState.getStateListRU());
         model.addAttribute("posts", postRepository.findAll());
 
         return "army/form";
@@ -85,8 +85,8 @@ public class ArmyController {
         Rank rank = Rank.findState(json.getString("rank"));
         HealthState health_state = HealthState.findState(json.getString("health_state"));
         long user_id = Long.parseLong(json.getString("user_id"));
-        long post_id =  Long.parseLong(json.getString("post_id"));
-        int agility =  Integer.parseInt(json.getString("agility"));
+        long post_id = Long.parseLong(json.getString("post_id"));
+        int agility = Integer.parseInt(json.getString("agility"));
         int strength = Integer.parseInt(json.getString("strength"));
         int stamina = Integer.parseInt(json.getString("stamina"));
 
@@ -114,22 +114,22 @@ public class ArmyController {
 
     @GetMapping("/change/{id}")
     @PreAuthorize("hasAuthority('army:write')")
-    public String changeForm(Model model, Authentication authentication, @PathVariable Long id){
+    public String changeForm(Model model, Authentication authentication, @PathVariable Long id) {
 
         Soldier soldier = soldierRepository.findById(id).orElse(null);
-        if(soldier == null){
+        if (soldier == null) {
             return "redirect:/army";
         }
 
         model.addAttribute("soldier", new SoldierUtility(soldier));
         model.addAttribute("action", "change");
         List<User> users = userRepository.findAllByRoleIn(getRolesForSelect(authentication));
-        if (users.size() == 0){
+        if (users.size() == 0) {
             return "army/form";
         }
         model.addAttribute("users", users);
         model.addAttribute("ranks", Rank.getRankListRU());
-        model.addAttribute("health",HealthState.getStateListRU());
+        model.addAttribute("health", HealthState.getStateListRU());
         model.addAttribute("posts", postRepository.findAll());
 
         return "army/change";
@@ -145,8 +145,8 @@ public class ArmyController {
         HealthState health_state = HealthState.findState(json.getString("health_state"));
         long soldier_id = Long.parseLong(json.getString("soldier_id"));
         long user_id = Long.parseLong(json.getString("user_id"));
-        long post_id =  Long.parseLong(json.getString("post_id"));
-        int agility =  Integer.parseInt(json.getString("agility"));
+        long post_id = Long.parseLong(json.getString("post_id"));
+        int agility = Integer.parseInt(json.getString("agility"));
         int strength = Integer.parseInt(json.getString("strength"));
         int stamina = Integer.parseInt(json.getString("stamina"));
 
@@ -154,12 +154,12 @@ public class ArmyController {
 
         //Переделать в 1 запрос (хз как)
         Soldier soldier = soldierRepository.findById(soldier_id).orElse(null);
-        if(soldier == null) {
+        if (soldier == null) {
             return "redirect:/army";
         }
 
         User user = userRepository.findById(user_id).orElse(null);
-        if(user == null){
+        if (user == null) {
             return "redirect:/army";
         }
         //Проверить на пустоту
@@ -172,7 +172,7 @@ public class ArmyController {
         soldierRepository.save(soldier);
 
         Characteristics characteristics = characteristicsRepository.findBySoldier_id(soldier_id).orElse(null);
-        if (characteristics == null){
+        if (characteristics == null) {
             return "redirect:/army";
         }
 
@@ -191,9 +191,9 @@ public class ArmyController {
 
         Soldier soldier = soldierRepository.findById(id).orElse(null);
 
-        if(soldier != null){
+        if (soldier != null) {
             Characteristics characteristics = characteristicsRepository.findBySoldier_id(id).orElse(null);
-            if(characteristics != null){
+            if (characteristics != null) {
                 characteristicsRepository.delete(characteristics);
             }
 
@@ -204,16 +204,16 @@ public class ArmyController {
         return "redirect:/army";
     }
 
-    private List<Role> getRolesForSelect(Authentication authentication){
+    private List<Role> getRolesForSelect(Authentication authentication) {
         User user = userRepository.findByLogin(authentication.getName()).orElse(null);
 
         List<Role> roles = new ArrayList<>();
 
-        if(user == null){
+        if (user == null) {
             return roles;
         }
 
-        switch (user.getRole()){
+        switch (user.getRole()) {
             case GENERAL:
 
             case ADMIN:

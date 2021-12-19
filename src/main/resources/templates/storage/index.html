@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <div th:replace="fragments/fragment :: head"></div>
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <title id="pageTitle">Метро 2033 Военный персонал</title>
+</head>
+<body>
+<div th:replace="fragments/fragment :: nav-all"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 col-sm-4 col-lg-3 col-md-4 py-3 sidebar border-right">
+            <div th:replace="fragments/fragment :: menu"></div>
+        </div>
+        <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
+            <h1>Количество предметов на складе</h1>
+            <a href="/storage/create" class="btn btn-primary my-3" sec:authorize="${hasAuthority('delivery:write')}">Добавить предмет</a>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Предмет</th>
+                    <th scope="col">Количество</th>
+                    <th scope="col">Изменить</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${items}">
+                    <th scope="row" id="item_id" th:text="${item.id}">id</th>
+                    <td scope="row" th:text="${item.name}">name</td>
+                    <td scope="row" th:text="${item.quantity_in_storage}">quantity_in_storage</td>
+                    <td scope="row"><div><a th:href="@{/storage/change/{id}(id=${item.id})}" class="btn-primary btn">Изменить</a></div></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

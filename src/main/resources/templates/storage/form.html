@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <div th:replace="fragments/fragment :: head"></div>
+
+  <title id="pageTitle">Метро 2033 посты</title>
+</head>
+<body>
+<div th:replace="fragments/fragment :: nav-all"></div>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-xs-12 col-sm-4 col-lg-3 col-md-4 py-3 sidebar border-right">
+      <div th:replace="fragments/fragment :: menu"></div>
+    </div>
+    <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
+      <h1>Добавление нового предмета на склад</h1>
+      <form th:method="POST" th:action="@{/storage}" th:object="${item}">
+        <div class="form-group">
+          <label for="name">Наименование</label>
+          <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="Наименование">
+        </div>
+
+        <div class="form-group">
+          <label for="quantity">Количество</label>
+          <input type="text" id="quantity" th:field="*{quantity}" class="form-control" placeholder="Количество">
+        </div>
+
+        <div class="form-group">
+          <input type="hidden" name="action" th:value="${action}">
+          <button type="submit" class="btn-primary btn">Сохранить</button>
+          <a href="/storage" class="btn-primary btn">Назад</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>
