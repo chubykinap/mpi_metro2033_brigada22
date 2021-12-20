@@ -145,10 +145,7 @@ public class ArmyController {
         User user = userRepository.findById(user_id).orElse(null);
         Post post = postRepository.findById(post_id).orElse(null);
 
-        Characteristics characteristics = new Characteristics();
-        characteristics.setAgility(agility);
-        characteristics.setStrength(strength);
-        characteristics.setStamina(stamina);
+        Characteristics characteristics = new Characteristics(agility, strength, stamina);
 
         soldier.setUser(user);
         soldier.setPost(post);

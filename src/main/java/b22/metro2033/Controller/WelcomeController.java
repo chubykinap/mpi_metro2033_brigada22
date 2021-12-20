@@ -30,7 +30,7 @@ public class WelcomeController {
     @GetMapping("/")
     public String index(Authentication authentication, Model model) {
         User user = userRepository.findByLogin(authentication.getName()).orElse(null);
-        if(user == null)
+        if (user == null)
             return "redirect:/auth/login";
 
         model.addAttribute("login", user.getLogin());
@@ -52,4 +52,8 @@ public class WelcomeController {
 
         return "welcome/index";
     }
+
+
+
+
 }
