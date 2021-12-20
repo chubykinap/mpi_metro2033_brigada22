@@ -16,47 +16,75 @@
             <h1>Датчики поста: [[${post.name}]]</h1>
             <a href="/posts" class="btn btn-primary my-3">Назад</a>
             <a th:href="@{/posts/add_sensor_to_post/{id}(id=${post.id})}" class="btn-primary btn">Добавить сенсор на пост</a>
-            <table th:fragment="sensors_table" class="table table-striped">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Название</th>
-                    <th scope="col">Местоположение</th>
-                    <th scope="col">Пост</th>
-                    <th scope="col">Сообщения</th>
-                    <th scope="col" sec:authorize="${hasAuthority('army:write')}">Удалить</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="sensor : ${sensors}">
-                    <div th:if="${#strings.equals(sensor.sensorStatus, 'ERROR')}">
-                        <th bgcolor="#FF0000" scope="row" th:text="${sensor.id}">id</th>
-                        <td bgcolor="#FF0000" th:text="${sensor.name}">name</td>
-                        <td bgcolor="#FF0000" :text="${sensor.location}">location</td>
 
-                        <div th:if="${#strings.equals(post, 'NoData')}">
-                            <td bgcolor="#FF0000" scope="row" th:text="Не находится на посту">post</td>
-                        </div>
-                        <div th:unless="${#strings.equals(post, 'NoData')}">
-                            <td bgcolor="#FF0000" scope="row" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
+
+            <div>
+                <span>
+                    <a class="page-link svg-icon"  th:if="${sensorsPage.totalPages > 0 and start_page - number_of_pages > 0}"
+                       th:href="@{/posts/show_sensors/{id}(id=${post.id}, size=${sensorsPage.size}, page=${start_page - number_of_pages}, start_page=${start_page - number_of_pages})}"
+                       th:class="${start_page} ? active">[<<]
+                    </a>
+                </span>
+
+                <span class="page-item" th:if="${sensorsPage.totalPages > 0}"
+                      th:each="pageNumber : ${pageNumbers}">
+                    <a class="page-link svg-icon" th:href="@{/posts/show_sensors/{id}(id=${post.id}, size=${sensorsPage.size}, page=${pageNumber}, start_page=${start_page})}"
+                       th:text=${pageNumber}
+                       th:class="${pageNumber==sensorsPage.number + 1} ? active">
+                    </a>
+                </span>
+
+                <span>
+                    <a class="page-link svg-icon" th:if="${sensorsPage.totalPages > 0 and start_page + number_of_pages <= sensorsPage.totalPages}"
+                       th:href="@{/posts/show_sensors/{id}(id=${post.id}, size=${sensorsPage.size}, page=${start_page + number_of_pages}, start_page=${start_page + number_of_pages})}"
+                       th:class="${start_page + number_of_pages} ? active">[>>]
+                    </a>
+                </span>
+            </div>
+
+            <div>
+                <table th:fragment="sensors_table" class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Название</th>
+                        <th scope="col">Местоположение</th>
+                        <th scope="col">Пост</th>
+                        <th scope="col">Сообщения</th>
+                        <th scope="col" sec:authorize="${hasAuthority('army:write')}">Удалить</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="sensor : ${sensorsPage}">
+                        <div th:if="${#strings.equals(sensor.sensorStatus, 'ERROR')}">
+                            <th bgcolor="#FF0000" scope="row" th:text="${sensor.id}">id</th>
+                            <td bgcolor="#FF0000" th:text="${sensor.name}">name</td>
+                            <td bgcolor="#FF0000" :text="${sensor.location}">location</td>
+
+                            <div th:if="${#strings.equals(post, 'NoData')}">
+                                <td bgcolor="#FF0000" scope="row" th:text="Не находится на посту">post</td>
+                            </div>
+                            <div th:unless="${#strings.equals(post, 'NoData')}">
+                                <td bgcolor="#FF0000" scope="row" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
                                                'Расположение: ' + sensor.post.location + '<br>'}">Не находится на посту</td>
+                            </div>
                         </div>
-                    </div>
 
-                    <div th:if="${!#strings.equals(sensor.sensorStatus, 'ERROR')}">
-                        <th scope="row" th:text="${sensor.id}">id</th>
-                        <td th:text="${sensor.name}">name</td>
-                        <td :text="${sensor.location}">location</td>
-                        <td scope="row" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
+                        <div th:if="${!#strings.equals(sensor.sensorStatus, 'ERROR')}">
+                            <th scope="row" th:text="${sensor.id}">id</th>
+                            <td th:text="${sensor.name}">name</td>
+                            <td :text="${sensor.location}">location</td>
+                            <td scope="row" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
                                                'Расположение: ' + sensor.post.location + '<br>'}">post</td>
-                    </div>
+                        </div>
 
-                    <td scope="row"><div><a th:href="@{/posts/show_sensor_messages/{id}(id=${sensor.id})}" class="btn-primary btn" id="messages">Показать сообщения</a></div></td>
-                    <td scope="row"><div><a th:href="@{/posts/delete_sensor_post/{id}(id=${sensor.id})}" class="btn-primary btn" id="delete" sec:authorize="${hasAuthority('army:write')}">Удалить</a></div></td>
+                        <td scope="row"><div><a th:href="@{/posts/show_sensor_messages/{id}(id=${sensor.id})}" class="btn-primary btn" id="messages">Показать сообщения</a></div></td>
+                        <td scope="row"><div><a th:href="@{/posts/delete_sensor_post/{id}(id=${sensor.id})}" class="btn-primary btn" id="delete" sec:authorize="${hasAuthority('army:write')}">Удалить</a></div></td>
 
-                </tr>
-                </tbody>
-            </table>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
         </div>
     </div>

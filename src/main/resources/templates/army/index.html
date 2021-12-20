@@ -53,45 +53,74 @@
         <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
             <h1>Военный персонал</h1>
             <a href="/army/create" class="btn btn-primary my-3" sec:authorize="${hasAuthority('army:write')}">Добавить нового военного</a>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Имя</th>
-                    <th scope="col">Фамилия</th>
-                    <th scope="col">Отчество</th>
-                    <th scope="col">Пост</th>
-                    <th scope="col">Характеристики</th>
-                    <th scope="col">Здоровье</th>
-                    <th scope="col" sec:authorize="${hasAuthority('army:write')}">Изменить</th>
-                    <th scope="col" sec:authorize="${hasAuthority('army:write')}">Удалить</th>
-                </tr>
-                </thead>
-                <tbody>
 
-                <tr th:each="soldier : ${soldiers}">
-                    <th scope="row" id="soldier_id" th:text="${soldier.id}">id</th>
-                    <td scope="row" th:text="${soldier.user.name}">name</td>
-                    <td scope="row" th:text="${soldier.user.surname}">surname</td>
-                    <td scope="row" th:text="${soldier.user.patronymic}">patronymic</td>
+            <div>
+                <span>
+                    <a class="page-link svg-icon"  th:if="${soldiersPage.totalPages > 0 and start_page - number_of_pages > 0}"
+                       th:href="@{army(size=${soldiersPage.size}, page=${start_page - number_of_pages}, start_page=${start_page - number_of_pages})}"
+                       th:class="${start_page} ? active">[<<]
+                    </a>
+                </span>
 
-                    <div th:if="${soldier.post ne null}">
-                        <td scope="row" th:utext="'Название: ' + ${soldier.post.name + '<br>' +
+                <span class="page-item" th:if="${soldiersPage.totalPages > 0}"
+                      th:each="pageNumber : ${pageNumbers}">
+                    <a class="page-link svg-icon" th:href="@{army(size=${soldiersPage.size}, page=${pageNumber}, start_page=${start_page})}"
+                       th:text=${pageNumber}
+                       th:class="${pageNumber==soldiersPage.number + 1} ? active">
+                    </a>
+                </span>
+
+                <span>
+                    <a class="page-link svg-icon" th:if="${soldiersPage.totalPages > 0 and start_page + number_of_pages <= soldiersPage.totalPages}"
+                       th:href="@{army(size=${soldiersPage.size}, page=${start_page + number_of_pages}, start_page=${start_page + number_of_pages})}"
+                       th:class="${start_page + number_of_pages} ? active">[>>]
+                    </a>
+                </span>
+            </div>
+
+            <div>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Имя</th>
+                        <th scope="col">Фамилия</th>
+                        <th scope="col">Отчество</th>
+                        <th scope="col">Пост</th>
+                        <th scope="col">Характеристики</th>
+                        <th scope="col">Здоровье</th>
+                        <th scope="col" sec:authorize="${hasAuthority('army:write')}">Изменить</th>
+                        <th scope="col" sec:authorize="${hasAuthority('army:write')}">Удалить</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <tr th:each="soldier : ${soldiersPage}">
+                        <th scope="row" id="soldier_id" th:text="${soldier.id}">id</th>
+                        <td scope="row" th:text="${soldier.user.name}">name</td>
+                        <td scope="row" th:text="${soldier.user.surname}">surname</td>
+                        <td scope="row" th:text="${soldier.user.patronymic}">patronymic</td>
+
+                        <div th:if="${soldier.post ne null}">
+                            <td scope="row" th:utext="'Название: ' + ${soldier.post.name + '<br>' +
                                                'Расположение: ' + soldier.post.location + '<br>'}">post</td>
-                    </div>
-                    <div th:unless="${soldier.post ne null}">
-                        <td scope="row" text="Не назначен на пост">Не назначен на пост</td>
-                    </div>
+                        </div>
+                        <div th:unless="${soldier.post ne null}">
+                            <td scope="row" text="Не назначен на пост">Не назначен на пост</td>
+                        </div>
 
-                    <td scope="row" th:utext="'Ловкость: ' + ${soldier.agility + '<br>' +
+                        <td scope="row" th:utext="'Ловкость: ' + ${soldier.agility + '<br>' +
                                                'Сила: ' + soldier.strength + '<br>' +
                                                'Выносливость: ' + soldier.stamina}">characteristics</td>
-                    <td scope="row" th:text="${soldier.health_state}">health</td>
-                    <td scope="row"><div><a th:href="@{/army/change/{id}(id=${soldier.id})}" class="btn-primary btn" sec:authorize="${hasAuthority('army:write')}">Изменить</a></div></td>
-                    <td scope="row"><div><a th:href="@{/army/delete/{id}(id=${soldier.id})}" class="btn-primary btn" id="delete" sec:authorize="${hasAuthority('army:write')}">Удалить</a></div></td>
-                </tr>
-                </tbody>
-            </table>
+                        <td scope="row" th:text="${soldier.health_state}">health</td>
+                        <td scope="row"><div><a th:href="@{/army/change/{id}(id=${soldier.id})}" class="btn-primary btn" sec:authorize="${hasAuthority('army:write')}">Изменить</a></div></td>
+                        <td scope="row"><div><a th:href="@{/army/delete/{id}(id=${soldier.id})}" class="btn-primary btn" id="delete" sec:authorize="${hasAuthority('army:write')}">Удалить</a></div></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
         </div>
     </div>
 </div>

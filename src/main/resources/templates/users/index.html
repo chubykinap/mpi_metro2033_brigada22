@@ -52,7 +52,7 @@
                 </span>
 
                 <span>
-                    <a class="page-link svg-icon" th:if="${usersPage.totalPages > 0 and start_page + number_of_pages < usersPage.totalPages}"
+                    <a class="page-link svg-icon" th:if="${usersPage.totalPages > 0 and start_page + number_of_pages <= usersPage.totalPages}"
                        th:href="@{users(size=${usersPage.size}, page=${start_page + number_of_pages}, start_page=${start_page + number_of_pages})}"
                        th:class="${start_page + number_of_pages} ? active">[>>]
                     </a>

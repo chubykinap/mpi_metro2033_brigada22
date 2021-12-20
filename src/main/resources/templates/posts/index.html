@@ -15,30 +15,57 @@
         <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
             <h1>Посты</h1>
             <a href="/posts/create" class="btn btn-primary my-3" sec:authorize="${hasAuthority('army:write')}">Создать</a>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Название</th>
-                    <th scope="col">Местоположение</th>
-                    <th scope="col" sec:authorize="${hasAuthority('army:write')}">Изменить</th>
-                    <th scope="col" sec:authorize="${hasAuthority('army:write')}">Солдаты</th>
-                    <th scope="col" sec:authorize="${hasAuthority('army:write')}">Датчики</th>
-                    <th scope="col" sec:authorize="${hasAuthority('army:write')}">Удалить</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="post : ${posts}">
-                    <th scope="row" th:text="${post.id}">id</th>
-                    <td th:text="${post.name}">name</td>
-                    <td th:text="${post.location}">location</td>
-                    <td scope="row"><div><a th:href="@{/posts/change/{id}(id=${post.id})}" class="btn-primary btn" id="change" sec:authorize="${hasAuthority('army:write')}">Изменить</a></div></td>
-                    <td scope="row"><div><a th:href="@{/posts/show_soldiers/{id}(id=${post.id})}" class="btn-primary btn" id="show_soldiers" sec:authorize="${hasAuthority('army:write')}">Солдаты</a></div></td>
-                    <td scope="row"><div><a th:href="@{/posts/show_sensors/{id}(id=${post.id})}" class="btn-primary btn" id="show_sensors" sec:authorize="${hasAuthority('army:write')}">Датчики</a></div></td>
-                    <td scope="row"><div><a th:href="@{/posts/delete/{id}(id=${post.id})}" class="btn-primary btn" id="delete" sec:authorize="${hasAuthority('army:write')}">Удалить</a></div></td>
-                </tr>
-                </tbody>
-            </table>
+            <div>
+                 <span>
+                    <a class="page-link svg-icon"  th:if="${postsPage.totalPages > 0 and start_page - number_of_pages > 0}"
+                       th:href="@{posts(size=${postsPage.size}, page=${start_page - number_of_pages}, start_page=${start_page - number_of_pages})}"
+                       th:class="${start_page} ? active">[<<]
+                    </a>
+                </span>
+
+                <span class="page-item" th:if="${postsPage.totalPages > 0}"
+                      th:each="pageNumber : ${pageNumbers}">
+                    <a class="page-link svg-icon" th:href="@{posts(size=${postsPage.size}, page=${pageNumber}, start_page=${start_page})}"
+                       th:text=${pageNumber}
+                       th:class="${pageNumber==postsPage.number + 1} ? active">
+                    </a>
+                </span>
+
+                <span>
+                    <a class="page-link svg-icon" th:if="${postsPage.totalPages > 0 and start_page + number_of_pages <= postsPage.totalPages}"
+                       th:href="@{posts(size=${postsPage.size}, page=${start_page + number_of_pages}, start_page=${start_page + number_of_pages})}"
+                       th:class="${start_page + number_of_pages} ? active">[>>]
+                    </a>
+                </span>
+            </div>
+
+
+            <div>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Название</th>
+                        <th scope="col">Местоположение</th>
+                        <th scope="col" sec:authorize="${hasAuthority('army:write')}">Изменить</th>
+                        <th scope="col" sec:authorize="${hasAuthority('army:write')}">Солдаты</th>
+                        <th scope="col" sec:authorize="${hasAuthority('army:write')}">Датчики</th>
+                        <th scope="col" sec:authorize="${hasAuthority('army:write')}">Удалить</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="post : ${postsPage}">
+                        <th scope="row" th:text="${post.id}">id</th>
+                        <td th:text="${post.name}">name</td>
+                        <td th:text="${post.location}">location</td>
+                        <td scope="row"><div><a th:href="@{/posts/change/{id}(id=${post.id})}" class="btn-primary btn" id="change" sec:authorize="${hasAuthority('army:write')}">Изменить</a></div></td>
+                        <td scope="row"><div><a th:href="@{/posts/show_soldiers/{id}(id=${post.id})}" class="btn-primary btn" id="show_soldiers" sec:authorize="${hasAuthority('army:write')}">Солдаты</a></div></td>
+                        <td scope="row"><div><a th:href="@{/posts/show_sensors/{id}(id=${post.id})}" class="btn-primary btn" id="show_sensors" sec:authorize="${hasAuthority('army:write')}">Датчики</a></div></td>
+                        <td scope="row"><div><a th:href="@{/posts/delete/{id}(id=${post.id})}" class="btn-primary btn" id="delete" sec:authorize="${hasAuthority('army:write')}">Удалить</a></div></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

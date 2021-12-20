@@ -3,12 +3,16 @@ package b22.metro2033.Controller.Army;
 import b22.metro2033.Entity.Army.*;
 import b22.metro2033.Entity.User;
 import b22.metro2033.Entity.Utility.PostUtility;
+import b22.metro2033.Entity.Utility.SoldierUtility;
 import b22.metro2033.Repository.Army.MovementSensorRepository;
 import b22.metro2033.Repository.Army.PostRepository;
 import b22.metro2033.Repository.Army.SoldierRepository;
 import b22.metro2033.Repository.UserRepository;
+import b22.metro2033.Service.PaginatedService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -18,7 +22,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/posts")
@@ -40,13 +46,44 @@ public class PostController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('army:read')")
-    public String index(Model model, Authentication authentication){
+    public String index(Model model, Authentication authentication,
+                        @RequestParam("page") Optional<Integer> page,
+                        @RequestParam("size") Optional<Integer> size,
+                        @RequestParam("start_page") Optional<Integer> start_page,
+                        @RequestParam("number_of_pages") Optional<Integer> number_of_pages){
+
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(10);
+        int startPage = start_page.orElse(1);
+        int numberOfPages = number_of_pages.orElse(10);
+
+        if (startPage < 0) startPage = 1;
+        if (currentPage < 0) currentPage = 1;
+
         User user = userRepository.findByLogin(authentication.getName()).orElse(null);
         if(user == null){
             return "redirect:/auth/login";
         }
 
-        model.addAttribute("posts", postRepository.findAll());
+        List<Post> posts = postRepository.findAll();
+
+        Page<Post> postsPage = PaginatedService.findPaginated(PageRequest.of(currentPage - 1, pageSize), posts);
+
+        int totalPages = postsPage.getTotalPages();
+        if (totalPages > 0) {
+
+            List<Integer> pageNumbers = new ArrayList<>();
+            for (int i = startPage; i < startPage + numberOfPages; i++){
+                if (i > totalPages) break;
+                pageNumbers.add(i);
+            }
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+
+        model.addAttribute("postsPage", postsPage);
+        model.addAttribute("start_page", startPage);
+        model.addAttribute("number_of_pages", numberOfPages);
+
         return "posts/index";
     }
 
@@ -76,16 +113,47 @@ public class PostController {
 
     @GetMapping("/show_soldiers/{id}")
     @PreAuthorize("hasAuthority('army:write')")
-    public String showSoldiers(Model model, Authentication authentication, @PathVariable Long id){
+    public String showSoldiers(Model model, Authentication authentication, @PathVariable Long id,
+                               @RequestParam("page") Optional<Integer> page,
+                               @RequestParam("size") Optional<Integer> size,
+                               @RequestParam("start_page") Optional<Integer> start_page,
+                               @RequestParam("number_of_pages") Optional<Integer> number_of_pages){
+
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(10);
+        int startPage = start_page.orElse(1);
+        int numberOfPages = number_of_pages.orElse(10);
+
+        if (startPage < 0) startPage = 1;
+        if (currentPage < 0) currentPage = 1;
 
         Post post = postRepository.findById(id).orElse(null);
         if(post == null){
             return "redirect:/posts";
         }
 
+        List<Soldier> soldiers = post.getSoldier();
+
+        Page<Soldier> soldiersPage = PaginatedService.findPaginated(PageRequest.of(currentPage - 1, pageSize), soldiers);
+
+        model.addAttribute("soldiersPage", soldiersPage);
+        model.addAttribute("start_page", startPage);
+        model.addAttribute("number_of_pages", numberOfPages);
+
+        int totalPages = soldiersPage.getTotalPages();
+        if (totalPages > 0) {
+
+            List<Integer> pageNumbers = new ArrayList<>();
+            for (int i = startPage; i < startPage + numberOfPages; i++){
+                if (i > totalPages) break;
+                pageNumbers.add(i);
+            }
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+
         model.addAttribute("post", new PostUtility(post));
         model.addAttribute("action", "change");
-        model.addAttribute("soldiers", post.getSoldier());
+
 
         //model.addAttribute("sensors", post.getMovementSensors());
 
@@ -204,13 +272,44 @@ public class PostController {
 
     @GetMapping("/show_sensors/{id}")
     @PreAuthorize("hasAuthority('army:read')")
-    public String showSensorsForm(Model model, Authentication authentication, @PathVariable Long id){
+    public String showSensorsForm(Model model, Authentication authentication, @PathVariable Long id,
+                                  @RequestParam("page") Optional<Integer> page,
+                                  @RequestParam("size") Optional<Integer> size,
+                                  @RequestParam("start_page") Optional<Integer> start_page,
+                                  @RequestParam("number_of_pages") Optional<Integer> number_of_pages){
+
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(1);
+        int startPage = start_page.orElse(1);
+        int numberOfPages = number_of_pages.orElse(1);
+
+        if (startPage < 0) startPage = 1;
+        if (currentPage < 0) currentPage = 1;
+
         User user = userRepository.findByLogin(authentication.getName()).orElse(null);
         if(user == null){
             return "redirect:/auth/login";
         }
 
-        model.addAttribute("sensors", movementSensorRepository.findAllByPostId(id));
+        List<MovementSensor> sensors = movementSensorRepository.findAllByPostId(id);
+
+        Page<MovementSensor> sensorsPage = PaginatedService.findPaginated(PageRequest.of(currentPage - 1, pageSize), sensors);
+
+        model.addAttribute("sensorsPage", sensorsPage);
+        model.addAttribute("start_page", startPage);
+        model.addAttribute("number_of_pages", numberOfPages);
+
+        int totalPages = sensorsPage.getTotalPages();
+        if (totalPages > 0) {
+
+            List<Integer> pageNumbers = new ArrayList<>();
+            for (int i = startPage; i < startPage + numberOfPages; i++){
+                if (i > totalPages) break;
+                pageNumbers.add(i);
+            }
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+
         Post post = postRepository.findById(id).orElse(null);
         if(post == null) {
             model.addAttribute("post", "NoData");
