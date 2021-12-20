@@ -15,6 +15,31 @@
     <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
       <h1>Датчики</h1>
       <a href="/sensors/create" class="btn btn-primary my-3" sec:authorize="${hasAuthority('army:write')}">Создать</a>
+      <div>
+          <span>
+              <a class="page-link svg-icon"  th:if="${sensorsPage.totalPages > 0 and start_page - number_of_pages > 0}"
+                 th:href="@{sensors(size=${sensorsPage.size}, page=${start_page - number_of_pages}, start_page=${start_page - number_of_pages})}"
+                 th:class="${start_page} ? active">[<<]
+              </a>
+          </span>
+
+        <span class="page-item" th:if="${sensorsPage.totalPages > 0}"
+              th:each="pageNumber : ${pageNumbers}">
+              <a class="page-link svg-icon" th:href="@{sensors(size=${sensorsPage.size}, page=${pageNumber}, start_page=${start_page})}"
+                 th:text=${pageNumber}
+                 th:class="${pageNumber==sensorsPage.number + 1} ? active">
+              </a>
+          </span>
+
+        <span>
+              <a class="page-link svg-icon" th:if="${sensorsPage.totalPages > 0 and start_page + number_of_pages <= sensorsPage.totalPages}"
+                 th:href="@{sensors(size=${sensorsPage.size}, page=${start_page + number_of_pages}, start_page=${start_page + number_of_pages})}"
+                 th:class="${start_page + number_of_pages} ? active">[>>]
+              </a>
+          </span>
+      </div>
+
+      <div>
         <table th:fragment="sensors_table" class="table table-striped">
           <thead>
           <tr>
@@ -28,7 +53,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr th:each="sensor : ${sensors}">
+          <tr th:each="sensor : ${sensorsPage}">
             <div th:if="${#strings.equals(sensor.sensorStatus, 'ERROR')}">
               <th bgcolor="#FF0000" scope="row" th:text="${sensor.id}">id</th>
               <td bgcolor="#FF0000" th:text="${sensor.name}">name</td>
@@ -59,6 +84,7 @@
           </tr>
           </tbody>
         </table>
+      </div>
 
     </div>
   </div>

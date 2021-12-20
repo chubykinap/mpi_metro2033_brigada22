@@ -6,9 +6,12 @@ import b22.metro2033.Repository.Army.MovementSensorRepository;
 import b22.metro2033.Repository.Army.PostRepository;
 import b22.metro2033.Repository.Army.SensorMessagesRepository;
 import b22.metro2033.Repository.UserRepository;
+import b22.metro2033.Service.PaginatedService;
 import b22.metro2033.Service.SensorService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -18,7 +21,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Controller
@@ -48,11 +53,44 @@ public class SensorController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('army:read')")
-    public String index(Model model, Authentication authentication){
+    public String index(Model model, Authentication authentication,
+                        @RequestParam("page") Optional<Integer> page,
+                        @RequestParam("size") Optional<Integer> size,
+                        @RequestParam("start_page") Optional<Integer> start_page,
+                        @RequestParam("number_of_pages") Optional<Integer> number_of_pages){
+
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(10);
+        int startPage = start_page.orElse(1);
+        int numberOfPages = number_of_pages.orElse(10);
+
+        if (startPage < 0) startPage = 1;
+        if (currentPage < 0) currentPage = 1;
+
         User user = userRepository.findByLogin(authentication.getName()).orElse(null);
         if(user == null){
             return "redirect:/auth/login";
         }
+
+        List<MovementSensor> sensors = movementSensorRepository.findAll();
+
+        Page<MovementSensor> sensorsPage = PaginatedService.findPaginated(PageRequest.of(currentPage - 1, pageSize), sensors);
+
+        model.addAttribute("sensorsPage", sensorsPage);
+        model.addAttribute("start_page", startPage);
+        model.addAttribute("number_of_pages", numberOfPages);
+
+        int totalPages = sensorsPage.getTotalPages();
+        if (totalPages > 0) {
+
+            List<Integer> pageNumbers = new ArrayList<>();
+            for (int i = startPage; i < startPage + numberOfPages; i++){
+                if (i > totalPages) break;
+                pageNumbers.add(i);
+            }
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+
 
         model.addAttribute("sensors", movementSensorRepository.findAll());
         createMessage();
@@ -158,11 +196,43 @@ public class SensorController {
 
     @GetMapping("/messages/{id}")
     @PreAuthorize("hasAuthority('army:read')")
-    public String messages(Model model, Authentication authentication, @PathVariable Long id){
+    public String messages(Model model, Authentication authentication, @PathVariable Long id,
+                           @RequestParam("page") Optional<Integer> page,
+                           @RequestParam("size") Optional<Integer> size,
+                           @RequestParam("start_page") Optional<Integer> start_page,
+                           @RequestParam("number_of_pages") Optional<Integer> number_of_pages){
+
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(10);
+        int startPage = start_page.orElse(1);
+        int numberOfPages = number_of_pages.orElse(10);
+
+        if (startPage < 0) startPage = 1;
+        if (currentPage < 0) currentPage = 1;
+
 
         MovementSensor movementSensor = movementSensorRepository.findById(id).orElse(null);
         if(movementSensor == null){
             return "redirect:/sensors";
+        }
+
+        List<SensorMessages> sensorMessages = movementSensor.getSensorMessages();
+
+        Page<SensorMessages> messagesPage = PaginatedService.findPaginated(PageRequest.of(currentPage - 1, pageSize), sensorMessages);
+
+        model.addAttribute("messagesPage", messagesPage);
+        model.addAttribute("start_page", startPage);
+        model.addAttribute("number_of_pages", numberOfPages);
+
+        int totalPages = messagesPage.getTotalPages();
+        if (totalPages > 0) {
+
+            List<Integer> pageNumbers = new ArrayList<>();
+            for (int i = startPage; i < startPage + numberOfPages; i++){
+                if (i > totalPages) break;
+                pageNumbers.add(i);
+            }
+            model.addAttribute("pageNumbers", pageNumbers);
         }
 
         model.addAttribute("sensor", movementSensor);

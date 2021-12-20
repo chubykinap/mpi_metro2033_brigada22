@@ -52,30 +52,57 @@
 
             <a th:href="@{/posts/done/{id}(id=${sensor.id})}" class="btn btn-primary my-3" th:if="${#strings.equals(sensor.sensorStatus, 'ERROR')}" sec:authorize="${hasAuthority('army:write')}">Проблема решена</a>
             <h3>Сообщения</h3>
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Время</th>
-                    <th scope="col">Текст сообщения</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="sensorMessage : ${sensor.sensorMessages}">
-                    <div th:if="${sensorMessage.error}">
-                        <th scope="row" th:text="${sensorMessage.id}" bgcolor="#FF0000">id</th>
-                        <td th:text="${sensorMessage.messages_date}" bgcolor="#FF0000">date</td>
-                        <td th:text="${sensorMessage.messages}" bgcolor="#FF0000">messages</td>
-                    </div>
 
-                    <div th:if="${!sensorMessage.error}">
-                        <th scope="row" th:text="${sensorMessage.id}">id</th>
-                        <td th:text="${sensorMessage.messages_date}">date</td>
-                        <td th:text="${sensorMessage.messages}">messages</td>
-                    </div>
-                </tr>
-                </tbody>
-            </table>
+            <div>
+                <span>
+                    <a class="page-link svg-icon"  th:if="${messagesPage.totalPages > 0 and start_page - number_of_pages > 0}"
+                       th:href="@{/posts/show_sensor_messages/{id}(id=${sensor.id}, size=${messagesPage.size}, page=${start_page - number_of_pages}, start_page=${start_page - number_of_pages})}"
+                       th:class="${start_page} ? active">[<<]
+                    </a>
+                </span>
+
+                <span class="page-item" th:if="${messagesPage.totalPages > 0}"
+                      th:each="pageNumber : ${pageNumbers}">
+                    <a class="page-link svg-icon" th:href="@{/posts/show_sensor_messages/{id}(id=${sensor.id}, size=${messagesPage.size}, page=${pageNumber}, start_page=${start_page})}"
+                       th:text=${pageNumber}
+                       th:class="${pageNumber==messagesPage.number + 1} ? active">
+                    </a>
+                </span>
+
+                <span>
+                    <a class="page-link svg-icon" th:if="${messagesPage.totalPages > 0 and start_page + number_of_pages <= messagesPage.totalPages}"
+                       th:href="@{/posts/show_sensor_messages/{id}(id=${sensor.id}, size=${messagesPage.size}, page=${start_page + number_of_pages}, start_page=${start_page + number_of_pages})}"
+                       th:class="${start_page + number_of_pages} ? active">[>>]
+                    </a>
+                </span>
+            </div>
+
+            <div>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Время</th>
+                        <th scope="col">Текст сообщения</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="sensorMessage : ${messagesPage}">
+                        <div th:if="${sensorMessage.error}">
+                            <th scope="row" th:text="${sensorMessage.id}" bgcolor="#FF0000">id</th>
+                            <td th:text="${sensorMessage.messages_date}" bgcolor="#FF0000">date</td>
+                            <td th:text="${sensorMessage.messages}" bgcolor="#FF0000">messages</td>
+                        </div>
+
+                        <div th:if="${!sensorMessage.error}">
+                            <th scope="row" th:text="${sensorMessage.id}">id</th>
+                            <td th:text="${sensorMessage.messages_date}">date</td>
+                            <td th:text="${sensorMessage.messages}">messages</td>
+                        </div>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
         </div>
     </div>

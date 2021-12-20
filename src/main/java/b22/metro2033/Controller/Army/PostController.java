@@ -279,9 +279,9 @@ public class PostController {
                                   @RequestParam("number_of_pages") Optional<Integer> number_of_pages){
 
         int currentPage = page.orElse(1);
-        int pageSize = size.orElse(1);
+        int pageSize = size.orElse(10);
         int startPage = start_page.orElse(1);
-        int numberOfPages = number_of_pages.orElse(1);
+        int numberOfPages = number_of_pages.orElse(10);
 
         if (startPage < 0) startPage = 1;
         if (currentPage < 0) currentPage = 1;
@@ -322,11 +322,42 @@ public class PostController {
 
     @GetMapping("/show_sensor_messages/{id}")
     @PreAuthorize("hasAuthority('army:read')")
-    public String showSensorMessages(Model model, Authentication authentication, @PathVariable Long id){
+    public String showSensorMessages(Model model, Authentication authentication, @PathVariable Long id,
+                                     @RequestParam("page") Optional<Integer> page,
+                                     @RequestParam("size") Optional<Integer> size,
+                                     @RequestParam("start_page") Optional<Integer> start_page,
+                                     @RequestParam("number_of_pages") Optional<Integer> number_of_pages){
+
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(10);
+        int startPage = start_page.orElse(1);
+        int numberOfPages = number_of_pages.orElse(10);
+
+        if (startPage < 0) startPage = 1;
+        if (currentPage < 0) currentPage = 1;
 
         MovementSensor movementSensor = movementSensorRepository.findById(id).orElse(null);
         if(movementSensor == null){
             return "redirect:/posts";
+        }
+
+        List<SensorMessages> sensorMessages = movementSensor.getSensorMessages();
+
+        Page<SensorMessages> messagesPage = PaginatedService.findPaginated(PageRequest.of(currentPage - 1, pageSize), sensorMessages);
+
+        model.addAttribute("messagesPage", messagesPage);
+        model.addAttribute("start_page", startPage);
+        model.addAttribute("number_of_pages", numberOfPages);
+
+        int totalPages = messagesPage.getTotalPages();
+        if (totalPages > 0) {
+
+            List<Integer> pageNumbers = new ArrayList<>();
+            for (int i = startPage; i < startPage + numberOfPages; i++){
+                if (i > totalPages) break;
+                pageNumbers.add(i);
+            }
+            model.addAttribute("pageNumbers", pageNumbers);
         }
 
         model.addAttribute("sensor", movementSensor);
