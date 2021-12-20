@@ -108,7 +108,6 @@ class ArmyControllerTest {
         Assertions.assertNotNull(soldierRepository.findByUserId(user.getId()).orElse(null));
     }
 
-
     @Test
     void testChangeOneSoldier() throws Exception {
         testCreateNewSoldier();
