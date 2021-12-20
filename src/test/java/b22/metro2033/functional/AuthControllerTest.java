@@ -87,21 +87,6 @@ class AuthControllerTest {
                 .andExpect(status().isOk());
     }
 
-    @Test
-    @WithMockUser(username = "he", password = "ggg")
-    void loginAsHeadEngineer() throws Exception {
-        mockMvc.perform(get("/"))
-                .andExpect(authenticated())
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @WithMockUser(username = "e", password = "ggg")
-    void loginAsEngineer() throws Exception {
-        mockMvc.perform(get("/"))
-                .andExpect(authenticated())
-                .andExpect(status().isOk());
-    }
 
     @Test
     @WithMockUser(username = "gue", password = "ggg")
