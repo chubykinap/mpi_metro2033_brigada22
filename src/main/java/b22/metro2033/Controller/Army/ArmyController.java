@@ -77,6 +77,7 @@ public class ArmyController {
         //List<User> users = userRepository.findAllByRoleIn(getRolesForSelect(authentication));
         List<User> users = userRepository.findFreeSoldiers();
         if (users.size() == 0) {
+            model.addAttribute("users", "NoData");
             return "army/form";
         }
         model.addAttribute("users", users);

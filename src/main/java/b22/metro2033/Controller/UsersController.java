@@ -213,8 +213,8 @@ public class UsersController {
         switch (user.getRole()){
             case ADMIN:
                 roles = Stream.of(Role.ADMIN, Role.GENERAL, Role.SOLDIER,
-                                    Role.HEAD_COURIER, Role.HEAD_COURIER,
-                                    Role.HEAD_ENGINEER, Role.HEAD_ENGINEER).collect(Collectors.toList());
+                                    Role.HEAD_COURIER, Role.COURIER,
+                                    Role.HEAD_ENGINEER, Role.ENGINEER).collect(Collectors.toList());
                 break;
         }
 

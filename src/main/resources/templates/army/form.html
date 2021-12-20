@@ -90,63 +90,76 @@
     </div>
     <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
       <h1>Добавление нового военного</h1>
-      <form th:method="POST" th:action="@{/army}" th:object="${soldier}" id="ajax_create_soldier">
-        <div class="form-group">
-          <label for="user">Пользователь</label>
 
-          <select id="user" class="custom-select" th:field="*{user}">
-            <option value="">Выбрать пользователя...</option>
+      <div th:if="${!#strings.equals(users, 'NoData')}">
 
-            <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}">Пользователь</option>
+        <form th:method="POST" th:action="@{/army}" th:object="${soldier}" id="ajax_create_soldier">
+          <div class="form-group">
+            <label for="user">Пользователь</label>
 
-          </select>
-        </div>
 
-        <div class="form-group">
-          <label for="post">Пост</label>
-          <select id="post" class="custom-select" th:field="*{post}">
-            <option value="">Выбрать пост...</option>
-            <option th:each="post : ${posts}" th:value="${post.id}"
-                    th:text="${post.name}">Post</option>
-          </select>
-        </div>
+            <select id="user" class="custom-select" th:field="*{user}">
+              <option value="">Выбрать пользователя...</option>
 
-        <div class="form-group">
-          <label for="rank">Звание</label>
-          <select id="rank" class="custom-select" th:field="*{rank}">
-            <option value="">Выбрать звание...</option>
-            <option th:each="rank : ${ranks}" th:value="${rank}" th:text="${rank}">Звание</option>
-          </select>
-        </div>
+              <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}">Пользователь</option>
 
-        <div class="form-group">
-          <label for="health_state">Здоровье</label>
-          <select id="health_state" class="custom-select" th:field="*{health_state}">
-            <option value="">Состояние здоровья солдата...</option>
-            <option th:each="state : ${health}" th:value="${state}" th:text="${state}">Здоровье</option>
-          </select>
-        </div>
+            </select>
+          </div>
 
-        <div class="form-group">
-          <label for="agility">Ловкость</label>
-          <input type="number" id="agility"  class="form-control" placeholder="Ловкость" min="0" max="100">
-        </div>
+          <div class="form-group">
+            <label for="post">Пост</label>
+            <select id="post" class="custom-select" th:field="*{post}">
+              <option value="">Выбрать пост...</option>
+              <option th:each="post : ${posts}" th:value="${post.id}"
+                      th:text="${post.name}">Post</option>
+            </select>
+          </div>
 
-        <div class="form-group">
-          <label for="strength">Сила</label>
-          <input type="number" id="strength" class="form-control" placeholder="Сила">
-        </div>
+          <div class="form-group">
+            <label for="rank">Звание</label>
+            <select id="rank" class="custom-select" th:field="*{rank}">
+              <option value="">Выбрать звание...</option>
+              <option th:each="rank : ${ranks}" th:value="${rank}" th:text="${rank}">Звание</option>
+            </select>
+          </div>
 
-        <div class="form-group">
-          <label for="stamina">Выносливость</label>
-          <input type="number" id="stamina"  class="form-control" placeholder="Выносливость">
-        </div>
+          <div class="form-group">
+            <label for="health_state">Здоровье</label>
+            <select id="health_state" class="custom-select" th:field="*{health_state}">
+              <option value="">Состояние здоровья солдата...</option>
+              <option th:each="state : ${health}" th:value="${state}" th:text="${state}">Здоровье</option>
+            </select>
+          </div>
 
-        <div class="form-group">
-          <input type="button" id="change"  class="btn-primary btn" value="Создать"/>
-          <a href="/army" class="btn-primary btn">Назад</a>
-        </div>
-      </form>
+          <div class="form-group">
+            <label for="agility">Ловкость</label>
+            <input type="number" id="agility"  class="form-control" placeholder="Ловкость" min="0" max="100">
+          </div>
+
+          <div class="form-group">
+            <label for="strength">Сила</label>
+            <input type="number" id="strength" class="form-control" placeholder="Сила">
+          </div>
+
+          <div class="form-group">
+            <label for="stamina">Выносливость</label>
+            <input type="number" id="stamina"  class="form-control" placeholder="Выносливость">
+          </div>
+
+          <div class="form-group">
+            <input type="button" id="change"  class="btn-primary btn" value="Создать"/>
+          </div>
+        </form>
+      </div>
+
+      <div th:unless="${!#strings.equals(users, 'NoData')}">
+        <h1>Нет пользователей с ролью военный</h1>
+      </div>
+
+      <div class="form-group">
+        <a href="/army" class="btn-primary btn">Назад</a>
+      </div>
+
     </div>
   </div>
 </div>
