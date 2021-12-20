@@ -1,5 +1,8 @@
 package b22.metro2033.Controller;
 
+import b22.metro2033.Entity.Alerts.AlertMessages;
+import b22.metro2033.Entity.Army.MovementSensor;
+import b22.metro2033.Entity.Army.SensorStatus;
 import b22.metro2033.Entity.Role;
 import b22.metro2033.Entity.User;
 import b22.metro2033.Entity.Utility.UserUtility;

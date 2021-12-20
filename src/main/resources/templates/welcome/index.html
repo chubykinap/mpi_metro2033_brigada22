@@ -4,6 +4,21 @@
     <div th:replace="fragments/fragment :: head"></div>
 
     <title id="pageTitle">Система станции метро</title>
+
+    <style>
+      #inline{
+        width:100%;
+        height:auto;
+        display:flex;
+        }
+      #user_alert_messages,#sensors_alert_messages{
+      width:50%;
+      height:100px;
+      margin:10px;
+      }
+
+    </style>
+
 </head>
 <body>
 <div th:replace="fragments/fragment :: nav-all"></div>
@@ -17,66 +32,45 @@
             <h4>Вы зашли как: [[${role}]]</h4>
             <h6>Ваши возможности: [[${permissions}]]</h6>
 
-            <div class="container mt-3" style="margin-left: 0px;">
-                <h2>Уведомления:</h2>
-                <div th:each="alert : ${alerts}">
-                    <!--<p>Add the alert-link class to any links inside the alert box to create "matching colored links".</p>!-->
+            <div id="inline">
+                <div class="container mt-3" id="user_alert_messages">
+                    <h2>Уведомления:</h2>
+                    <div th:each="alert : ${alerts}">
+                        <!--<p>Add the alert-link class to any links inside the alert box to create "matching colored links".</p>!-->
+                        <div th:if="${#strings.equals(alert.type_of_message, 'ERROR')}">
+                            <div class="alert alert-danger">
+                                <strong>Danger!</strong> [[${alert.alert_message}]] : [[${alert.alert_message_date}]].
+                            </div>
+                        </div>
 
-                    <div th:if="${#strings.equals(alert.type_of_message, 'ERROR')}">
+                        <div th:if="${#strings.equals(alert.type_of_message, 'NOTIFICATION')}">
+                            <div class="alert alert-info">
+                                <strong>Info!</strong> [[${alert.alert_message}]] : [[${alert.alert_message_date}]].
+                            </div>
+                        </div>
+
+                        <div th:if="${#strings.equals(alert.type_of_message, 'ALARM')}">
+                            <div class="alert alert-warning">
+                                <strong>Warning!</strong> [[${alert.alert_message}]] : [[${alert.alert_message_date}]].
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container mt-3" id="sensors_alert_messages">
+                    <h2>Датчики:</h2>
+                    <div th:each="sensor : ${sensors_error}">
                         <div class="alert alert-danger">
-                            <strong>Danger!</strong> [[${alert.alert_message}]] : [[${alert.alert_message_date}]].
+                            <strong>Danger!</strong> Замечено движение у датчика: [[${sensor.name}]] : [[${sensor.location}]] : [[${sensor.location}]] .
                         </div>
-                    </div>
-
-                    <div th:if="${#strings.equals(alert.type_of_message, 'NOTIFICATION')}">
-                        <div class="alert alert-info">
-                            <strong>Info!</strong> [[${alert.alert_message}]] : [[${alert.alert_message_date}]].
-                        </div>
-                    </div>
-
-                    <div th:if="${#strings.equals(alert.type_of_message, 'ALARM')}">
-                        <div class="alert alert-warning">
-                            <strong>Warning!</strong> [[${alert.alert_message}]] : [[${alert.alert_message_date}]].
-                        </div>
-                    </div>
-
-                    <!--<div class="alert alert-success">
-                        <strong>Success!</strong> You should <a href="#" class="alert-link">read this message</a>.
-                    </div>
-                    <div class="alert alert-info">
-                        <strong>Info!</strong> You should <a href="#" class="alert-link">read this message</a>.
-                    </div>
-                    <div class="alert alert-warning">
-                        <strong>Warning!</strong> You should <a href="#" class="alert-link">read this message</a>.
-                    </div>
-                    <div class="alert alert-danger">
-                        <strong>Danger!</strong> You should <a href="#" class="alert-link">read this message</a>.
-                    </div>
-                    <div class="alert alert-primary">
-                        <strong>Primary!</strong> You should <a href="#" class="alert-link">read this message</a>.
-                    </div>
-                    <div class="alert alert-secondary">
-                        <strong>Secondary!</strong> You should <a href="#" class="alert-link">read this message</a>.
-                    </div>
-                    <div class="alert alert-dark">
-                        <strong>Dark!</strong> You should <a href="#" class="alert-link">read this message</a>.
-                    </div>
-                    <div class="alert alert-light">
-                        <strong>Light!</strong> You should <a href="#" class="alert-link">read this message</a>.
-                    </div>!-->
-                </div>
-
-                <div th:each="sensor : ${sensors_error}">
-                    <div class="alert alert-danger">
-                        <strong>Danger!</strong> Замечено движение у датчика: [[${sensor.name}]] : [[${sensor.location}]] : [[${sensor.location}]] .
                     </div>
                 </div>
-
             </div>
 
-        </div>
 
         </div>
+
+    </div>
 
 </div>
 </body>

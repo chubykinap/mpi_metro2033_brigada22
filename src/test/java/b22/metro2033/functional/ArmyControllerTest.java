@@ -154,5 +154,4 @@ class ArmyControllerTest {
         Assertions.assertNull(soldierRepository.findById(soldier.getId()).orElse(null));
     }
 
-
 }

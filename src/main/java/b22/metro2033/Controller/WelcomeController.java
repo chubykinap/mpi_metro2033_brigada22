@@ -53,7 +53,4 @@ public class WelcomeController {
         return "welcome/index";
     }
 
-
-
-
 }
