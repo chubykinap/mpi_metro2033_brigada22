@@ -12,4 +12,6 @@ import java.util.Optional;
 public interface SoldierRepository extends JpaRepository<Soldier, Long> {
     List<Soldier> findAll();
     Optional<Soldier> findById(long id);
+    Optional<Soldier> findByUserId(long id);
+
 }

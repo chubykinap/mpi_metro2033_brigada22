@@ -68,7 +68,7 @@ public class ArmyController {
         if (users.size() == 0){
             return "army/form";
         }
-        model.addAttribute("users",  users);
+        model.addAttribute("users", users);
         model.addAttribute("ranks", Rank.getRankListRU());
         model.addAttribute("health",HealthState.getStateListRU());
         model.addAttribute("posts", postRepository.findAll());
@@ -96,9 +96,6 @@ public class ArmyController {
         Post post = postRepository.findById(post_id).orElse(null);
 
         Characteristics characteristics = new Characteristics(agility, strength, stamina);
-//        characteristics.setAgility(agility);
-//        characteristics.setStrength(strength);
-//        characteristics.setStamina(stamina);
 
         soldier.setUser(user);
         soldier.setPost(post);
