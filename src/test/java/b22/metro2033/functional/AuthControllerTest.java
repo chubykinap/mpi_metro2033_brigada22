@@ -87,7 +87,6 @@ class AuthControllerTest {
                 .andExpect(status().isOk());
     }
 
-
     @Test
     @WithMockUser(username = "gue", password = "ggg")
     void loginAsGuest() throws Exception {
