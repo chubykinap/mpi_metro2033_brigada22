@@ -65,7 +65,7 @@
             <div th:if="${!#strings.equals(sensor.sensorStatus, 'ERROR')}">
               <th scope="row" th:text="${sensor.id}">id</th>
               <td th:text="${sensor.name}">name</td>
-              <td :text="${sensor.location}">location</td>
+              <td th:text="${sensor.location}">location</td>
 
               <div th:if="${sensor.post ne null}">
                 <td scope="row" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
