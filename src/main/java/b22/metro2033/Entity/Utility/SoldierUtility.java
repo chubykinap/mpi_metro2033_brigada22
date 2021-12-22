@@ -39,6 +39,11 @@ public class SoldierUtility {
         return res;
     }
 
+    public static SoldierUtility toSoldierUtilityOne(Soldier soldier){
+        SoldierUtility soldierUtility = new SoldierUtility(soldier);
+        return soldierUtility;
+    }
+
     public long getId() {
         return id;
     }
