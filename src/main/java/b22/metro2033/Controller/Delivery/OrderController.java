@@ -1,17 +1,18 @@
 package b22.metro2033.Controller.Delivery;
 
+import b22.metro2033.Entity.Alerts.AlertMessages;
+import b22.metro2033.Entity.Alerts.TypeOfMessage;
 import b22.metro2033.Entity.Delivery.*;
 import b22.metro2033.Entity.Role;
 import b22.metro2033.Entity.User;
 import b22.metro2033.Entity.Utility.OrderItemUtility;
 import b22.metro2033.Entity.Utility.OrderUtility;
+import b22.metro2033.Repository.Alerts.AlertsRepository;
 import b22.metro2033.Repository.Delivery.CourierRepository;
 import b22.metro2033.Repository.Delivery.ItemRepository;
 import b22.metro2033.Repository.Delivery.OrderItemRepository;
 import b22.metro2033.Repository.Delivery.OrderRepository;
 import b22.metro2033.Repository.UserRepository;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,6 +37,7 @@ public class OrderController {
     private final CourierRepository courierRepository;
     private final OrderItemRepository orderItemRepository;
     private final ItemRepository itemRepository;
+    private final AlertsRepository alertsRepository;
     private final static String[] stations = new String[]{
             "Горьковская", "Спасская", "Адмиралтейская", "Маяковская"
     };
@@ -44,12 +46,14 @@ public class OrderController {
                            OrderRepository orderRepository,
                            CourierRepository courierRepository,
                            OrderItemRepository repository,
-                           ItemRepository itemRepository) {
+                           ItemRepository itemRepository,
+                           AlertsRepository alertsRepository) {
         this.userRepository = userRepository;
         this.orderRepository = orderRepository;
         this.courierRepository = courierRepository;
         this.orderItemRepository = repository;
         this.itemRepository = itemRepository;
+        this.alertsRepository = alertsRepository;
     }
 
 
@@ -60,11 +64,11 @@ public class OrderController {
         if (user == null) {
             return "redirect:/auth/login";
         }
-        Courier courier = courierRepository.findById(user.getId()).orElse(null);
         List<DeliveryOrder> orders;
-        if (user.getRole() == Role.COURIER)
-            orders = orderRepository.findAllByCourierId(courier.getId());
-        else
+        if (user.getRole() == Role.COURIER) {
+            orders = orderRepository.findAllByCourierId(user.getCourier().getId());
+
+        } else
             orders = orderRepository.findAll();
         model.addAttribute("orders", OrderUtility.toOrderUtility(orders));
         return "delivery/index";
@@ -111,14 +115,14 @@ public class OrderController {
 
         courier.setOrder(order);
         courier.setWorking(true);
-        courierRepository.save(courier);
 
         for (OrderItemUtility item : items) {
             Item item_stored = itemRepository.findByName(item.getItem());
             if (direction &&
-                    item_stored.getQuantity() < item.getQuantity())
+                    item_stored.getQuantity() < item.getQuantity()) {
+                orderRepository.delete(order);
                 throw new Exception("Недостаточно ресурсов");
-            else if (direction) {
+            } else if (direction) {
                 item_stored.setQuantity(item_stored.getQuantity() - item.getQuantity());
                 itemRepository.save(item_stored);
             }
@@ -128,6 +132,11 @@ public class OrderController {
             d_o.setItem(item_stored);
             orderItemRepository.save(d_o);
         }
+
+        String message = "Вам назначен новый заказ";
+        sendAlertMessage(courier.getUser(), message, TypeOfMessage.NOTIFICATION);
+        orderRepository.save(order);
+        courierRepository.save(courier);
 
         return "redirect:/delivery";
     }
@@ -189,8 +198,7 @@ public class OrderController {
 
         if (order == null) {
             return "redirect:/delivery";
-        }
-        else {
+        } else {
             if (order.isPointOfDeparture() && order.getState() != DeliveryState.COMPLETED) {
                 List<OrderItem> orderItems = orderItemRepository.findAllByIdOrderId(order.getId());
                 for (OrderItem oi : orderItems) {
@@ -201,6 +209,7 @@ public class OrderController {
             }
             Courier courier = courierRepository.findByOrderId(order.getId());
             courier.setOrder(null);
+            courier.setWorking(false);
             orderRepository.delete(order);
         }
 
@@ -224,5 +233,14 @@ public class OrderController {
         }
 
         return items;
+    }
+
+    public void sendAlertMessage(User user, String message, TypeOfMessage type) {
+        AlertMessages alertMessages = new AlertMessages();
+        alertMessages.setUser(user);
+        alertMessages.setAlert_message(message);
+        alertMessages.setType_of_message(type);
+
+        alertsRepository.save(alertMessages);
     }
 }

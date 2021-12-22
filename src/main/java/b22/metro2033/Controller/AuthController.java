@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,14 +41,14 @@ public class AuthController {
 
     @GetMapping("/login")
     public String login(Principal principal) {
-        if(principal != null)
+        if (principal != null)
             return "redirect:/";
         return "auth/login";
     }
 
     @GetMapping("/register")
     public String register(Model model, Principal principal) {
-        if(principal != null)
+        if (principal != null)
             return "redirect:/";
 
         model.addAttribute("user", new User());
@@ -64,17 +65,21 @@ public class AuthController {
     }
 
     @PostMapping("/register")
+    //@RequestBody для тестов
     public String newCustomer(Principal principal, Model model, @ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
-        if(principal != null)
+        if (principal != null)
             return "redirect:/";
 
-        if(bindingResult.hasErrors())
+        for (ObjectError error : bindingResult.getAllErrors()) {
+            System.out.println(error.toString());
+        }
+        if (bindingResult.hasErrors())
             return "auth/register";
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         //user.setRole(Role.GUEST);
 
-        if (userRepository.findByLogin(user.getLogin()).isPresent()){
+        if (userRepository.findByLogin(user.getLogin()).isPresent()) {
             model.addAttribute("error", "Пользователь с таким логином уже существует!");
             return "error";
         }
@@ -87,7 +92,7 @@ public class AuthController {
         return "auth/register";
     }
 
-    private List<Role> getRoles(){
+    private List<Role> getRoles() {
         List<Role> roles = Arrays.asList(Role.values());
         return roles;
     }
