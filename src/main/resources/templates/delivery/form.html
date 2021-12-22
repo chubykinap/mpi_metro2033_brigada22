@@ -29,10 +29,10 @@
     $(document).ready(function() {
         $(function() {
             $("#create").click(function() {
-                var items = getTableDate('t_items');
+                var items = getTableData('t_items');
 
                 var checked=$("#isPointOfDeparture").is(":checked");
-
+                console.log("enter");
                 var order = {
                     "station":$("#station").val(),
                     "direction":checked,
@@ -44,19 +44,17 @@
                     type: "POST",
                     url: "/delivery",
                     contentType: "application/json",
-                    data: JSON.stringify(new_soldier),
+                    data: JSON.stringify(order),
                     // dataType: "dataType",
                     success: function (data) {
                       console.log("success");
                       console.log(data);
                       window.location.href = '/delivery';
                     }
-                  });
-            }
-        }
-    }
-
-
+                });
+            });
+        })
+    });
 </script>
 
 <div th:replace="fragments/fragment :: nav-all"></div>

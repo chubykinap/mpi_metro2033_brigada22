@@ -76,7 +76,7 @@ public class OrderController {
         model.addAttribute("items", items);
         model.addAttribute("order", new DeliveryOrder());
 
-        List<Courier> couriers = courierRepository.findAll();
+        List<Courier> couriers = courierRepository.findAllByWorkingFalse();
         model.addAttribute("couriers", couriers);
 
         model.addAttribute("stations", stations);
@@ -94,6 +94,7 @@ public class OrderController {
         Date date = parseStringToDate(json.getString("date"));
         DeliveryState state = DeliveryState.RECEIVED;
         ObjectMapper mapper = new ObjectMapper();
+        String test = json.getString("items");
         List<OrderItemUtility> items = mapper.readValue(json.getString("items"),
                 new TypeReference<List<OrderItemUtility>>() {
                 });
@@ -193,7 +194,7 @@ public class OrderController {
     }
 
     private Date parseStringToDate(String date) throws ParseException {
-        DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
+        DateFormat format = new SimpleDateFormat("yyyy-MM-d", Locale.ENGLISH);
         return format.parse(date);
     }
 }

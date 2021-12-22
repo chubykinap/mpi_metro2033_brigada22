@@ -33,23 +33,17 @@ import java.util.stream.Stream;
 @RequestMapping("/courier")
 public class CourierController {
     private final UserRepository userRepository;
-    private final OrderRepository orderRepository;
     private final CourierRepository courierRepository;
-    private final OrderItemRepository repository;
 
     @Autowired
     public CourierController(UserRepository userRepository,
-                             OrderRepository orderRepository,
-                             CourierRepository courierRepository,
-                             OrderItemRepository repository) {
+                             CourierRepository courierRepository) {
         this.userRepository = userRepository;
-        this.orderRepository = orderRepository;
         this.courierRepository = courierRepository;
-        this.repository = repository;
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority('army:read')")
+    @PreAuthorize("hasAuthority('delivery:write')")
     public String index(Model model, Authentication authentication){
         User user = userRepository.findByLogin(authentication.getName()).orElse(null);
         if(user == null){
@@ -58,17 +52,21 @@ public class CourierController {
         List<Courier> couriers = courierRepository.findAll();
         model.addAttribute("couriers", couriers);
 
-        return "army/index";
+        return "courier/index";
     }
 
     @GetMapping("/create")
     @PreAuthorize("hasAuthority('delivery:write')")
     public String createForm(Model model, Authentication authentication){
+        User user = userRepository.findByLogin(authentication.getName()).orElse(null);
+        if(user == null)
+            return "redirect:/auth/login";
+
         model.addAttribute("courier", new Courier());
         model.addAttribute("action", "Create");
-        List<User> users = userRepository.findAllByRoleIn(getRolesForSelect(authentication));
+        List<User> users = userRepository.findFreeCourier();
         if (users.size() == 0)
-            return "courier/form";
+            return "redirect:/courier";
         model.addAttribute("users", users);
 
         return "courier/form";
@@ -76,7 +74,7 @@ public class CourierController {
 
     @PreAuthorize("hasAuthority('delivery:write')")
     @RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
-    public String create(@RequestBody @Valid String response) throws Exception { //ParesException type?
+    public String create(@RequestBody @Valid String response) throws Exception {
         JSONObject json = new JSONObject(response);
 
         long user_id = Long.parseLong(json.getString("user_id"));
@@ -86,11 +84,11 @@ public class CourierController {
         courier.setUser(user);
         courierRepository.save(courier);
 
-        return "redirect:/army";
+        return "redirect:/";
     }
 
     @GetMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority('army:write')")
+    @PreAuthorize("hasAuthority('delivery:write')")
     public String remove(@PathVariable Long id) {
 
         Courier courier = courierRepository.findById(id).orElse(null);
@@ -98,7 +96,7 @@ public class CourierController {
         if(courier != null)
             courierRepository.deleteById(id);
 
-        return "redirect:/army";
+        return "redirect:/courier";
     }
 
     private List<Role> getRolesForSelect(Authentication authentication){

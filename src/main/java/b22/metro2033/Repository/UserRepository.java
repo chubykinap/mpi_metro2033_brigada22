@@ -19,4 +19,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "WHERE u.role = 'SOLDIER' AND s.user_id IS NULL", nativeQuery = true)
     List<User> findFreeSoldiers();
 
+    @Query(value = "SELECT * FROM metro_user u LEFT JOIN courier c ON c.user_id = u.id " +
+            "WHERE u.role = 'COURIER' AND c.user_id IS NULL", nativeQuery = true)
+    List<User> findFreeCourier();
 }

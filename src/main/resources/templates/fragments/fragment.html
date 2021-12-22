@@ -45,6 +45,9 @@
     <li class="" sec:authorize="${hasAuthority('delivery:read')}">
       <a href="/storage"><span class="fas fa-cubes fa-fw"></span> Склад</a>
     </li>
+    <li class="" sec:authorize="${hasAuthority('delivery:write')}">
+      <a href="/courier"><span class="fa fa-wheelchair-alt fa-fw"></span> Курьеры</a>
+    </li>
     <li class=""  sec:authorize="${hasAuthority('army:read')}">
       <a href="/army"><span class="fas fa-flag fa-fw"></span> Армия</a>
     </li>
