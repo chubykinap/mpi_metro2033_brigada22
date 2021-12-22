@@ -45,12 +45,9 @@
                 <h6>Имя - [[${courier.user.name}]]</h6>
                 <h6>Фамилия - [[${courier.user.surname}]]</h6>
                 <h6>Отчество - [[${courier.user.patronymic}]]</h6>
-
-                <div th:if="${courier.working is true}">
-                    <h4>У вас есть заказ</h4>
-                </div>
-                <div th:if="${courier.working is false}">
-                    <h4>У вас нет заказа</h4>
+                <div th:switch="${courier.working}">
+                    <h4 th:case="true" scope="row" >У вас есть заказ</h4>
+                    <h4 th:case="false" scope="row" >У вас нет заказа</h4>
                 </div>
             </div>
 

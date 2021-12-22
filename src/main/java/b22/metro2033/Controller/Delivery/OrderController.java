@@ -12,6 +12,7 @@ import b22.metro2033.Repository.Delivery.OrderRepository;
 import b22.metro2033.Repository.UserRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.MediaType;
@@ -61,7 +62,7 @@ public class OrderController {
         }
         Courier courier = courierRepository.findById(user.getId()).orElse(null);
         List<DeliveryOrder> orders;
-        if (user.getRole() == Role.COURIER || user.getRole() == Role.HEAD_COURIER)
+        if (user.getRole() == Role.COURIER)
             orders = orderRepository.findAllByCourierId(courier.getId());
         else
             orders = orderRepository.findAll();
@@ -69,9 +70,9 @@ public class OrderController {
         return "delivery/index";
     }
 
-    @GetMapping("create")
+    @GetMapping("create/{type}")
     @PreAuthorize("hasAuthority('delivery:write')")
-    public String create(Model model, Authentication authentication) {
+    public String create(Model model, Authentication authentication, @PathVariable String type) {
         List<Item> items = itemRepository.findAll();
         model.addAttribute("items", items);
         model.addAttribute("order", new DeliveryOrder());
@@ -80,8 +81,10 @@ public class OrderController {
         model.addAttribute("couriers", couriers);
 
         model.addAttribute("stations", stations);
-
-        return "delivery/form";
+        if (type.equals("send"))
+            return "delivery/form_send";
+        else
+            return "delivery/form_receive";
     }
 
     @PreAuthorize("hasAuthority('delivery:write')")
@@ -92,25 +95,33 @@ public class OrderController {
         String station = json.getString("station");
         boolean direction = json.getBoolean("direction");
         Date date = parseStringToDate(json.getString("date"));
+        Courier courier = courierRepository.findById(json.getInt("courier_id")).orElse(null);
+        if (courier == null)
+            return "redirect:/delivery";
         DeliveryState state = DeliveryState.RECEIVED;
-        ObjectMapper mapper = new ObjectMapper();
-        String test = json.getString("items");
-        List<OrderItemUtility> items = mapper.readValue(json.getString("items"),
-                new TypeReference<List<OrderItemUtility>>() {
-                });
+        List<OrderItemUtility> items = jsonToList(json.getJSONArray("items"));
 
         DeliveryOrder order = new DeliveryOrder();
         order.setState(state);
+        order.setCourier(courier);
         order.setPointOfDeparture(direction);
         order.setStation(station);
         order.setDate(date);
         orderRepository.save(order);
+
+        courier.setOrder(order);
+        courier.setWorking(true);
+        courierRepository.save(courier);
 
         for (OrderItemUtility item : items) {
             Item item_stored = itemRepository.findByName(item.getItem());
             if (direction &&
                     item_stored.getQuantity() < item.getQuantity())
                 throw new Exception("Недостаточно ресурсов");
+            else if (direction) {
+                item_stored.setQuantity(item_stored.getQuantity() - item.getQuantity());
+                itemRepository.save(item_stored);
+            }
             OrderItem d_o = new OrderItem();
             d_o.setOrder(order);
             d_o.setQuantity(item.getQuantity());
@@ -156,37 +167,38 @@ public class OrderController {
             return "redirect:/delivery";
         }
 
+        if (!order.isPointOfDeparture() && state == DeliveryState.COMPLETED) {
+            List<OrderItem> orderItems = orderItemRepository.findAllByIdOrderId(order.getId());
+            for (OrderItem oi : orderItems) {
+                Item item_stored = itemRepository.findById(oi.getItem().getId());
+                item_stored.setQuantity(item_stored.getQuantity() + oi.getQuantity());
+                itemRepository.save(item_stored);
+            }
+            state = DeliveryState.CLOSED;
+        }
+
         order.setState(state);
         orderRepository.save(order);
         return "redirect:/delivery";
     }
 
-    @RequestMapping(value = "/completeOrder", method = RequestMethod.POST)
-    @PreAuthorize("hasAuthority('delivery:read')")
-    public String completeOrder(@PathVariable Long id) {
-        DeliveryOrder order = orderRepository.findById(id).orElse(null);
-
-        if (order != null) {
-            order.setState(DeliveryState.COMPLETED);
-            List<OrderItem> list = orderItemRepository.findAllByIdOrderId(id);
-            if (!order.isPointOfDeparture())
-                for (OrderItem item : list) {
-                    Item item_stored = itemRepository.findByName(item.getItem().getName());
-                    item_stored.setQuantity(item.getQuantity() + item.getQuantity());
-                    itemRepository.save(item_stored);
-                }
-            orderRepository.save(order);
-        }
-
-        return "redirect:/delivery";
-    }
-
-    @RequestMapping(value = "/deleteOrder", method = RequestMethod.POST)
-    @PreAuthorize("hasAuthority('delivery:read')")
+    @GetMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority('delivery:write')")
     public String deleteOrder(@PathVariable Long id) {
         DeliveryOrder order = orderRepository.findById(id).orElse(null);
 
-        if (order != null) {
+        if (order == null) {
+            return "redirect:/delivery";
+        }
+        else {
+            if (order.isPointOfDeparture() && order.getState() != DeliveryState.COMPLETED) {
+                List<OrderItem> orderItems = orderItemRepository.findAllByIdOrderId(order.getId());
+                for (OrderItem oi : orderItems) {
+                    Item item_stored = itemRepository.findById(oi.getItem().getId());
+                    item_stored.setQuantity(item_stored.getQuantity() + oi.getQuantity());
+                    itemRepository.save(item_stored);
+                }
+            }
             orderRepository.delete(order);
         }
 
@@ -196,5 +208,19 @@ public class OrderController {
     private Date parseStringToDate(String date) throws ParseException {
         DateFormat format = new SimpleDateFormat("yyyy-MM-d", Locale.ENGLISH);
         return format.parse(date);
+    }
+
+    private List<OrderItemUtility> jsonToList(JSONArray array) throws JSONException {
+        List<OrderItemUtility> items = new ArrayList<>();
+
+        for (int i = 0; i < array.length(); i++) {
+            JSONArray tmp = (JSONArray) array.get(i);
+            OrderItemUtility order = new OrderItemUtility(
+                    tmp.get(0).toString(),
+                    Integer.parseInt(tmp.get(1).toString()));
+            items.add(order);
+        }
+
+        return items;
     }
 }

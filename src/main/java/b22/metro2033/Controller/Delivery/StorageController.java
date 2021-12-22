@@ -91,7 +91,7 @@ public class StorageController {
         JSONObject json = new JSONObject(response);
 
         long item_id = Long.parseLong(json.getString("item_id"));
-        Item item = itemRepository.findById(item_id).orElse(null);
+        Item item = itemRepository.findById(item_id);
         if(item == null) {
             return "redirect:/storage";
         }

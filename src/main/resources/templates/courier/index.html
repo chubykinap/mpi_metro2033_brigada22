@@ -13,6 +13,15 @@
 <script type="application/javascript">
     $(document).ready(function() {
             $(function(){
+              var table = document.getElementsByTagName('table')[0],
+              rows = table.getElementsByTagName('tr'),
+              text = 'textContent' in document ? 'textContent' : 'innerText';
+
+              for (var i = 1, len = rows.length; i < len; i++) {
+                rows[i].children[0][text] = i + rows[i].children[0][text];
+              }
+            })
+            $(function(){
                 $(document).on('click', '$delete', function(event)
                 {
                     event.preventDefault();
@@ -69,7 +78,7 @@
                     </thead>
                     <tbody>
                     <tr th:each="courier : ${couriers}">
-                        <th scope="row" id="courier_id" th:text="${courier.id}">id</th>
+                        <th scope="row"></th>
                         <td scope="row" th:text="${courier.user.name}">name</td>
                         <td scope="row" th:text="${courier.user.surname}">surname</td>
                         <td scope="row" th:text="${courier.user.patronymic}">patronymic</td>
