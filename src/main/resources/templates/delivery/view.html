@@ -31,24 +31,6 @@
                     }
                 });
             });
-            $("#delete").click(function(event) {
-                event.preventDefault();
-                var id = {
-                    "id":$("#text_id").text()
-                }
-                console.log(id);
-                $.ajax({
-                    type: "POST",
-                    url: "/delivery/deleteOrder/",
-                    contentType: "application/json",
-                    data: JSON.stringify(id),
-                    // dataType: "dataType",
-                    success: function (data) {
-                      console.log("success");
-                      window.location.href = '/delivery';
-                    }
-                });
-            });
         })
     });
 
@@ -106,7 +88,7 @@
 
                     <div class="form-group">
                         <input type="button" id="change" class="btn-primary btn" value="Сохранить"/>
-                        <a href="/delivery" id="delete" class="btn-primary btn">Удалить</a>
+                        <a th:href="@{/delivery/delete/{id}(id=${order.id})}" sec:authorize="${hasAuthority('delivery:write')}" id="delete" class="btn-primary btn">Удалить</a>
                     </div>
                     <a href="/delivery" class="btn-primary btn">Назад</a>
                 </div>
