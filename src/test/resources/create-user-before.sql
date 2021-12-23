@@ -1,6 +1,9 @@
-delete from soldier_characteristics;
+delete from sensor_messages;
+delete from movement_sensor;
 delete from soldier;
 delete from security_post;
+delete from soldier_characteristics;
+delete from alert_messages;
 delete from metro_user;
 
 insert into metro_user(enabled, login, password, role) values
