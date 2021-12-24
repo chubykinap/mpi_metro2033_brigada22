@@ -44,6 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@WithUserDetails("aaa")
 @TestPropertySource("/application-test.properties")
 @Sql(value = {"/create-user-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(value = {"/create-user-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
@@ -85,10 +86,9 @@ class CourierControllerTest {
     private OrderItemRepository orderItemRepository;
 
     @Test
-    @WithMockUser(username = "ss", password = "dsadas")
     void testOfShowingAllOrders() throws Exception {
 
-        mockMvc.perform(get("/"))
+        mockMvc.perform(get("/delivery"))
                 .andDo(print())
                 .andExpect(authenticated())
                 .andExpect(status().isOk());
