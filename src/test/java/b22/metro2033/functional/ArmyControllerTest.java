@@ -236,6 +236,72 @@ class ArmyControllerTest {
     }
 
     @Test
+    void testChangeOneSoldierNegativeJSONBody() throws Exception {
+        testCreateNewSoldier();
+        List<Soldier> soldierList = soldierRepository.findAll();
+        Soldier soldier = soldierList.get(0);
+        long id = soldier.getId();
+
+        Post new_post = new Post();
+        new_post.setLocation("Vagon");
+        new_post.setName("post_3");
+
+        postRepository.save(new_post);
+
+        // change all
+        String response = "{" +
+                "\"soldier_id\": ываыва, " +
+                "\"rank\": \"" + Rank.getStateRU(MAJOR) + "\", " +
+                "\"health_state\": \"" + HealthState.getStateRU(CRITICAL) + "\", " +
+                "\"user_id\": " + soldier.getUser().getId() + ", " +
+                "\"post_id\": " + new_post.getId() + "," +
+                "\"agility\": " + 33 + ", " +
+                "\"strength\": " + 44 + ", " +
+                "\"stamina\": " + 55 +
+                "}";
+
+        mockMvc.perform(post("/army/change")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(response))
+                .andDo(print())
+                .andExpect(authenticated())
+                .andExpect(status().is4xxClientError());
+    }
+    @Test
+    void testChangeOneSoldierNegativeJSONSyntax() throws Exception {
+        testCreateNewSoldier();
+        List<Soldier> soldierList = soldierRepository.findAll();
+        Soldier soldier = soldierList.get(0);
+        long id = soldier.getId();
+
+        Post new_post = new Post();
+        new_post.setLocation("Vagon");
+        new_post.setName("post_3");
+
+        postRepository.save(new_post);
+
+        // change all
+        String response = "{" +
+                "\"soldier_id\": ываыва, " +
+                "\"rank\": \"" + Rank.getStateRU(MAJOR) + "\", " +
+                "\"health_state\": \"" + HealthState.getStateRU(CRITICAL) + "\", " +
+                "\"user_id\": " + soldier.getUser().getId() + ", " +
+                "\"post_id\": " + new_post.getId() + "," +
+                "\"agility\": " + 33 + ", " +
+                "\"strength\": " + 44 + ", " +
+                "\"stamina\": " + 55 +
+                "";
+
+        mockMvc.perform(post("/army/change")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(response))
+                .andDo(print())
+                .andExpect(authenticated())
+                .andExpect(status().is4xxClientError());
+    }
+
+
+    @Test
     void testDeleteOneSoldier() throws Exception {
         testCreateNewSoldier();
         List<Soldier> soldierList = soldierRepository.findAll();
@@ -248,6 +314,21 @@ class ArmyControllerTest {
                 .andExpect(redirectedUrl("/army"));
 
         Assertions.assertNull(soldierRepository.findById(soldier.getId()).orElse(null));
+    }
+
+    @Test
+    void testDeleteOneSoldierNegativeID() throws Exception {
+        testCreateNewSoldier();
+        List<Soldier> soldierList = soldierRepository.findAll();
+        Soldier soldier = soldierList.get(soldierList.size() - 1);
+        long id = soldier.getId() + 1000;
+
+        mockMvc.perform(get("/army/delete/" + soldier.getId()))
+                .andDo(print())
+                .andExpect(authenticated())
+                .andExpect(redirectedUrl("/army"));
+
+//        Assertions.assertNull(soldierRepository.findById(soldier.getId()).orElse(null));
     }
 
     @Test
@@ -314,6 +395,40 @@ class ArmyControllerTest {
         Soldier changedSoldier = soldierRepository.findById(soldier.getId()).orElse(null);
 
         Assertions.assertEquals(post.getId(), changedSoldier.getPost().getId());
+
+    }
+
+    @Test
+    void testSoldierAppointmentToPostNegativeIDs() throws Exception{
+
+        testCreateNewSoldier();
+        List<Soldier> soldierList = soldierRepository.findAll();
+        Soldier soldier = soldierList.get(0);
+        long id = soldier.getId() + 1098923;
+
+        Post post = new Post();
+        post.setLocation("Vagon");
+        post.setName("post_3");
+
+        postRepository.save(post);
+
+        // change all
+        String response = "{" +
+                "\"post_id\": " + post.getId() + ", " +
+                "\"soldier_id\": \"" + id + "\"" +
+                "}";
+
+        mockMvc.perform(post("/posts/add_soldier_to_post")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(response))
+                .andDo(print())
+                .andExpect(authenticated())
+                .andExpect(redirectedUrl("/posts"));
+
+//        //Get soldier
+//        Soldier changedSoldier = soldierRepository.findById(soldier.getId()).orElse(null);
+//
+//        Assertions.assertEquals(post.getId(), changedSoldier.getPost().getId());
 
     }
 

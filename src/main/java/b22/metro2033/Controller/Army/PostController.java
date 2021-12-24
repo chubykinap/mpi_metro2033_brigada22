@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -205,22 +207,25 @@ public class PostController {
     @GetMapping("/add_soldier_to_post/{id}")
     @PreAuthorize("hasAuthority('army:write')")
     public String addSoldierToPostForm(Model model, Authentication authentication, @PathVariable Long id){
+        try {
+            Post post = postRepository.findById(id).orElse(null);
+            if (post == null) {
+                return "redirect:/posts";
+            }
 
-        Post post = postRepository.findById(id).orElse(null);
-        if(post == null){
-            return "redirect:/posts";
+            model.addAttribute("post", new PostUtility(post));
+            model.addAttribute("action", "change");
+            List<Soldier> soldierList = soldierRepository.findAllByPostIsNull();
+            if (soldierList.isEmpty()) {
+                model.addAttribute("soldiers", "NoData");
+            } else {
+                model.addAttribute("soldiers", soldierList);
+            }
+
+            return "posts/add_soldier_to_post";
+        } catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "HTTP request is wrong (CODE 400)\n");
         }
-
-        model.addAttribute("post", new PostUtility(post));
-        model.addAttribute("action", "change");
-        List<Soldier> soldierList = soldierRepository.findAllByPostIsNull();
-        if(soldierList.isEmpty()){
-            model.addAttribute("soldiers","NoData");
-        }else{
-            model.addAttribute("soldiers", soldierList);
-        }
-
-        return "posts/add_soldier_to_post";
     }
 
     @GetMapping("/add_sensor_to_post/{id}")
@@ -407,27 +412,30 @@ public class PostController {
     @PreAuthorize("hasAuthority('army:write')")
     @RequestMapping(value = "/add_soldier_to_post", consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
     public String addSoldierToPost(@RequestBody String response) throws Exception { //ParesException type?
+        try {
+            JSONObject json = new JSONObject(response);
 
-        JSONObject json = new JSONObject(response);
+            long post_id = Long.parseLong(json.getString("post_id"));
+            long soldier_id = Long.parseLong(json.getString("soldier_id"));
 
-        long post_id = Long.parseLong(json.getString("post_id"));
-        long soldier_id = Long.parseLong(json.getString("soldier_id"));
+            //Переделать в 1 запрос (хз как)
+            Post post = postRepository.findById(post_id).orElse(null);
+            if (post == null) {
+                return "redirect:/posts";
+            }
 
-        //Переделать в 1 запрос (хз как)
-        Post post = postRepository.findById(post_id).orElse(null);
-        if(post == null) {
+            Soldier soldier = soldierRepository.findById(soldier_id).orElse(null);
+            if (soldier == null) {
+                return "redirect:/posts";
+            }
+
+            soldier.setPost(post);
+            soldierRepository.save(soldier);
+
             return "redirect:/posts";
+        } catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "HTTP request is wrong (CODE 400)\n");
         }
-
-        Soldier soldier = soldierRepository.findById(soldier_id).orElse(null);
-        if(soldier == null) {
-            return "redirect:/posts";
-        }
-
-        soldier.setPost(post);
-        soldierRepository.save(soldier);
-
-        return "redirect:/posts";
     }
 
 

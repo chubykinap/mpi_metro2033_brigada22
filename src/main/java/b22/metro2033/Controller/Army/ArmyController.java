@@ -14,6 +14,7 @@ import b22.metro2033.Repository.UserRepository;
 import b22.metro2033.Service.PaginatedService;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -188,103 +189,109 @@ public class ArmyController {
     @PreAuthorize("hasAuthority('army:write')")
     @RequestMapping(value = "/change", consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
     public String change(@RequestBody String response) throws Exception { //ParesException type?
+        try {
+            JSONObject json = new JSONObject(response);
 
-        JSONObject json = new JSONObject(response);
+            Rank rank = Rank.findState(json.getString("rank"));
+            HealthState health_state = HealthState.findState(json.getString("health_state"));
+            long soldier_id = Long.parseLong(json.getString("soldier_id"));
+            long user_id = Long.parseLong(json.getString("user_id"));
+            long post_id = Long.parseLong(json.getString("post_id"));
+            int agility = Integer.parseInt(json.getString("agility"));
+            int strength = Integer.parseInt(json.getString("strength"));
+            int stamina = Integer.parseInt(json.getString("stamina"));
 
-        Rank rank = Rank.findState(json.getString("rank"));
-        HealthState health_state = HealthState.findState(json.getString("health_state"));
-        long soldier_id = Long.parseLong(json.getString("soldier_id"));
-        long user_id = Long.parseLong(json.getString("user_id"));
-        long post_id = Long.parseLong(json.getString("post_id"));
-        int agility = Integer.parseInt(json.getString("agility"));
-        int strength = Integer.parseInt(json.getString("strength"));
-        int stamina = Integer.parseInt(json.getString("stamina"));
+            System.out.print(stamina);
 
-        System.out.print(stamina);
+            //Переделать в 1 запрос (хз как)
+            Soldier soldier = soldierRepository.findById(soldier_id).orElse(null);
+            if (soldier == null) {
+                return "redirect:/army";
+            }
 
-        //Переделать в 1 запрос (хз как)
-        Soldier soldier = soldierRepository.findById(soldier_id).orElse(null);
-        if (soldier == null) {
-            return "redirect:/army";
-        }
+            User user = userRepository.findById(user_id).orElse(null);
+            if (user == null) {
+                return "redirect:/army";
+            }
 
-        User user = userRepository.findById(user_id).orElse(null);
-        if (user == null) {
-            return "redirect:/army";
-        }
+            soldier.setUser(user);
 
-        soldier.setUser(user);
+            //Проверить на пустоту
+            if (post_id == -1) {
+                soldier.setPost(null);
+                String message = "Вас сняли с поста";
+                sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
+            } else {
+                Post post = postRepository.findById(post_id).orElse(null);
 
-        //Проверить на пустоту
-        if (post_id == -1){
-            soldier.setPost(null);
-            String message = "Вас сняли с поста";
-            sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
-        }else{
-            Post post = postRepository.findById(post_id).orElse(null);
-
-            if (post != null && soldier.getPost() != null){
-                if (!soldier.getPost().equals(post)){
+                if (post != null && soldier.getPost() != null) {
+                    if (!soldier.getPost().equals(post)) {
+                        String message = "Вы назначены на новый пост: " + post.getName() + " " + post.getLocation();
+                        sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
+                    }
+                    soldier.setPost(post);
+                } else if (post != null && soldier.getPost() == null) {
                     String message = "Вы назначены на новый пост: " + post.getName() + " " + post.getLocation();
                     sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
+                    soldier.setPost(post);
                 }
-                soldier.setPost(post);
-            }else if(post != null && soldier.getPost() == null) {
-                String message = "Вы назначены на новый пост: " + post.getName() + " " + post.getLocation();
-                sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
-                soldier.setPost(post);
             }
-        }
 
-        if (!soldier.getRank().equals(rank)){
-            String message = "Вам изменили звание: " + rank.toString();
-            sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
-        }
-        soldier.setRank(rank);
+            if (!soldier.getRank().equals(rank)) {
+                String message = "Вам изменили звание: " + rank.toString();
+                sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
+            }
+            soldier.setRank(rank);
 
-        if (!soldier.getHealth_state().equals(health_state)){
-            String message = "Вам изменили состояние здоровья: " + health_state;
-            sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
-        }
-        soldier.setHealth_state(health_state);
+            if (!soldier.getHealth_state().equals(health_state)) {
+                String message = "Вам изменили состояние здоровья: " + health_state;
+                sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
+            }
+            soldier.setHealth_state(health_state);
 
-        soldierRepository.save(soldier);
+            soldierRepository.save(soldier);
 
-        Characteristics characteristics = characteristicsRepository.findBySoldier_id(soldier_id).orElse(null);
-        if (characteristics == null){
+            Characteristics characteristics = characteristicsRepository.findBySoldier_id(soldier_id).orElse(null);
+            if (characteristics == null) {
+                return "redirect:/army";
+            }
+
+            if (characteristics.getAgility() != agility ||
+                    characteristics.getStamina() != stamina ||
+                    characteristics.getStrength() != strength) {
+                String message = "Вам изменили характеристики";
+                sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
+            }
+
+            characteristics.setAgility(agility);
+            characteristics.setStamina(stamina);
+            characteristics.setStrength(strength);
+            characteristicsRepository.save(characteristics);
             return "redirect:/army";
+        } catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "HTTP request is wrong (CODE 400)\n");
         }
-
-        if (characteristics.getAgility() != agility ||
-                characteristics.getStamina() != stamina ||
-                characteristics.getStrength() != strength) {
-            String message = "Вам изменили характеристики";
-            sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
-        }
-
-        characteristics.setAgility(agility);
-        characteristics.setStamina(stamina);
-        characteristics.setStrength(strength);
-        characteristicsRepository.save(characteristics);
-        return "redirect:/army";
     }
 
     @GetMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('army:write')")
     public String enable(@PathVariable Long id) {
+        try {
+            Soldier soldier = soldierRepository.findById(id).orElse(null);
 
-        Soldier soldier = soldierRepository.findById(id).orElse(null);
+            if (soldier != null) {
+                Characteristics characteristics = characteristicsRepository.findBySoldier_id(id).orElse(null);
+                if (characteristics != null) {
+                    characteristicsRepository.delete(characteristics);
+                }
 
-        if(soldier != null){
-            Characteristics characteristics = characteristicsRepository.findBySoldier_id(id).orElse(null);
-            if(characteristics != null){
-                characteristicsRepository.delete(characteristics);
+                soldierRepository.deleteById(id);
             }
-
-            soldierRepository.deleteById(id);
+            //soldierRepository.findById(id).ifPresent(soldierRepository::delete);
+            return "redirect:/army";
+        } catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "HTTP request is wrong (CODE 400)\n");
         }
-        //soldierRepository.findById(id).ifPresent(soldierRepository::delete);
-        return "redirect:/army";
     }
 
     public void sendAlertMessage(User user, String message, TypeOfMessage type){
