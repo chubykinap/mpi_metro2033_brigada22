@@ -49,7 +49,7 @@ public class CourierController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority('army:read')")
+    @PreAuthorize("hasAuthority('delivery:read')")
     public String index(Model model, Authentication authentication){
         User user = userRepository.findByLogin(authentication.getName()).orElse(null);
         if(user == null){
@@ -58,7 +58,7 @@ public class CourierController {
         List<Courier> couriers = courierRepository.findAll();
         model.addAttribute("couriers", couriers);
 
-        return "army/index";
+        return "/";
     }
 
     @GetMapping("/create")

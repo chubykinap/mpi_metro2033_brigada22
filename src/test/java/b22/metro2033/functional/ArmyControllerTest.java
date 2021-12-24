@@ -38,8 +38,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @WithUserDetails("ggg")
 @TestPropertySource("/application-test.properties")
-@Sql(value = {"/create-user-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-@Sql(value = {"/create-user-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@Sql(value = {"/create-user-for-army-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(value = {"/create-user-for-army-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 class ArmyControllerTest {
     @Autowired
     private MockMvc mockMvc;
