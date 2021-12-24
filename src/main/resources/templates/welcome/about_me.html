@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:replace="fragments/fragment :: head"></div>
+
+    <title id="pageTitle">Система станции метро</title>
+</head>
+<body>
+<div th:replace="fragments/fragment :: nav-all"></div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 col-sm-4 col-lg-3 col-md-4 py-3 sidebar border-right">
+            <div th:replace="fragments/fragment :: menu"></div>
+        </div>
+        <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
+            <h1>Добро пожаловать в систему метро, [[${login}]]</h1>
+            <h4>Вы зашли как: [[${role}]]</h4>
+            <h6>Ваши возможности: [[${permissions}]]</h6>
+
+            <div th:if="${soldier ne null}">
+                <h4>Вы военный:</h4>
+                <h6>Имя - [[${soldier.user.name}]]</h6>
+                <h6>Фамилия - [[${soldier.user.surname}]]</h6>
+                <h6>Отчество - [[${soldier.user.patronymic}]]</h6>
+
+                <div th:if="${soldier.post ne null}">
+                    <h4>Вы назначены на пост:</h4>
+                    <h6>Название - [[${soldier.post.name}]]</h6>
+                    <h6>Расположение - [[${soldier.post.location}]]</h6>
+                </div>
+
+                <div th:unless="${soldier.post ne null}">
+                    <h4>Вы не назначены на пост</h4>
+                </div>
+
+                <h4>Ваши характеристики:</h4>
+                <h6>Ловкость - [[${soldier.agility}]]</h6>
+                <h6>Сила - [[${soldier.strength}]]</h6>
+                <h6>Выносливость - [[${soldier.stamina}]]</h6>
+                <h6>Состояние здоровья - [[${soldier.health_state}]]</h6>
+            </div>
+
+            <div th:if="${courier ne null}">
+                <h4>Вы курьер:</h4>
+                <h6>Имя - [[${courier.user.name}]]</h6>
+                <h6>Фамилия - [[${courier.user.surname}]]</h6>
+                <h6>Отчество - [[${courier.user.patronymic}]]</h6>
+                <div th:switch="${courier.working}">
+                    <h4 th:case="true" scope="row" >У вас есть заказ</h4>
+                    <h4 th:case="false" scope="row" >У вас нет заказа</h4>
+                </div>
+            </div>
+
+
+
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

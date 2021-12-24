@@ -269,6 +269,24 @@ public class ArmyController {
         return "redirect:/army";
     }
 
+    @GetMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority('army:write')")
+    public String enable(@PathVariable Long id) {
+
+        Soldier soldier = soldierRepository.findById(id).orElse(null);
+
+        if(soldier != null){
+            Characteristics characteristics = characteristicsRepository.findBySoldier_id(id).orElse(null);
+            if(characteristics != null){
+                characteristicsRepository.delete(characteristics);
+            }
+
+            soldierRepository.deleteById(id);
+        }
+        //soldierRepository.findById(id).ifPresent(soldierRepository::delete);
+        return "redirect:/army";
+    }
+
     public void sendAlertMessage(User user, String message, TypeOfMessage type){
         AlertMessages alertMessages = new AlertMessages();
         alertMessages.setUser(user);

@@ -6,6 +6,11 @@ public class OrderItemUtility {
     private String item_name;
     private int quantity;
 
+    public OrderItemUtility(String item_name, int quantity) {
+        this.item_name = item_name;
+        this.quantity = quantity;
+    }
+
     public String getItem() {
         return item_name;
     }

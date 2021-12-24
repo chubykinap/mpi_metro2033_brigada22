@@ -11,31 +11,28 @@
 
 <script type="application/javascript">
     function getTableData(id) {
-        var t_rows = document.getElementById(id).querySelectorAll('tbody tr');
-        var t_data = [];
-        var ix = 0;
-
-        for(var i=0; i<t_rows.length; i++) {
-            var row_tds = t_rows[i].querySelectorAll('td');
-            if(row_tds.length > 0) {
-                t_data[ix] = [];
-                for(var i2=0; i2<row_tds.length; i2++) t_data[ix].push((row_tds[i2].innerText || row_tds[i2].textContent));
-                ix++;
-            }
-        }
-        return t_data;
+        var $t_data = [];
+        $("#t_items tbody tr").each(function(i) {
+            var $c_data = [];
+            var $item_name = $(this).find('#t_name').text();
+            var $item_quantity = $(this).find('#t_quantity').val();
+            $c_data.push($item_name);
+            $c_data.push($item_quantity);
+            $t_data.push($c_data);
+        });
+        return $t_data;
     }
 
     $(document).ready(function() {
         $(function() {
             $("#create").click(function() {
-                var items = getTableDate('t_items');
-
-                var checked=$("#isPointOfDeparture").is(":checked");
+                var items = getTableData('t_items');
+                console.log(items);
 
                 var order = {
+                    "courier_id":$("#courier").val(),
                     "station":$("#station").val(),
-                    "direction":checked,
+                    "direction":false,
                     "date":$('#date_select').val(),
                     "items":items
                 };
@@ -44,19 +41,16 @@
                     type: "POST",
                     url: "/delivery",
                     contentType: "application/json",
-                    data: JSON.stringify(new_soldier),
-                    // dataType: "dataType",
+                    data: JSON.stringify(order),
                     success: function (data) {
                       console.log("success");
                       console.log(data);
                       window.location.href = '/delivery';
                     }
-                  });
-            }
-        }
-    }
-
-
+                });
+            });
+        })
+    });
 </script>
 
 <div th:replace="fragments/fragment :: nav-all"></div>
@@ -66,7 +60,7 @@
             <div th:replace="fragments/fragment :: menu"></div>
         </div>
         <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
-            <h1>Создание заказа на доставку</h1>
+            <h1>Создание заказа на доставку ресурсов</h1>
             <form th:method="POST" th:action="@{/delivery}" th:object="${order}">
                 <div class="form-group">
                     <label for="station">Станция</label>
@@ -74,11 +68,6 @@
                         <option value="">Выбрать станцию...</option>
                         <option th:each="station : ${stations}" th:value=${station} th:text="${station}">Станция</option>
                     </select>
-                </div>
-
-                <div class="form-group">
-                    <input type="checkbox" id="isPointOfDeparture" name="isPointOfDeparture">
-                    <label for="isPointOfDeparture">Доставка с текущей станции</label>
                 </div>
 
                 <div class="form-group">
@@ -106,10 +95,10 @@
                             </tr>
                         <tbody>
                         <tr th:each="item : ${items}">
-                            <td scope="row" th:utext="${item.name}"></td>
+                            <td id="t_name" scope="row" th:utext="${item.name}"></td>
                             <td scope="row">
-                                <input type="number" id="quantity" class="form-control"
-                                       placeholder="Количество" min="0" max="${item.quantity_in_storage}">
+                                <input type="number" id="t_quantity" class="form-control" value="0"
+                                       placeholder="Количество" min="0">
                             </td>
                         </tr>
                         </tbody>

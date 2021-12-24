@@ -9,39 +9,6 @@
     <title id="pageTitle">Метро 2033 Военный персонал</title>
 </head>
 <body>
-<script type="application/javascript">
-        $(document).ready(function() {
-            $(function(){
-                $(document).on('click', '#delete2', function(event)
-                {
-                    event.preventDefault();
-                    var tbl_row = $(this).closest('tr');
-                    var soldier_id = $(tbl_row).find("#soldier_id").text();
-
-                    //Проверить
-                    if (soldier_id == '') {
-                      alert("Не найден ID солдата");
-                    }
-
-                    var soldier = {
-                        "soldier_id":soldier_id
-                    };
-
-                    $.ajax({
-                        type: "POST",
-                        url: "/army/delete",
-                        contentType: "application/json",
-                        data: JSON.stringify(soldier),
-                        success: function (data) {
-                          console.log("success");
-                          console.log(data);
-                          window.location.href = data;
-                        }
-                    });
-                });
-            })
-        });
-</script>
 
 
 <div th:replace="fragments/fragment :: nav-all"></div>

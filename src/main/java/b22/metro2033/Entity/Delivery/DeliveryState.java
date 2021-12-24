@@ -4,17 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum DeliveryState {
+    CLOSED,
     RECEIVED,
     IN_PROGRESS,
     COMPLETED,
     CANCELED;
 
-    public static List<DeliveryState> getHigher(DeliveryState state){
+    public static List<DeliveryState> getHigher(DeliveryState state) {
         List<DeliveryState> res = new ArrayList<>();
-        int value = state.ordinal();
-        while (value < 4) {
-            res.add(DeliveryState.values()[value++]);
+        if (state == CLOSED)
+            res.add(CLOSED);
+        else if (state != COMPLETED) {
+            int value = state.ordinal();
+            if (value == 0)
+                value++;
+            while (value < 4) {
+                res.add(DeliveryState.values()[value++]);
+            }
         }
+        else
+            res.add(COMPLETED);
         return res;
     }
 }

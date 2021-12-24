@@ -45,18 +45,19 @@
             <h1>Информация о заказе</h1>
             <form th:method="POST" th:action="@{changeState}" th:object="${order}">
                 <div class="form-group">
-                    <label>Номер заказа:&nbsp&nbsp</label><label th:text="*{id}"></label>
+                    <label>Номер заказа:&nbsp&nbsp</label><label id="text_id" th:text="*{id}"></label>
                     <input type="hidden" id="order_id" th:field="*{id}">
+
                     <div class="form-group">
-                        <label>Станция отправления:&nbsp&nbsp </label><label th:text="*{departureStation}"></label>
+                        <label>Тип заказа:&nbsp&nbsp </label>
+                        <div th:switch="*{isPointOfDeparture}">
+                            <label th:case="true">Отправка реурсов</label>
+                            <label th:case="false">Поставка ресурсов</label>
+                        </div>
                     </div>
 
                     <div class="form-group">
-                        <label>Станция доставки:&nbsp&nbsp </label><label th:text="*{arrivalStation}"></label>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Дата заказа:&nbsp&nbsp </label><label th:text=="*{date}"></label>
+                        <label>Срок доставки:&nbsp&nbsp </label><label th:text=="*{date}"></label>
                     </div>
 
                     <div class="form-group">
@@ -87,8 +88,9 @@
 
                     <div class="form-group">
                         <input type="button" id="change" class="btn-primary btn" value="Сохранить"/>
-                        <a href="/delivery" class="btn-primary btn">Назад</a>
+                        <a th:href="@{/delivery/delete/{id}(id=${order.id})}" sec:authorize="${hasAuthority('delivery:write')}" id="delete" class="btn-primary btn">Удалить</a>
                     </div>
+                    <a href="/delivery" class="btn-primary btn">Назад</a>
                 </div>
             </form>
         </div>

@@ -1,16 +1,12 @@
 package b22.metro2033.functional;
 
 import b22.metro2033.Controller.Army.ArmyController;
-import b22.metro2033.Entity.Army.HealthState;
-import b22.metro2033.Entity.Army.Post;
-import b22.metro2033.Entity.Army.Rank;
-import b22.metro2033.Entity.Army.Soldier;
+import b22.metro2033.Entity.Army.*;
 import b22.metro2033.Entity.Role;
 import b22.metro2033.Entity.User;
-import b22.metro2033.Repository.Army.CharacteristicsRepository;
-import b22.metro2033.Repository.Army.PostRepository;
-import b22.metro2033.Repository.Army.SoldierRepository;
+import b22.metro2033.Repository.Army.*;
 import b22.metro2033.Repository.UserRepository;
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -24,14 +20,17 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import static b22.metro2033.Entity.Army.HealthState.CRITICAL;
+import static b22.metro2033.Entity.Army.Rank.MAJOR;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -58,6 +57,12 @@ class ArmyControllerTest {
 
     @Autowired
     private CharacteristicsRepository characteristicsRepository;
+
+    @Autowired
+    private MovementSensorRepository movementSensorRepository;
+
+    @Autowired
+    private SensorMessagesRepository sensorMessagesRepository;
 
     @Test
     void testOfShowingAllSoldiersIndex() throws Exception {
@@ -99,8 +104,8 @@ class ArmyControllerTest {
                 "}";
 
         mockMvc.perform(post("/army")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(response))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(response))
                 .andDo(print())
                 .andExpect(authenticated())
                 .andExpect(redirectedUrl("/army"));
@@ -180,26 +185,52 @@ class ArmyControllerTest {
         Soldier soldier = soldierList.get(0);
         long id = soldier.getId();
 
-        // change stamina
+        Post new_post = new Post();
+        new_post.setLocation("Vagon");
+        new_post.setName("post_3");
+
+        postRepository.save(new_post);
+
+        // change all
         String response = "{" +
                 "\"soldier_id\": " + soldier.getId() + ", " +
-                "\"rank\": \"" + Rank.getStateRU(soldier.getRank()) + "\", " +
-                "\"health_state\": \"" + HealthState.getStateRU(soldier.getHealth_state()) + "\", " +
+                "\"rank\": \"" + Rank.getStateRU(MAJOR) + "\", " +
+                "\"health_state\": \"" + HealthState.getStateRU(CRITICAL) + "\", " +
                 "\"user_id\": " + soldier.getUser().getId() + ", " +
-                "\"post_id\": " + soldier.getPost().getId() + "," +
-                "\"agility\": " + soldier.getCharacteristics().getAgility() + ", " +
-                "\"strength\": " + soldier.getCharacteristics().getStrength() + ", " +
+                "\"post_id\": " + new_post.getId() + "," +
+                "\"agility\": " + 33 + ", " +
+                "\"strength\": " + 44 + ", " +
                 "\"stamina\": " + 55 +
                 "}";
 
         mockMvc.perform(post("/army/change")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(response))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(response))
                 .andDo(print())
                 .andExpect(authenticated())
                 .andExpect(redirectedUrl("/army"));
 
+        //Get soldier
         Soldier changedSoldier = soldierRepository.findById(soldier.getId()).orElse(null);
+
+        //Rank
+        Rank rank = changedSoldier.getRank();
+        Assertions.assertEquals(rank, MAJOR);
+
+        //Health_state
+        HealthState healthState = changedSoldier.getHealth_state();
+        Assertions.assertEquals(healthState, CRITICAL);
+
+        //Post
+        long post_id = changedSoldier.getPost().getId();
+        Assertions.assertEquals(post_id, new_post.getId());
+
+        int agility = changedSoldier.getCharacteristics().getAgility();
+        Assertions.assertEquals(agility, 33);
+
+        int strength = changedSoldier.getCharacteristics().getStrength();
+        Assertions.assertEquals(strength, 44);
+
         int stamina = changedSoldier.getCharacteristics().getStamina();
         Assertions.assertEquals(stamina, 55);
     }
@@ -217,6 +248,73 @@ class ArmyControllerTest {
                 .andExpect(redirectedUrl("/army"));
 
         Assertions.assertNull(soldierRepository.findById(soldier.getId()).orElse(null));
+    }
+
+    @Test
+    void testOfShowingSensors() throws Exception {
+        Post post = new Post();
+        post.setLocation("Vagon");
+        post.setName("post_3");
+
+        postRepository.save(post);
+
+        MovementSensor movementSensor = new MovementSensor();
+        movementSensor.setSensorStatus(SensorStatus.NORMAL);
+        movementSensor.setLocation("vhod");
+        movementSensor.setName("sensor1");
+        movementSensor.setPost(post);
+
+        movementSensorRepository.save(movementSensor);
+
+        SensorMessages sensorMessages = new SensorMessages();
+        sensorMessages.setMessages("All good");
+        sensorMessages.setMessages_date(LocalDateTime.now());
+        sensorMessages.setError(false);
+        sensorMessages.setMovementSensor(movementSensorRepository.findById(movementSensor.getId()).orElse(null));
+
+        sensorMessagesRepository.save(sensorMessages);
+
+        mockMvc.perform(get("/sensors"))
+                .andDo(print())
+                .andExpect(authenticated())
+                .andExpect(xpath("/html/body/div/div/div[2]/div[2]/table/tbody/tr[1]/div[1]/td[1]").string("sensor1"))
+                .andExpect(xpath("/html/body/div/div/div[2]/div[2]/table/tbody/tr[1]/div[1]/td[2]").string("vhod"))
+                .andExpect(xpath("/html/body/div/div/div[2]/div[2]/table/tbody/tr[1]/div[1]/div[1]/td[1]").string("Название: post_3Расположение: Vagon"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testSoldierAppointmentToPost() throws Exception{
+
+        testCreateNewSoldier();
+        List<Soldier> soldierList = soldierRepository.findAll();
+        Soldier soldier = soldierList.get(0);
+        long id = soldier.getId();
+
+        Post post = new Post();
+        post.setLocation("Vagon");
+        post.setName("post_3");
+
+        postRepository.save(post);
+
+        // change all
+        String response = "{" +
+                "\"post_id\": " + post.getId() + ", " +
+                "\"soldier_id\": \"" + id + "\"" +
+                "}";
+
+        mockMvc.perform(post("/posts/add_soldier_to_post")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(response))
+                .andDo(print())
+                .andExpect(authenticated())
+                .andExpect(redirectedUrl("/posts"));
+
+        //Get soldier
+        Soldier changedSoldier = soldierRepository.findById(soldier.getId()).orElse(null);
+
+        Assertions.assertEquals(post.getId(), changedSoldier.getPost().getId());
+
     }
 
 }

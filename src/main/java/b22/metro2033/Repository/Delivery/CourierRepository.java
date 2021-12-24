@@ -12,4 +12,6 @@ public interface CourierRepository extends JpaRepository<Courier, Long> {
     List<Courier> findAll();
     Optional<Courier> findById(long id);
     Courier findByOrderId(long id);
+    List<Courier> findAllByWorkingFalse();
+    Optional<Courier> findByUserId(long id);
 }
