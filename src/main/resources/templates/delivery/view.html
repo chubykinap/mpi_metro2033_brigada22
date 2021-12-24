@@ -45,11 +45,11 @@
             <h1>Информация о заказе</h1>
             <form th:method="POST" th:action="@{changeState}" th:object="${order}">
                 <div class="form-group">
-                    <label>Номер заказа:&nbsp&nbsp</label><label id="text_id" th:text="*{id}"></label>
-                    <input type="hidden" id="order_id" th:field="*{id}">
+                    <label>Номер заказа:<wbr/><wbr/></label><label id="text_id" th:text="*{id}"></label>
+                    <input type="hidden" id="order_id" th:field="*{id}"></input>
 
                     <div class="form-group">
-                        <label>Тип заказа:&nbsp&nbsp </label>
+                        <label>Тип заказа:<wbr/><wbr/> </label>
                         <div th:switch="*{isPointOfDeparture}">
                             <label th:case="true">Отправка реурсов</label>
                             <label th:case="false">Поставка ресурсов</label>
@@ -57,7 +57,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Срок доставки:&nbsp&nbsp </label><label th:text=="*{date}"></label>
+                        <label>Срок доставки:<wbr/><wbr/> </label><label th:text=="*{date}"></label>
                     </div>
 
                     <div class="form-group">
@@ -87,7 +87,7 @@
                     </div>
 
                     <div class="form-group">
-                        <input type="button" id="change" class="btn-primary btn" value="Сохранить"/>
+                        <input type="button" id="change" class="btn-primary btn" value="Сохранить"></input>
                         <a th:href="@{/delivery/delete/{id}(id=${order.id})}" sec:authorize="${hasAuthority('delivery:write')}" id="delete" class="btn-primary btn">Удалить</a>
                     </div>
                     <a href="/delivery" class="btn-primary btn">Назад</a>
