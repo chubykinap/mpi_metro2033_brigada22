@@ -16,9 +16,11 @@
             var $c_data = [];
             var $item_name = $(this).find('#t_name').text();
             var $item_quantity = $(this).find('#t_quantity').val();
-            $c_data.push($item_name);
-            $c_data.push($item_quantity);
-            $t_data.push($c_data);
+            if ($item_quantity > 0) {
+                $c_data.push($item_name);
+                $c_data.push($item_quantity);
+                $t_data.push($c_data);
+            }
         });
         return $t_data;
     }
@@ -28,6 +30,10 @@
             $("#create").click(function() {
                 var items = getTableData('t_items');
                 console.log(items);
+                if (items.length < 1) {
+                    alert("Не добавлены предметы для доставки");
+                    return;
+                }
 
                 var order = {
                     "courier_id":$("#courier").val(),
