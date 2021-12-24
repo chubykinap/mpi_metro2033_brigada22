@@ -44,8 +44,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @WithUserDetails("head_courier")
 @TestPropertySource("/application-test.properties")
-@Sql(value = {"/create-user-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-@Sql(value = {"/create-user-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@Sql(value = {"/create-user-for-courier-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(value = {"/create-user-for-courier-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class CourierTest {
 
     @Autowired
@@ -210,6 +210,103 @@ public class CourierTest {
 
         List<DeliveryOrder> changed_order = orderRepository.findAllByCourierId(courier.getId());
         Assertions.assertEquals(changed_order.get(0).getState(), DeliveryState.RECEIVED);
+
+    }
+
+    @Test
+    @WithMockUser(username = "head_courier", password = "ggg", authorities = "delivery:write")
+    public void testOfCreationNewOrderNegativeJSONBody() throws Exception{
+
+        User user = new User();
+        user.setRole(Role.COURIER);
+        user.setName("TestName");
+        user.setSurname("TestSurname");
+        user.setPatronymic("TestPatronymic");
+        user.setLogin("TestLogin");
+        user.setPassword("TestPassword");
+        userRepository.save(user);
+
+        Courier courier = new Courier();
+        courier.setWorking(false);
+        courier.setUser(user);
+        courierRepository.save(courier);
+
+        Item item1 = new Item();
+        item1.setName("AK-47");
+        item1.setQuantity(4);
+        itemRepository.save(item1);
+
+        Item item2 = new Item();
+        item2.setName("RPG");
+        item2.setQuantity(10);
+        itemRepository.save(item2);
+
+        String items_json_array = "[[\"AK-47\", \"2\"],[\"RPG\", \"2\"]]";
+
+        String response = "{" +
+                "\"station\": " + "\"Горьковская\"" + ", " +
+                "\"direction\": " + 1234 + ", " +
+                "\"date\": " + "\"Ujjhdbfjs\"" + ", " +
+                "\"courier_id\": " + courier.getId() + ", " +
+                "\"items\": " + items_json_array + "}";
+
+        mockMvc.perform(post("/delivery")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(response))
+                .andDo(print())
+                .andExpect(authenticated())
+                .andExpect(status().is4xxClientError());
+
+//        List<DeliveryOrder> changed_order = orderRepository.findAllByCourierId(courier.getId());
+//        Assertions.assertEquals(changed_order.get(0).getState(), DeliveryState.RECEIVED);
+
+    }
+    @Test
+    @WithMockUser(username = "head_courier", password = "ggg", authorities = "delivery:write")
+    public void testOfCreationNewOrderNegativeJSONSyntax() throws Exception{
+
+        User user = new User();
+        user.setRole(Role.COURIER);
+        user.setName("TestName");
+        user.setSurname("TestSurname");
+        user.setPatronymic("TestPatronymic");
+        user.setLogin("TestLogin");
+        user.setPassword("TestPassword");
+        userRepository.save(user);
+
+        Courier courier = new Courier();
+        courier.setWorking(false);
+        courier.setUser(user);
+        courierRepository.save(courier);
+
+        Item item1 = new Item();
+        item1.setName("AK-47");
+        item1.setQuantity(4);
+        itemRepository.save(item1);
+
+        Item item2 = new Item();
+        item2.setName("RPG");
+        item2.setQuantity(10);
+        itemRepository.save(item2);
+
+        String items_json_array = "[[\"AK-47\", \"2\"],[\"RPG\", \"2\"]]";
+
+        String response = "{" +
+                "\"station\": " + "\"Горьковская\"" + ", " +
+                "\"direction\": " + 1234 + ", " +
+                "\"date\": " + "\"Ujjhdbfjs\"" + ", " +
+                "\"courier_id\": " + courier.getId() + ", " +
+                "\"items\": " + items_json_array + "";
+
+        mockMvc.perform(post("/delivery")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(response))
+                .andDo(print())
+                .andExpect(authenticated())
+                .andExpect(status().is4xxClientError());
+
+//        List<DeliveryOrder> changed_order = orderRepository.findAllByCourierId(courier.getId());
+//        Assertions.assertEquals(changed_order.get(0).getState(), DeliveryState.RECEIVED);
 
     }
 

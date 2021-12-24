@@ -16,12 +16,14 @@ import b22.metro2033.Repository.UserRepository;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.text.DateFormat;
@@ -77,68 +79,76 @@ public class OrderController {
     @GetMapping("create/{type}")
     @PreAuthorize("hasAuthority('delivery:write')")
     public String create(Model model, Authentication authentication, @PathVariable String type) {
-        List<Item> items = itemRepository.findAll();
-        model.addAttribute("items", items);
-        model.addAttribute("order", new DeliveryOrder());
+        try {
+            List<Item> items = itemRepository.findAll();
+            model.addAttribute("items", items);
+            model.addAttribute("order", new DeliveryOrder());
 
-        List<Courier> couriers = courierRepository.findAllByWorkingFalse();
-        model.addAttribute("couriers", couriers);
+            List<Courier> couriers = courierRepository.findAllByWorkingFalse();
+            model.addAttribute("couriers", couriers);
 
-        model.addAttribute("stations", stations);
-        if (type.equals("send"))
-            return "delivery/form_send";
-        else
-            return "delivery/form_receive";
+            model.addAttribute("stations", stations);
+            if (type.equals("send"))
+                return "delivery/form_send";
+            else
+                return "delivery/form_receive";
+        } catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "HTTP request is wrong (CODE 400)\n");
+        }
     }
 
     @PreAuthorize("hasAuthority('delivery:write')")
     @RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
     public String create(@RequestBody @Valid String response) throws Exception {
-        JSONObject json = new JSONObject(response);
+        try {
+            JSONObject json = new JSONObject(response);
 
-        String station = json.getString("station");
-        boolean direction = json.getBoolean("direction");
-        Date date = parseStringToDate(json.getString("date"));
-        Courier courier = courierRepository.findById(json.getInt("courier_id")).orElse(null);
-        if (courier == null)
-            return "redirect:/delivery";
-        DeliveryState state = DeliveryState.RECEIVED;
-        List<OrderItemUtility> items = jsonToList(json.getJSONArray("items"));
+            String station = json.getString("station");
+            boolean direction = json.getBoolean("direction");
+            Date date = parseStringToDate(json.getString("date"));
+            Courier courier = courierRepository.findById(json.getInt("courier_id")).orElse(null);
+            if (courier == null)
+                return "redirect:/delivery";
+            DeliveryState state = DeliveryState.RECEIVED;
+            List<OrderItemUtility> items = jsonToList(json.getJSONArray("items"));
 
-        DeliveryOrder order = new DeliveryOrder();
-        order.setState(state);
-        order.setCourier(courier);
-        order.setPointOfDeparture(direction);
-        order.setStation(station);
-        order.setDate(date);
-        orderRepository.save(order);
+            DeliveryOrder order = new DeliveryOrder();
+            order.setState(state);
+            order.setCourier(courier);
+            order.setPointOfDeparture(direction);
+            order.setStation(station);
+            order.setDate(date);
+            orderRepository.save(order);
 
-        courier.setOrder(order);
-        courier.setWorking(true);
+            courier.setOrder(order);
+            courier.setWorking(true);
 
-        for (OrderItemUtility item : items) {
-            Item item_stored = itemRepository.findByName(item.getItem());
-            if (direction &&
-                    item_stored.getQuantity() < item.getQuantity()) {
-                orderRepository.delete(order);
-                throw new Exception("Недостаточно ресурсов");
-            } else if (direction) {
-                item_stored.setQuantity(item_stored.getQuantity() - item.getQuantity());
-                itemRepository.save(item_stored);
+            for (OrderItemUtility item : items) {
+                Item item_stored = itemRepository.findByName(item.getItem());
+                if (direction &&
+                        item_stored.getQuantity() < item.getQuantity()) {
+                    orderRepository.delete(order);
+                    throw new Exception("Недостаточно ресурсов");
+                } else if (direction) {
+                    item_stored.setQuantity(item_stored.getQuantity() - item.getQuantity());
+                    itemRepository.save(item_stored);
+                }
+                OrderItem d_o = new OrderItem();
+                d_o.setOrder(order);
+                d_o.setQuantity(item.getQuantity());
+                d_o.setItem(item_stored);
+                orderItemRepository.save(d_o);
             }
-            OrderItem d_o = new OrderItem();
-            d_o.setOrder(order);
-            d_o.setQuantity(item.getQuantity());
-            d_o.setItem(item_stored);
-            orderItemRepository.save(d_o);
+
+            String message = "Вам назначен новый заказ";
+            sendAlertMessage(courier.getUser(), message, TypeOfMessage.NOTIFICATION);
+            orderRepository.save(order);
+            courierRepository.save(courier);
+
+            return "redirect:/delivery";
+        } catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "HTTP request is wrong (CODE 400)\n");
         }
-
-        String message = "Вам назначен новый заказ";
-        sendAlertMessage(courier.getUser(), message, TypeOfMessage.NOTIFICATION);
-        orderRepository.save(order);
-        courierRepository.save(courier);
-
-        return "redirect:/delivery";
     }
 
     @GetMapping("/view/{id}")
