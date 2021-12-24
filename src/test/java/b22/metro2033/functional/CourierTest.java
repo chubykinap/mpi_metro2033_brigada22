@@ -305,9 +305,6 @@ public class CourierTest {
                 .andExpect(authenticated())
                 .andExpect(status().is4xxClientError());
 
-//        List<DeliveryOrder> changed_order = orderRepository.findAllByCourierId(courier.getId());
-//        Assertions.assertEquals(changed_order.get(0).getState(), DeliveryState.RECEIVED);
-
     }
 
     @Test

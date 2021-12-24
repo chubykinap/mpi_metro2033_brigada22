@@ -79,22 +79,20 @@ public class OrderController {
     @GetMapping("create/{type}")
     @PreAuthorize("hasAuthority('delivery:write')")
     public String create(Model model, Authentication authentication, @PathVariable String type) {
-        try {
-            List<Item> items = itemRepository.findAll();
-            model.addAttribute("items", items);
-            model.addAttribute("order", new DeliveryOrder());
 
-            List<Courier> couriers = courierRepository.findAllByWorkingFalse();
-            model.addAttribute("couriers", couriers);
+        List<Item> items = itemRepository.findAll();
+        model.addAttribute("items", items);
+        model.addAttribute("order", new DeliveryOrder());
 
-            model.addAttribute("stations", stations);
-            if (type.equals("send"))
-                return "delivery/form_send";
-            else
-                return "delivery/form_receive";
-        } catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "HTTP request is wrong (CODE 400)\n");
-        }
+        List<Courier> couriers = courierRepository.findAllByWorkingFalse();
+        model.addAttribute("couriers", couriers);
+
+        model.addAttribute("stations", stations);
+        if (type.equals("send"))
+            return "delivery/form_send";
+        else
+            return "delivery/form_receive";
+
     }
 
     @PreAuthorize("hasAuthority('delivery:write')")
