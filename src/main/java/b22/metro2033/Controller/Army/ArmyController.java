@@ -12,16 +12,19 @@ import b22.metro2033.Repository.Army.PostRepository;
 import b22.metro2033.Repository.Army.SoldierRepository;
 import b22.metro2033.Repository.UserRepository;
 import b22.metro2033.Service.PaginatedService;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -126,35 +129,39 @@ public class ArmyController {
         return "army/form";
     }
 
+
     @PreAuthorize("hasAuthority('army:write')")
     @RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
     public String create(@RequestBody @Valid String response) throws Exception { //ParesException type?
+        try {
+            JSONObject json = new JSONObject(response);
+            Rank rank = Rank.findState(json.getString("rank"));
+            HealthState health_state = HealthState.findState(json.getString("health_state"));
+            long user_id = Long.parseLong(json.getString("user_id"));
+            long post_id = Long.parseLong(json.getString("post_id"));
+            int agility = Integer.parseInt(json.getString("agility"));
+            int strength = Integer.parseInt(json.getString("strength"));
+            int stamina = Integer.parseInt(json.getString("stamina"));
 
-        JSONObject json = new JSONObject(response);
+            Soldier soldier = new Soldier();
 
-        Rank rank = Rank.findState(json.getString("rank"));
-        HealthState health_state = HealthState.findState(json.getString("health_state"));
-        long user_id = Long.parseLong(json.getString("user_id"));
-        long post_id = Long.parseLong(json.getString("post_id"));
-        int agility = Integer.parseInt(json.getString("agility"));
-        int strength = Integer.parseInt(json.getString("strength"));
-        int stamina = Integer.parseInt(json.getString("stamina"));
+            User user = userRepository.findById(user_id).orElse(null);
+            Post post = postRepository.findById(post_id).orElse(null);
 
-        Soldier soldier = new Soldier();
+            Characteristics characteristics = new Characteristics(agility, strength, stamina);
 
-        User user = userRepository.findById(user_id).orElse(null);
-        Post post = postRepository.findById(post_id).orElse(null);
+            soldier.setUser(user);
+            soldier.setPost(post);
+            soldier.setRank(rank);
+            soldier.setHealth_state(health_state);
+            soldierRepository.save(soldier);
 
-        Characteristics characteristics = new Characteristics(agility, strength, stamina);
+            characteristics.setSoldier(soldier);
+            characteristicsRepository.save(characteristics);
+        } catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "HTTP request is wrong (CODE 400)\n");
+        }
 
-        soldier.setUser(user);
-        soldier.setPost(post);
-        soldier.setRank(rank);
-        soldier.setHealth_state(health_state);
-        soldierRepository.save(soldier);
-
-        characteristics.setSoldier(soldier);
-        characteristicsRepository.save(characteristics);
 
         return "redirect:/army";
     }

@@ -109,6 +109,71 @@ class ArmyControllerTest {
     }
 
     @Test
+    void testCreateNewSoldierNegativeJSONSyntax() throws Exception {
+        User user = new User();
+        user.setRole(Role.SOLDIER);
+        user.setName("TestName");
+        user.setSurname("TestSurname");
+        user.setPatronymic("TestPatronymic");
+        user.setLogin("TestLogin");
+        user.setPassword("TestPassword");
+        userRepository.save(user);
+
+        Post post = new Post();
+        post.setName("TestName");
+        post.setLocation("TestLocation");
+        postRepository.save(post);
+
+        String response = "{" +
+                "\"rank\": 1, " +
+                "\"health_state\":\"Здоров\", " +
+                "\"user_id\": " + user.getId() + ", " +
+                "\"post_id\": " + post.getId() + "," +
+                "\"agility\": \"1\", ";
+
+        mockMvc.perform(post("/army")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(response))
+                .andDo(print())
+                .andExpect(authenticated())
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void testCreateNewSoldierNegativeJSONBody() throws Exception {
+        User user = new User();
+        user.setRole(Role.SOLDIER);
+        user.setName("TestName");
+        user.setSurname("TestSurname");
+        user.setPatronymic("TestPatronymic");
+        user.setLogin("TestLogin");
+        user.setPassword("TestPassword");
+        userRepository.save(user);
+
+        Post post = new Post();
+        post.setName("TestName");
+        post.setLocation("TestLocation");
+        postRepository.save(post);
+
+        String response = "{" +
+                "\"rank\": 1, " +
+                "\"health_state\":\"Здоров\", " +
+                "\"user_id\": " + user.getId() + ", " +
+                "\"post_id\": " + post.getId() + "," +
+                "\"agility\": \"1\", " +
+                "\"strength\": 2, " +
+                "\"stamina\": 3" +
+                "}";
+
+        mockMvc.perform(post("/army")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(response))
+            .andDo(print())
+            .andExpect(authenticated())
+            .andExpect(status().is4xxClientError());
+    }
+
+    @Test
     void testChangeOneSoldier() throws Exception {
         testCreateNewSoldier();
         List<Soldier> soldierList = soldierRepository.findAll();
