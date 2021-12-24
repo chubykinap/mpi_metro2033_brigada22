@@ -1,3 +1,5 @@
+
+delete from courier;
 delete from sensor_messages;
 delete from movement_sensor;
 delete from soldier;

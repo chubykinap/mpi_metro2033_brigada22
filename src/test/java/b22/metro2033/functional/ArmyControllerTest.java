@@ -25,6 +25,7 @@ import java.util.List;
 
 import static b22.metro2033.Entity.Army.HealthState.CRITICAL;
 import static b22.metro2033.Entity.Army.Rank.MAJOR;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -215,6 +216,40 @@ class ArmyControllerTest {
                 .andExpect(xpath("/html/body/div/div/div[2]/div[2]/table/tbody/tr[1]/div[1]/td[2]").string("vhod"))
                 .andExpect(xpath("/html/body/div/div/div[2]/div[2]/table/tbody/tr[1]/div[1]/div[1]/td[1]").string("Название: post_3Расположение: Vagon"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void testSoldierAppointmentToPost() throws Exception{
+
+        testCreateNewSoldier();
+        List<Soldier> soldierList = soldierRepository.findAll();
+        Soldier soldier = soldierList.get(0);
+        long id = soldier.getId();
+
+        Post post = new Post();
+        post.setLocation("Vagon");
+        post.setName("post_3");
+
+        postRepository.save(post);
+
+        // change all
+        String response = "{" +
+                "\"post_id\": " + post.getId() + ", " +
+                "\"soldier_id\": \"" + id + "\"" +
+                "}";
+
+        mockMvc.perform(post("/posts/add_soldier_to_post")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(response))
+                .andDo(print())
+                .andExpect(authenticated())
+                .andExpect(redirectedUrl("/posts"));
+
+        //Get soldier
+        Soldier changedSoldier = soldierRepository.findById(soldier.getId()).orElse(null);
+
+        Assertions.assertEquals(post.getId(), changedSoldier.getPost().getId());
+
     }
 
 }
