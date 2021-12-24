@@ -104,8 +104,8 @@ class ArmyControllerTest {
                 "}";
 
         mockMvc.perform(post("/army")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(response))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(response))
                 .andDo(print())
                 .andExpect(authenticated())
                 .andExpect(redirectedUrl("/army"));
@@ -139,8 +139,8 @@ class ArmyControllerTest {
                 "}";
 
         mockMvc.perform(post("/army/change")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(response))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(response))
                 .andDo(print())
                 .andExpect(authenticated())
                 .andExpect(redirectedUrl("/army"));

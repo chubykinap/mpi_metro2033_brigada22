@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -73,12 +74,15 @@ class AuthControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "hc", password = "ggg")
-    void loginAsHeadCourier() throws Exception {
-        mockMvc.perform(get("/"))
+    @WithMockUser(username = "hc", password = "ggg", authorities = "delivery:read")
+    void testOfShowingAllOrders() throws Exception {
+
+        mockMvc.perform(get("/delivery"))
+                .andDo(print())
                 .andExpect(authenticated())
                 .andExpect(status().isOk());
     }
+
 
     @Test
     @WithMockUser(username = "c", password = "ggg")
