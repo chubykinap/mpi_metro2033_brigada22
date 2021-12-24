@@ -6,52 +6,10 @@
 
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
+    <script src="/js/courier.js" type="application/javascript"></script>
     <title id="pageTitle">Метро 2033 Курьерская служба</title>
 </head>
 <body>
-<script type="application/javascript">
-    $(document).ready(function() {
-            $(function(){
-              var table = document.getElementsByTagName('table')[0],
-              rows = table.getElementsByTagName('tr'),
-              text = 'textContent' in document ? 'textContent' : 'innerText';
-
-              for (var i = 1, len = rows.length; i < len; i++) {
-                rows[i].children[0][text] = i + rows[i].children[0][text];
-              }
-            })
-            $(function(){
-                $(document).on('click', '$delete', function(event)
-                {
-                    event.preventDefault();
-                    var tbl_row = $(this).closest('tr');
-                    var courier_id = $(tbl_row).find("#courier_id").text();
-
-                    if (courier_id == '') {
-                      alert("Курьер не найден");
-                    }
-
-                    var courier = {
-                        "courier_id":courier_id
-                    };
-
-                    $.ajax({
-                        type: "POST",
-                        url: "/courier/delete",
-                        contentType: "application/json",
-                        data: JSON.stringify(courier),
-                        success: function (data) {
-                          console.log("success");
-                          console.log(data);
-                          window.location.href = data;
-                        }
-                    });
-                 });
-            })
-        });
-
-</script>
 
 <div>
     <div th:replace="fragments/fragment :: nav-all"></div>

@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -73,7 +74,7 @@ class AuthControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "hc", password = "ggg")
+    @WithMockUser(username = "hc", password = "ggg", authorities = "delivery:read")
     void testOfShowingAllOrders() throws Exception {
 
         mockMvc.perform(get("/delivery"))

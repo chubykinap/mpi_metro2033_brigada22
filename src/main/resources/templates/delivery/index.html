@@ -6,24 +6,11 @@
 
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
+    <script src="/js/table_id.js" type="application/javascript"></script>
     <title id="pageTitle">Метро 2033 Список полученных заказов</title>
 </head>
 <body>
 <div th:replace="fragments/fragment :: nav-all"></div>
-<script type="application/javascript">
-    $(document).ready(function() {
-            $(function(){
-              var table = document.getElementsByTagName('table')[0],
-              rows = table.getElementsByTagName('tr'),
-              text = 'textContent' in document ? 'textContent' : 'innerText';
-
-              for (var i = 1, len = rows.length; i < len; i++) {
-                rows[i].children[0][text] = i + rows[i].children[0][text];
-              }
-            })
-        });
-</script>
 
 <div class="container-fluid">
     <div class="row">
@@ -36,29 +23,29 @@
             <a href="/delivery/create/send" class="btn btn-primary my-3" sec:authorize="${hasAuthority('delivery:write')}">Создать новый заказ на отправку</a>
             <table class="table table-striped">
                 <thead>
-                <tr>
-                    <th scope="col">Номер заказа</th>
-                    <th scope="col">Дата</th>
-                    <th scope="col">Заказ</th>
-                    <th scope="col">Станция</th>
-                    <th scope="col">Статус</th>
-                    <th scope="col">Подробнее</th>
-                </tr>
+                    <tr>
+                        <th scope="col">Номер заказа</th>
+                        <th scope="col">Дата</th>
+                        <th scope="col">Заказ</th>
+                        <th scope="col">Станция</th>
+                        <th scope="col">Статус</th>
+                        <th scope="col">Подробнее</th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr th:each="order : ${orders}">
-                    <th scope="row"></th>
-                    <td scope="row" th:text="${order.date}">date</td>
-                    <div th:switch="${order.isPointOfDeparture}">
-                        <td th:case="true" scope="row">Отправка</td>
-                        <td th:case="false" scope="row">Поставка</td>
-                    </div>
-                    <td scope="row" th:text="${order.station}">station</td>
-                    <td scope="row" th:text="${order.state}">state</td>
-                    <td scope="row">
-                        <div><a th:href="@{/delivery/view/{id}(id=${order.id})}" class="btn-primary btn">Открыть</a></div>
-                    </td>
-                </tr>
+                    <tr th:each="order : ${orders}">
+                        <th scope="row"></th>
+                        <td scope="row" th:text="${order.date}">date</td>
+                        <div th:switch="${order.isPointOfDeparture}">
+                            <td th:case="true" scope="row">Отправка</td>
+                            <td th:case="false" scope="row">Поставка</td>
+                        </div>
+                        <td scope="row" th:text="${order.station}">station</td>
+                        <td scope="row" th:text="${order.state}">state</td>
+                        <td scope="row">
+                            <div><a th:href="@{/delivery/view/{id}(id=${order.id})}" class="btn-primary btn">Открыть</a></div>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
