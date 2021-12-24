@@ -175,28 +175,32 @@ public class OrderController {
     @RequestMapping(value = "/changeState", consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('delivery:read')")
     public String changeState(@RequestBody String request) throws JSONException {
-        JSONObject json = new JSONObject(request);
-        DeliveryState state = DeliveryState.valueOf(json.getString("state"));
-        long id = Long.parseLong(json.getString("id"));
+        try {
+            JSONObject json = new JSONObject(request);
+            DeliveryState state = DeliveryState.valueOf(json.getString("state"));
+            long id = Long.parseLong(json.getString("id"));
 
-        DeliveryOrder order = orderRepository.findById(id).orElse(null);
-        if (order == null) {
-            return "redirect:/delivery";
-        }
-
-        if (!order.isPointOfDeparture() && state == DeliveryState.COMPLETED) {
-            List<OrderItem> orderItems = orderItemRepository.findAllByIdOrderId(order.getId());
-            for (OrderItem oi : orderItems) {
-                Item item_stored = itemRepository.findById(oi.getItem().getId());
-                item_stored.setQuantity(item_stored.getQuantity() + oi.getQuantity());
-                itemRepository.save(item_stored);
+            DeliveryOrder order = orderRepository.findById(id).orElse(null);
+            if (order == null) {
+                return "redirect:/delivery";
             }
-            state = DeliveryState.CLOSED;
-        }
 
-        order.setState(state);
-        orderRepository.save(order);
-        return "redirect:/delivery";
+            if (!order.isPointOfDeparture() && state == DeliveryState.COMPLETED) {
+                List<OrderItem> orderItems = orderItemRepository.findAllByIdOrderId(order.getId());
+                for (OrderItem oi : orderItems) {
+                    Item item_stored = itemRepository.findById(oi.getItem().getId());
+                    item_stored.setQuantity(item_stored.getQuantity() + oi.getQuantity());
+                    itemRepository.save(item_stored);
+                }
+                state = DeliveryState.CLOSED;
+            }
+
+            order.setState(state);
+            orderRepository.save(order);
+            return "redirect:/delivery";
+        } catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "HTTP request is wrong (CODE 400)\n");
+        }
     }
 
     @RequestMapping(value = "/delete/{id}")

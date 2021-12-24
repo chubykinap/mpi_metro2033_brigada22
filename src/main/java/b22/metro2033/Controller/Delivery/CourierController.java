@@ -16,12 +16,14 @@ import b22.metro2033.Repository.UserRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -75,16 +77,20 @@ public class CourierController {
     @PreAuthorize("hasAuthority('delivery:write')")
     @RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
     public String create(@RequestBody @Valid String response) throws Exception {
-        JSONObject json = new JSONObject(response);
+        try {
+            JSONObject json = new JSONObject(response);
 
-        long user_id = Long.parseLong(json.getString("user_id"));
-        Courier courier = new Courier();
-        User user = userRepository.findById(user_id).orElse(null);
-
-        courier.setUser(user);
-        courierRepository.save(courier);
-
-        return "redirect:/";
+            long user_id = Long.parseLong(json.getString("user_id"));
+            Courier courier = new Courier();
+            User user = userRepository.findById(user_id).orElse(null);
+            if (user != null) {
+                courier.setUser(user);
+                courierRepository.save(courier);
+            }
+            return "redirect:/";
+        } catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "HTTP request is wrong (CODE 400)\n");
+        }
     }
 
     @GetMapping("/delete/{id}")
