@@ -117,7 +117,8 @@ public class OrderController {
         courier.setWorking(true);
 
         for (OrderItemUtility item : items) {
-            Item item_stored = itemRepository.findByName(item.getItem());
+            //Вставить проверку
+            Item item_stored = itemRepository.findByName(item.getItem()).orElse(null);
             if (direction &&
                     item_stored.getQuantity() < item.getQuantity()) {
                 orderRepository.delete(order);
