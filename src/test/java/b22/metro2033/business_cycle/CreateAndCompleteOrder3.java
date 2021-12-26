@@ -11,24 +11,22 @@ import b22.metro2033.Repository.Delivery.OrderItemRepository;
 import b22.metro2033.Repository.Delivery.OrderRepository;
 import b22.metro2033.Repository.UserRepository;
 import org.junit.Test;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 
@@ -37,16 +35,23 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.xpath;
 
-@RunWith(SpringRunner.class)
+/*@RunWith(SpringRunner.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+@Transactional
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+//@TestPropertySource("/application-test.properties")
+//@Sql(value = {"/create-user-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+//@Sql(value = {"/create-user-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+//@TestPropertySource("/application-test.properties")
+@Sql(value = {"/create-user-before.sql"})*/
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-//@TestPropertySource("/application-test.properties")
-@Sql(value = {"/create-user-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-//@Sql(value = {"/create-user-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-public class CreateAndCompleteOrder {
+public class CreateAndCompleteOrder3 {
     @Autowired
     private MockMvc mockMvc;
 
@@ -141,6 +146,28 @@ public class CreateAndCompleteOrder {
         return user;
     }
 
+    /*@BeforeAll
+     void setUpFixture() {
+
+        /*User head_courier = new User();
+        head_courier.setRole(Role.HEAD_COURIER);
+        head_courier.setName("head_courier1_name");
+        head_courier.setSurname("head_courier1_surname");
+        head_courier.setPatronymic("head_courier1_patronymic");
+        head_courier.setLogin("head_courier1");
+        head_courier.setPassword("$2a$12$FEV9T2U5Fz/cDPJdSFNPBuz/SdUq0U7AwQnoG6ejHRthisSBXXDtC");
+        userRepository.save(head_courier);
+
+        User courier = new User();
+        courier.setRole(Role.HEAD_COURIER);
+        courier.setName("courier1_name");
+        courier.setSurname("courier1_surname");
+        courier.setPatronymic("courier1_patronymic");
+        courier.setLogin("courier1");
+        courier.setPassword("$2a$12$FEV9T2U5Fz/cDPJdSFNPBuz/SdUq0U7AwQnoG6ejHRthisSBXXDtC");
+        userRepository.save(courier);
+    }*/
+
     //Курьер открывает список заказов
     @Test
     @Order(1)
@@ -172,26 +199,11 @@ public class CreateAndCompleteOrder {
 
         User user = userRepository.findByLogin("c").orElse(null);
 
-        Courier current_courier = courierRepository.findByUserId(user.getId()).orElse(null);
+        Courier current_courier = createTestCourier(user);
 
-        //Assertions.assertEquals(null, current_courier);
+        Item item1 = createTestItem("AK-47", 100);
 
-        if (current_courier == null){
-            current_courier = createTestCourier(user);
-        }
-
-        /*Item item1 = createTestItem("AK-47", 100);
-        Item item2 = createTestItem("AK-47", 200);*/
-
-        Item item1 = itemRepository.findByName("AK-47").orElse(null);
-        if (item1 == null){
-            item1 = createTestItem("AK-47", 100);
-        }
-
-        Item item2 = itemRepository.findByName("RPG").orElse(null);
-        if (item2 == null){
-            item2 = createTestItem("RPG", 200);
-        }
+        Item item2 = createTestItem("RPG", 200);
 
         String items_json_array = "[[\"" + item1.getName() + "\", \"" + item1.getQuantity()+ "\"],[\""
                 + item2.getName() + "\", \"" + item2.getQuantity()+ "\"]]";
@@ -328,9 +340,10 @@ public class CreateAndCompleteOrder {
 
     @Test
     @Order(10)
+    @Sql(value = {"/create-user-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
     @WithMockUser(username = "head_courier", password = "ggg", authorities = "delivery:read")
     public void testShowingOrderClosedByHeadCourier() throws Exception{
-        User user = userRepository.findByLogin("c").orElse(null);
+        User user = userRepository.findByLogin("courier1").orElse(null);
 
         Courier current_courier = courierRepository.findByUserId(user.getId()).orElse(null);
         if (current_courier == null){

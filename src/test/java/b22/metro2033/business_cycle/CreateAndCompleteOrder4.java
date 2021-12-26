@@ -17,8 +17,6 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -37,16 +35,18 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.xpath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-//@TestPropertySource("/application-test.properties")
+@WithUserDetails("head_courier")
+@TestPropertySource("/application-test.properties")
 @Sql(value = {"/create-user-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-//@Sql(value = {"/create-user-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-public class CreateAndCompleteOrder {
+@Sql(value = {"/create-user-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class CreateAndCompleteOrder4 {
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -141,57 +141,31 @@ public class CreateAndCompleteOrder {
         return user;
     }
 
-    //Курьер открывает список заказов
     @Test
     @Order(1)
-    @WithMockUser(username = "head_courier", password = "ggg", authorities = "delivery:read")
-    public void testOpenOrdersByHeadCourier() throws Exception{
+    public void testOfShowingAllOrders() throws Exception {
+        User user = createTestUser();
+        Courier courier = createTestCourier(user);
+        DeliveryOrder order = createOrderForCourier(courier);
 
         mockMvc.perform(get("/delivery"))
                 .andDo(print())
                 .andExpect(authenticated())
+                .andExpect(xpath("/html/body/div/div/div[2]/table/tbody/tr/td[2]").string("Горьковская"))
                 .andExpect(status().isOk());
 
     }
 
     @Test
-    @Order(2)
+    @Order(1)
     @WithMockUser(username = "head_courier", password = "ggg", authorities = "delivery:write")
-    public void testOpenFormCreateOrderByHeadCourier() throws Exception{
+    public void testOfCreationNewOrder() throws Exception{
 
-        mockMvc.perform(get("/delivery/create/receive"))
-                .andDo(print())
-                .andExpect(authenticated())
-                .andExpect(status().isOk());
-    }
+        User user = createTestUser();
+        Courier courier = createTestCourier(user);
 
-    @Test
-    @Order(3)
-    @WithMockUser(username = "head_courier", password = "ggg", authorities = "delivery:write")
-    public void testPostCreateOrderByHeadCourier() throws Exception{
-
-        User user = userRepository.findByLogin("c").orElse(null);
-
-        Courier current_courier = courierRepository.findByUserId(user.getId()).orElse(null);
-
-        //Assertions.assertEquals(null, current_courier);
-
-        if (current_courier == null){
-            current_courier = createTestCourier(user);
-        }
-
-        /*Item item1 = createTestItem("AK-47", 100);
-        Item item2 = createTestItem("AK-47", 200);*/
-
-        Item item1 = itemRepository.findByName("AK-47").orElse(null);
-        if (item1 == null){
-            item1 = createTestItem("AK-47", 100);
-        }
-
-        Item item2 = itemRepository.findByName("RPG").orElse(null);
-        if (item2 == null){
-            item2 = createTestItem("RPG", 200);
-        }
+        Item item1 = createTestItem("AK-47", 100);
+        Item item2 = createTestItem("RPG", 200);
 
         String items_json_array = "[[\"" + item1.getName() + "\", \"" + item1.getQuantity()+ "\"],[\""
                 + item2.getName() + "\", \"" + item2.getQuantity()+ "\"]]";
@@ -200,7 +174,7 @@ public class CreateAndCompleteOrder {
                 "\"station\": " + "\"Горьковская\"" + ", " +
                 "\"direction\": " + false + ", " +
                 "\"date\": " + "\"2033-01-01\"" + ", " +
-                "\"courier_id\": " + current_courier.getId() + ", " +
+                "\"courier_id\": " + courier.getId() + ", " +
                 "\"items\": " + items_json_array + "}";
 
         mockMvc.perform(post("/delivery")
@@ -210,40 +184,42 @@ public class CreateAndCompleteOrder {
                 .andExpect(authenticated())
                 .andExpect(redirectedUrl("/delivery"));
 
-        List<DeliveryOrder> changed_order = orderRepository.findAllByCourierId(current_courier.getId());
+        List<DeliveryOrder> changed_order = orderRepository.findAllByCourierId(courier.getId());
         Assertions.assertEquals(changed_order.get(0).getState(), DeliveryState.RECEIVED);
+
     }
 
     @Test
-    @Order(4)
-    @WithMockUser(username = "c", password = "ggg", authorities = "delivery:read")
-    public void testAlertByCourier() throws Exception{
-        mockMvc.perform(get("/"))
+    @Order(1)
+    public void testEndOrder() throws Exception{
+        User user = createTestUser();
+        Courier courier = createTestCourier(user);
+        DeliveryOrder order = createOrderForCourier(courier);
+
+        String response = "{" +
+                "\"id\": " + order.getId() + ", " +
+                "\"state\": " + DeliveryState.CLOSED +
+                "}";
+
+        mockMvc.perform(post("/delivery/changeState")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(response))
                 .andDo(print())
                 .andExpect(authenticated())
-                .andExpect(xpath("/html/body/div/div/div[2]/div/div[1]/div/div/div/strong").string("Info!"))
-                .andExpect(status().isOk());
+                .andExpect(redirectedUrl("/delivery"));
+
+
+        DeliveryOrder changed_order = orderRepository.findById(order.getId()).orElse(null);
+        Assertions.assertEquals(changed_order.getState(), DeliveryState.CLOSED);
     }
 
     @Test
-    @Order(5)
-    @WithMockUser(username = "c", password = "ggg", authorities = "delivery:read")
-    public void testShowingOrdersByCourier() throws Exception{
-        mockMvc.perform(get("/delivery"))
-                .andDo(print())
-                .andExpect(authenticated())
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @Order(6)
+    @Order(1)
     @WithMockUser(username = "c", password = "ggg", authorities = "delivery:read")
     public void testOfShowingOrderByCourier() throws Exception{
         User user = userRepository.findByLogin("c").orElse(null);
-
-        //Assertions.assertEquals("c", user.getLogin());
-
-        DeliveryOrder order = orderRepository.findAll().get(0);
+        Courier courier = createTestCourier(user);
+        DeliveryOrder order = createOrderForCourier(courier);
 
         mockMvc.perform(get("/delivery/view/" + order.getId()))
                 .andDo(print())
@@ -254,18 +230,36 @@ public class CreateAndCompleteOrder {
     }
 
     @Test
-    @Order(7)
+    @Order(1)
     @WithMockUser(username = "c", password = "ggg", authorities = "delivery:read")
-    public void testOfChangeStateByCourier() throws Exception{
+    public void testConfirmationOfOrderByCourier() throws Exception {
+
         User user = userRepository.findByLogin("c").orElse(null);
 
-        Courier current_courier = courierRepository.findByUserId(user.getId()).orElse(null);
-        if (current_courier == null){
-            current_courier = createTestCourier(user);
-        }
+        Courier courier = new Courier();
+        courier.setWorking(false);
+        courier.setUser(user);
+        courierRepository.save(courier);
 
-        List<DeliveryOrder> deliveryOrder = orderRepository.findAllByCourierId(current_courier.getId());
-        DeliveryOrder order = deliveryOrder.get(0);
+        Item item = new Item();
+        item.setName("AK-47");
+        item.setQuantity(4);
+        itemRepository.save(item);
+
+        DeliveryOrder order = new DeliveryOrder();
+        order.setCourier(courier);
+        order.setState(DeliveryState.RECEIVED);
+        Date date = new Date();
+        order.setDate(date);
+        order.setStation("Горьковская");
+        order.setPointOfDeparture(true);
+        orderRepository.save(order);
+
+        OrderItem orderItem = new OrderItem();
+        orderItem.setItem(item);
+        orderItem.setQuantity(2);
+        orderItem.setOrder(order);
+        orderItemRepository.save(orderItem);
 
         String response = "{" +
                 "\"id\": " + order.getId() + ", " +
@@ -284,68 +278,6 @@ public class CreateAndCompleteOrder {
         Assertions.assertEquals(changed_order.getState(), DeliveryState.IN_PROGRESS);
     }
 
-    @Test
-    @Order(8)
-    @WithMockUser(username = "c", password = "ggg", authorities = "delivery:read")
-    public void testOfEndOrderByCourier() throws Exception{
-        User user = userRepository.findByLogin("c").orElse(null);
 
-        Courier current_courier = courierRepository.findByUserId(user.getId()).orElse(null);
-        if (current_courier == null){
-            current_courier = createTestCourier(user);
-        }
-
-        List<DeliveryOrder> deliveryOrder = orderRepository.findAllByCourierId(current_courier.getId());
-        DeliveryOrder order = deliveryOrder.get(0);
-
-        String response = "{" +
-                "\"id\": " + order.getId() + ", " +
-                "\"state\": " + DeliveryState.COMPLETED +
-                "}";
-
-        mockMvc.perform(post("/delivery/changeState")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(response))
-                .andDo(print())
-                .andExpect(authenticated())
-                .andExpect(redirectedUrl("/delivery"));
-
-
-        DeliveryOrder changed_order = orderRepository.findById(order.getId()).orElse(null);
-        Assertions.assertEquals(DeliveryState.CLOSED, changed_order.getState());
-    }
-
-    @Test
-    @Order(9)
-    @WithMockUser(username = "head_courier", password = "ggg", authorities = "delivery:read")
-    public void testOpenOrdersByHeadCourierAfterClosedOrder() throws Exception{
-
-        mockMvc.perform(get("/delivery"))
-                .andDo(print())
-                .andExpect(authenticated())
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @Order(10)
-    @WithMockUser(username = "head_courier", password = "ggg", authorities = "delivery:read")
-    public void testShowingOrderClosedByHeadCourier() throws Exception{
-        User user = userRepository.findByLogin("c").orElse(null);
-
-        Courier current_courier = courierRepository.findByUserId(user.getId()).orElse(null);
-        if (current_courier == null){
-            current_courier = createTestCourier(user);
-        }
-
-        List<DeliveryOrder> deliveryOrder = orderRepository.findAllByCourierId(current_courier.getId());
-        DeliveryOrder order = deliveryOrder.get(0);
-
-        mockMvc.perform(get("/delivery/view/" + order.getId()))
-                .andDo(print())
-                .andExpect(authenticated())
-                .andExpect(xpath("//*[@id=\"text_id\"]").string(Long.toString(order.getId())))
-                .andExpect(xpath("/html/body/div/div/div[2]/form/div/div[3]/select/option").string("CLOSED"))
-                .andExpect(status().isOk());
-    }
 
 }

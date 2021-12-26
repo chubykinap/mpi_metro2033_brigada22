@@ -19,14 +19,18 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
 
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 @DataJpaTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+//@Sql(value = {"/create-user-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+//@Sql(value = {"/create-user-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class VolumeTest {
     @Autowired
     private UserRepository userRepository;
@@ -58,10 +62,14 @@ public class VolumeTest {
     @BeforeEach
     @AfterEach
     void tearDown() {
-        itemRepository.deleteAll();
         orderItemRepository.deleteAll();
-        orderRepository.deleteAll();
+        itemRepository.deleteAll();
         courierRepository.deleteAll();
+        orderRepository.deleteAll();
+        sensorMessagesRepository.deleteAll();
+        movementSensorRepository.deleteAll();
+        postRepository.deleteAll();
+        characteristicsRepository.deleteAll();
         userRepository.deleteAll();
     }
 
@@ -70,18 +78,18 @@ public class VolumeTest {
         return (int) (Math.random() * ++max);
     }
 
-    void createOrderPipeline(int actual) {
+    void createOrderPipeline(int actual, int for_name) {
 
         //Create users
         List<User> users = new ArrayList<>();
         for (int i = 0; i < actual; i++) {
             User user = new User();
             user.setRole(Role.ADMIN);
-            user.setName("TestName" + i);
-            user.setSurname("TestSurname" +  i);
-            user.setPatronymic("TestPatronymic" + i);
-            user.setLogin("TestLogin" + i);
-            user.setPassword("TestPassword" + i);
+            user.setName("TestName" + i + for_name);
+            user.setSurname("TestSurname" +  i + for_name);
+            user.setPatronymic("TestPatronymic" + i + for_name);
+            user.setLogin("TestLogin" + i + for_name);
+            user.setPassword("TestPassword" + i + for_name);
             users.add(user);
         }
         userRepository.saveAll(users);
@@ -100,7 +108,7 @@ public class VolumeTest {
         List<Item> items = new ArrayList<>();
         for (int i = 0; i < actual; i++) {
             Item item = new Item();
-            item.setName("item_test_name" + i);
+            item.setName("item_test_name" + i + for_name);
             item.setQuantity(200);
             items.add(item);
         }
@@ -114,7 +122,7 @@ public class VolumeTest {
             order.setState(DeliveryState.RECEIVED);
             Date date = new Date();
             order.setDate(date);
-            order.setStation("Горьковская" + i);
+            order.setStation("Горьковская" + i + for_name);
             order.setPointOfDeparture(false);
             orders.add(order);
         }
@@ -161,6 +169,15 @@ public class VolumeTest {
 
         // then
         Assertions.assertEquals(expected, actual);
+
+        long start = System.nanoTime();
+        User user = userRepository.findByLogin("TestLogin1").orElse(null);
+        long time = System.nanoTime() - start;
+
+        System.out.println("///////////////////////////////////");
+        System.out.println("Время выполнения запроса:");
+        System.out.println(time/1_000_000_000.0 + " секунд");
+        System.out.println("///////////////////////////////////");
     }
 
     @org.junit.jupiter.api.Order(2)
@@ -175,8 +192,16 @@ public class VolumeTest {
 
         // then
         Assertions.assertEquals(expected, actual);
-    }
 
+        long start = System.nanoTime();
+        User user = userRepository.findByLogin("TestLogin1").orElse(null);
+        long time = System.nanoTime() - start;
+
+        System.out.println("///////////////////////////////////");
+        System.out.println("Время выполнения запроса:");
+        System.out.println(time/1_000_000_000.0 + " секунд");
+        System.out.println("///////////////////////////////////");
+    }
 
     @org.junit.jupiter.api.Order(3)
     @Test
@@ -190,6 +215,15 @@ public class VolumeTest {
 
         // then
         Assertions.assertEquals(expected, actual);
+
+        long start = System.nanoTime();
+        User user = userRepository.findByLogin("TestLogin1").orElse(null);
+        long time = System.nanoTime() - start;
+
+        System.out.println("///////////////////////////////////");
+        System.out.println("Время выполнения запроса:");
+        System.out.println(time/1_000_000_000.0 + " секунд");
+        System.out.println("///////////////////////////////////");
     }
 
     @org.junit.jupiter.api.Order(4)
@@ -204,6 +238,15 @@ public class VolumeTest {
 
         // then
         Assertions.assertEquals(expected, actual);
+
+        long start = System.nanoTime();
+        User user = userRepository.findByLogin("TestLogin1").orElse(null);
+        long time = System.nanoTime() - start;
+
+        System.out.println("///////////////////////////////////");
+        System.out.println("Время выполнения запроса:");
+        System.out.println(time/1_000_000_000.0 + " секунд");
+        System.out.println("///////////////////////////////////");
     }
 
     @org.junit.jupiter.api.Order(5)
@@ -218,6 +261,15 @@ public class VolumeTest {
 
         // then
         Assertions.assertEquals(expected, actual);
+
+        long start = System.nanoTime();
+        User user = userRepository.findByLogin("TestLogin1").orElse(null);
+        long time = System.nanoTime() - start;
+
+        System.out.println("///////////////////////////////////");
+        System.out.println("Время выполнения запроса:");
+        System.out.println(time/1_000_000_000.0 + " секунд");
+        System.out.println("///////////////////////////////////");
     }
 
     @org.junit.jupiter.api.Order(6)
@@ -225,13 +277,25 @@ public class VolumeTest {
     void test10000CreateOrderPipeline() {
         // given
         int actual = 10000;
-        createOrderPipeline(actual);
+        createOrderPipeline(actual,50000000);
+
+        long start = System.nanoTime();
+        User user = userRepository.findByLogin("TestLogin1").orElse(null);
+        long time = System.nanoTime() - start;
+
+        System.out.println("///////////////////////////////////");
+        System.out.println("Время выполнения запроса:");
+        System.out.println(time/1_000_000_000.0 + " секунд");
+        System.out.println("///////////////////////////////////");
+
+
 
         // when
         int expected = userRepository.findAll().size();
 
         // then
         Assertions.assertEquals(expected, actual);
+
     }
 
     @org.junit.jupiter.api.Order(7)
@@ -239,13 +303,22 @@ public class VolumeTest {
     void test100000CreateOrderPipeline() {
         // given
         int actual = 100000;
-        createOrderPipeline(actual);
+        createOrderPipeline(actual, 50000000);
 
         // when
         int expected = userRepository.findAll().size();
 
         // then
         Assertions.assertEquals(expected, actual);
+
+        long start = System.nanoTime();
+        User user = userRepository.findByLogin("TestLogin1").orElse(null);
+        long time = System.nanoTime() - start;
+
+        System.out.println("///////////////////////////////////");
+        System.out.println("Время выполнения запроса:");
+        System.out.println(time/1_000_000_000.0 + " секунд");
+        System.out.println("///////////////////////////////////");
     }
 
     @org.junit.jupiter.api.Order(8)
@@ -253,13 +326,22 @@ public class VolumeTest {
     void test1000000CreateOrderPipeline() {
         // given
         int actual = 1000000;
-        createOrderPipeline(actual);
+        createOrderPipeline(actual, 50000000);
 
         // when
         int expected = userRepository.findAll().size();
 
         // then
         Assertions.assertEquals(expected, actual);
+
+        long start = System.nanoTime();
+        User user = userRepository.findByLogin("TestLogin1").orElse(null);
+        long time = System.nanoTime() - start;
+
+        System.out.println("///////////////////////////////////");
+        System.out.println("Время выполнения запроса:");
+        System.out.println(time/1_000_000_000.0 + " секунд");
+        System.out.println("///////////////////////////////////");
     }
 
     @org.junit.jupiter.api.Order(9)
@@ -267,13 +349,22 @@ public class VolumeTest {
     void test2000000CreateOrderPipeline() {
         // given
         int actual = 2000000;
-        createOrderPipeline(actual);
+        createOrderPipeline(actual, 50000000);
 
         // when
         int expected = userRepository.findAll().size();
 
         // then
         Assertions.assertEquals(expected, actual);
+
+        long start = System.nanoTime();
+        User user = userRepository.findByLogin("TestLogin1").orElse(null);
+        long time = System.nanoTime() - start;
+
+        System.out.println("///////////////////////////////////");
+        System.out.println("Время выполнения запроса:");
+        System.out.println(time/1_000_000_000.0 + " секунд");
+        System.out.println("///////////////////////////////////");
     }
 
     @org.junit.jupiter.api.Order(10)
@@ -281,13 +372,22 @@ public class VolumeTest {
     void test3000000CreateOrderPipeline() {
         // given
         int actual = 3000000;
-        createOrderPipeline(actual);
+        createOrderPipeline(actual, 50000000);
 
         // when
         int expected = userRepository.findAll().size();
 
         // then
         Assertions.assertEquals(expected, actual);
+
+        long start = System.nanoTime();
+        User user = userRepository.findByLogin("TestLogin1").orElse(null);
+        long time = System.nanoTime() - start;
+
+        System.out.println("///////////////////////////////////");
+        System.out.println("Время выполнения запроса:");
+        System.out.println(time/1_000_000_000.0 + " секунд");
+        System.out.println("///////////////////////////////////");
     }
 
 }
