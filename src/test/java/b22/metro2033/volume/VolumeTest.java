@@ -21,6 +21,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -78,18 +81,18 @@ public class VolumeTest {
         return (int) (Math.random() * ++max);
     }
 
-    void createOrderPipeline(int actual, int for_name) {
+    void createOrderPipeline(int actual) {
 
         //Create users
         List<User> users = new ArrayList<>();
         for (int i = 0; i < actual; i++) {
             User user = new User();
             user.setRole(Role.ADMIN);
-            user.setName("TestName" + i + for_name);
-            user.setSurname("TestSurname" +  i + for_name);
-            user.setPatronymic("TestPatronymic" + i + for_name);
-            user.setLogin("TestLogin" + i + for_name);
-            user.setPassword("TestPassword" + i + for_name);
+            user.setName("TestName" + i);
+            user.setSurname("TestSurname" +  i);
+            user.setPatronymic("TestPatronymic" + i);
+            user.setLogin("TestLogin" + i);
+            user.setPassword("TestPassword" + i);
             users.add(user);
         }
         userRepository.saveAll(users);
@@ -108,7 +111,7 @@ public class VolumeTest {
         List<Item> items = new ArrayList<>();
         for (int i = 0; i < actual; i++) {
             Item item = new Item();
-            item.setName("item_test_name" + i + for_name);
+            item.setName("item_test_name" + i);
             item.setQuantity(200);
             items.add(item);
         }
@@ -122,7 +125,7 @@ public class VolumeTest {
             order.setState(DeliveryState.RECEIVED);
             Date date = new Date();
             order.setDate(date);
-            order.setStation("Горьковская" + i + for_name);
+            order.setStation("Горьковская" + i);
             order.setPointOfDeparture(false);
             orders.add(order);
         }
@@ -160,202 +163,248 @@ public class VolumeTest {
     @org.junit.jupiter.api.Order(1)
     @Test
     void test10000_users() {
-        // given
         int actual = 10000;
         createOnlyOrders(actual);
 
-        // when
         int expected = userRepository.findAll().size();
 
-        // then
         Assertions.assertEquals(expected, actual);
 
         long start = System.nanoTime();
-        User user = userRepository.findByLogin("TestLogin1").orElse(null);
+        User user = userRepository.findByLogin("TestLogin" + (actual - 1)).orElse(null);
         long time = System.nanoTime() - start;
 
         System.out.println("///////////////////////////////////");
         System.out.println("Время выполнения запроса:");
         System.out.println(time/1_000_000_000.0 + " секунд");
         System.out.println("///////////////////////////////////");
+        String time_count = Double.toString((double) (time/1_000_000_000.0));
+        String out = "test10000_users\nВремя выполнения запроса: " + time_count + " секунд\n";
+
+        appendToFile(out);
     }
 
     @org.junit.jupiter.api.Order(2)
     @Test
     void test100000_users() {
-        // given
         int actual = 100000;
         createOnlyOrders(actual);
 
-        // when
         int expected = userRepository.findAll().size();
 
-        // then
         Assertions.assertEquals(expected, actual);
 
         long start = System.nanoTime();
-        User user = userRepository.findByLogin("TestLogin1").orElse(null);
+        User user = userRepository.findByLogin("TestLogin" + (actual - 1)).orElse(null);
         long time = System.nanoTime() - start;
 
         System.out.println("///////////////////////////////////");
         System.out.println("Время выполнения запроса:");
         System.out.println(time/1_000_000_000.0 + " секунд");
         System.out.println("///////////////////////////////////");
+        String time_count = Double.toString((double) (time/1_000_000_000.0));
+        String out = "test100000_users\nВремя выполнения запроса: " + time_count + " секунд\n";
+
+        appendToFile(out);
     }
 
     @org.junit.jupiter.api.Order(3)
     @Test
     void test1000000_users() {
-        // given
         int actual = 1000000;
         createOnlyOrders(actual);
 
-        // when
         int expected = userRepository.findAll().size();
 
-        // then
         Assertions.assertEquals(expected, actual);
 
         long start = System.nanoTime();
-        User user = userRepository.findByLogin("TestLogin1").orElse(null);
+        User user = userRepository.findByLogin("TestLogin" + (actual - 1)).orElse(null);
         long time = System.nanoTime() - start;
 
         System.out.println("///////////////////////////////////");
         System.out.println("Время выполнения запроса:");
         System.out.println(time/1_000_000_000.0 + " секунд");
         System.out.println("///////////////////////////////////");
+        String time_count = Double.toString((double) (time/1_000_000_000.0));
+        String out = "test1000000_users\nВремя выполнения запроса: " + time_count + " секунд\n";
+
+        appendToFile(out);
+
     }
 
     @org.junit.jupiter.api.Order(4)
     @Test
     void test2000000_users() {
-        // given
         int actual = 2000000;
         createOnlyOrders(actual);
 
-        // when
         int expected = userRepository.findAll().size();
 
-        // then
         Assertions.assertEquals(expected, actual);
 
         long start = System.nanoTime();
-        User user = userRepository.findByLogin("TestLogin1").orElse(null);
+        User user = userRepository.findByLogin("TestLogin" + (actual - 1)).orElse(null);
         long time = System.nanoTime() - start;
 
         System.out.println("///////////////////////////////////");
         System.out.println("Время выполнения запроса:");
         System.out.println(time/1_000_000_000.0 + " секунд");
         System.out.println("///////////////////////////////////");
+        String time_count = Double.toString((double) (time/1_000_000_000.0));
+        String out = "test2000000_users\nВремя выполнения запроса: " + time_count + " секунд\n";
+
+        appendToFile(out);
+
     }
 
     @org.junit.jupiter.api.Order(5)
     @Test
     void test3000000_users() {
-        // given
         int actual = 3000000;
         createOnlyOrders(actual);
 
-        // when
         int expected = userRepository.findAll().size();
 
-        // then
         Assertions.assertEquals(expected, actual);
 
         long start = System.nanoTime();
-        User user = userRepository.findByLogin("TestLogin1").orElse(null);
+        User user = userRepository.findByLogin("TestLogin" + (actual - 1)).orElse(null);
         long time = System.nanoTime() - start;
 
         System.out.println("///////////////////////////////////");
         System.out.println("Время выполнения запроса:");
         System.out.println(time/1_000_000_000.0 + " секунд");
         System.out.println("///////////////////////////////////");
+        String time_count = Double.toString((double) (time/1_000_000_000.0));
+        String out = "test3000000_users\nВремя выполнения запроса: " + time_count + " секунд\n";
+
+        appendToFile(out);
     }
 
     @org.junit.jupiter.api.Order(6)
     @Test
     void test10000CreateOrderPipeline() {
-        // given
         int actual = 10000;
-        createOrderPipeline(actual,50000000);
+        createOrderPipeline(actual);
+
+        int expected = userRepository.findAll().size();
+        int expectedOrders = orderRepository.findAll().size();
+        int expectedItems = itemRepository.findAll().size();
+        int expectedOrderItems = orderItemRepository.findAll().size();
+
+        Assertions.assertEquals(expected, actual);
+        Assertions.assertEquals(expectedOrders, actual);
+        Assertions.assertEquals(expectedItems, actual);
+        Assertions.assertEquals(expectedOrderItems, actual);
 
         long start = System.nanoTime();
-        User user = userRepository.findByLogin("TestLogin1").orElse(null);
+        User user = userRepository.findByLogin("TestLogin" + (actual - 1)).orElse(null);
         long time = System.nanoTime() - start;
 
         System.out.println("///////////////////////////////////");
         System.out.println("Время выполнения запроса:");
         System.out.println(time/1_000_000_000.0 + " секунд");
         System.out.println("///////////////////////////////////");
+        String time_count = Double.toString((double) (time/1_000_000_000.0));
+        String out = "test10000CreateOrderPipeline\nВремя выполнения запроса: " + time_count + " секунд\n";
 
-
-
-        // when
-        int expected = userRepository.findAll().size();
-
-        // then
-        Assertions.assertEquals(expected, actual);
+        appendToFile(out);
 
     }
 
     @org.junit.jupiter.api.Order(7)
     @Test
     void test100000CreateOrderPipeline() {
-        // given
         int actual = 100000;
-        createOrderPipeline(actual, 50000000);
+        createOrderPipeline(actual);
 
-        // when
         int expected = userRepository.findAll().size();
+        int expectedOrders = orderRepository.findAll().size();
+        int expectedItems = itemRepository.findAll().size();
+        int expectedOrderItems = orderItemRepository.findAll().size();
 
-        // then
         Assertions.assertEquals(expected, actual);
+        Assertions.assertEquals(expectedOrders, actual);
+        Assertions.assertEquals(expectedItems, actual);
+        Assertions.assertEquals(expectedOrderItems, actual);
 
         long start = System.nanoTime();
-        User user = userRepository.findByLogin("TestLogin1").orElse(null);
+        User user = userRepository.findByLogin("TestLogin" + (actual - 1)).orElse(null);
         long time = System.nanoTime() - start;
 
         System.out.println("///////////////////////////////////");
         System.out.println("Время выполнения запроса:");
         System.out.println(time/1_000_000_000.0 + " секунд");
         System.out.println("///////////////////////////////////");
+        String time_count = Double.toString((double) (time/1_000_000_000.0));
+        String out = "test100000CreateOrderPipeline\nВремя выполнения запроса: " + time_count + " секунд\n";
+
+        appendToFile(out);
+
     }
 
     @org.junit.jupiter.api.Order(8)
     @Test
     void test1000000CreateOrderPipeline() {
-        // given
         int actual = 1000000;
-        createOrderPipeline(actual, 50000000);
+        createOrderPipeline(actual);
 
-        // when
         int expected = userRepository.findAll().size();
+        int expectedOrders = orderRepository.findAll().size();
+        int expectedItems = itemRepository.findAll().size();
+        int expectedOrderItems = orderItemRepository.findAll().size();
 
-        // then
         Assertions.assertEquals(expected, actual);
+        Assertions.assertEquals(expectedOrders, actual);
+        Assertions.assertEquals(expectedItems, actual);
+        Assertions.assertEquals(expectedOrderItems, actual);
 
         long start = System.nanoTime();
-        User user = userRepository.findByLogin("TestLogin1").orElse(null);
+        User user = userRepository.findByLogin("TestLogin" + (actual - 1)).orElse(null);
         long time = System.nanoTime() - start;
 
         System.out.println("///////////////////////////////////");
         System.out.println("Время выполнения запроса:");
         System.out.println(time/1_000_000_000.0 + " секунд");
         System.out.println("///////////////////////////////////");
+        String time_count = Double.toString((double) (time/1_000_000_000.0));
+        String out = "test1000000CreateOrderPipeline\nВремя выполнения запроса: " + time_count + " секунд\n";
+
+        appendToFile(out);
     }
+
+    private static void appendToFile(String data) {
+        try
+        {
+            String filename= "/home/igorkinev/output.txt";
+            FileWriter fw = new FileWriter(filename,true); //the true will append the new data
+            fw.write(data);//appends the string to the file
+            fw.close();
+        }
+        catch(IOException ioe)
+        {
+            System.err.println("IOException: " + ioe.getMessage());
+        }
+    }
+
+
 
     @org.junit.jupiter.api.Order(9)
     @Test
     void test2000000CreateOrderPipeline() {
-        // given
         int actual = 2000000;
-        createOrderPipeline(actual, 50000000);
+        createOrderPipeline(actual);
 
-        // when
         int expected = userRepository.findAll().size();
+        int expectedOrders = orderRepository.findAll().size();
+        int expectedItems = itemRepository.findAll().size();
+        int expectedOrderItems = orderItemRepository.findAll().size();
 
-        // then
         Assertions.assertEquals(expected, actual);
+        Assertions.assertEquals(expectedOrders, actual);
+        Assertions.assertEquals(expectedItems, actual);
+        Assertions.assertEquals(expectedOrderItems, actual);
 
         long start = System.nanoTime();
         User user = userRepository.findByLogin("TestLogin1").orElse(null);
@@ -365,20 +414,27 @@ public class VolumeTest {
         System.out.println("Время выполнения запроса:");
         System.out.println(time/1_000_000_000.0 + " секунд");
         System.out.println("///////////////////////////////////");
+        String time_count = Double.toString((double) (time/1_000_000_000.0));
+        String out = "test2000000CreateOrderPipeline\nВремя выполнения запроса: " + time_count + " секунд\n";
+
+        appendToFile(out);
     }
 
     @org.junit.jupiter.api.Order(10)
     @Test
     void test3000000CreateOrderPipeline() {
-        // given
         int actual = 3000000;
-        createOrderPipeline(actual, 50000000);
+        createOrderPipeline(actual);
 
-        // when
         int expected = userRepository.findAll().size();
+        int expectedOrders = orderRepository.findAll().size();
+        int expectedItems = itemRepository.findAll().size();
+        int expectedOrderItems = orderItemRepository.findAll().size();
 
-        // then
         Assertions.assertEquals(expected, actual);
+        Assertions.assertEquals(expectedOrders, actual);
+        Assertions.assertEquals(expectedItems, actual);
+        Assertions.assertEquals(expectedOrderItems, actual);
 
         long start = System.nanoTime();
         User user = userRepository.findByLogin("TestLogin1").orElse(null);
@@ -388,6 +444,10 @@ public class VolumeTest {
         System.out.println("Время выполнения запроса:");
         System.out.println(time/1_000_000_000.0 + " секунд");
         System.out.println("///////////////////////////////////");
+        String time_count = Double.toString((double) (time/1_000_000_000.0));
+        String out = "test3000000CreateOrderPipeline\nВремя выполнения запроса: " + time_count + " секунд\n";
+
+        appendToFile(out);
     }
 
 }
