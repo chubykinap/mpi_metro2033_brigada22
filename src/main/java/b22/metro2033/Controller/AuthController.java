@@ -63,7 +63,7 @@ public class AuthController {
 
     @PostMapping("/register")
     //@RequestBody для тестов
-    public String newCustomer(Principal principal, Model model, @RequestBody @Valid User user, BindingResult bindingResult) {
+    public String newCustomer(Principal principal, Model model, @ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
         if (principal != null)
             return "redirect:/";
 

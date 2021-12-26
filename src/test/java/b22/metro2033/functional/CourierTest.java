@@ -125,7 +125,7 @@ public class CourierTest {
 
     public Courier createTestCourier(User user){
         Courier courier = new Courier();
-        courier.setWorking(false);
+        courier.setOrder(null);
         courier.setUser(user);
         courierRepository.save(courier);
         return courier;
@@ -282,7 +282,7 @@ public class CourierTest {
         User user = userRepository.findByLogin("c").orElse(null);
 
         Courier courier = new Courier();
-        courier.setWorking(false);
+        courier.setOrder(null);
         courier.setUser(user);
         courierRepository.save(courier);
 

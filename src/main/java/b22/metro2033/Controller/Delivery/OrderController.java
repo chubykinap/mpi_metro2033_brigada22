@@ -81,8 +81,11 @@ public class OrderController {
         model.addAttribute("items", items);
         model.addAttribute("order", new DeliveryOrder());
 
-        List<Courier> couriers = courierRepository.findAllByWorkingFalse();
-        model.addAttribute("couriers", couriers);
+        List<Courier> couriers = courierRepository.findAllByOrder(null);
+        if (couriers.size() == 0)
+            model.addAttribute("couriers", "NoData");
+        else
+            model.addAttribute("couriers", couriers);
 
         model.addAttribute("stations", stations);
         if (type.equals("send"))
@@ -114,7 +117,6 @@ public class OrderController {
         orderRepository.save(order);
 
         courier.setOrder(order);
-        courier.setWorking(true);
 
         for (OrderItemUtility item : items) {
             Item item_stored = itemRepository.findByName(item.getItem());
@@ -154,15 +156,81 @@ public class OrderController {
             return "/delivery";
         }
 
-        Courier courier = courierRepository.findByOrderId(order.getId());
-
-        List<OrderItem> list = orderItemRepository.findAllByIdOrderId(order.getId());
-        model.addAttribute("courier", courier);
+        model.addAttribute("courier", order.getCourier());
         model.addAttribute("order", new OrderUtility(order));
         model.addAttribute("states", DeliveryState.getHigher(order.getState()));
-        model.addAttribute("items", list);
+        model.addAttribute("items", order.getOrderItems());
         return "/delivery/view";
     }
+//
+//    @GetMapping("/change/{id}")
+//    @PreAuthorize("hasAuthority('delivery:write')")
+//    public String changeForm(Model model, Authentication auth, @PathVariable long id){
+//        User user = userRepository.findByLogin(auth.getName()).orElse(null);
+//        if (user == null) {
+//            return "redirect:/auth/login";
+//        }
+//
+//        DeliveryOrder order = orderRepository.findById(id).orElse(null);
+//        if (order == null)
+//            return "redirect:/delivery";
+//        model.addAttribute("order", order);
+//        model.addAttribute("action", "change");
+//        Courier courier = courierRepository.findByOrderId(order.getId());
+//        List<Courier> couriers = courierRepository.findAllByOrder(null);
+//        couriers.add(courier);
+//        if (couriers.size() == 0)
+//            model.addAttribute("couriers", "NoData");
+//        else
+//            model.addAttribute("couriers", couriers);
+//
+//        model.addAttribute("stations", stations);
+//
+//        model.addAttribute("items", order.getOrderItems());
+//        return "delivery/form_change";
+//    }
+//
+//    @PreAuthorize("hasAuthority('delivery:write')")
+//    @RequestMapping(value = "/change", consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
+//    public String change(@RequestBody String response) throws Exception {
+//        JSONObject json = new JSONObject(response);
+//
+//        String station = json.getString("station");
+//        int order_id = json.getInt("order_id");
+//        Date date = parseStringToDate(json.getString("date"));
+//        Courier courier = courierRepository.findById(json.getInt("courier_id")).orElse(null);
+//        if (courier == null)
+//            return "redirect:/delivery";
+//        List<OrderItemUtility> items = jsonToList(json.getJSONArray("items"));
+//
+//        DeliveryOrder order_old = orderRepository.findById(order_id).orElse(null);
+//        if (order_old == null)
+//            return "redirect:/delivery";
+//
+//
+//        for (OrderItemUtility item : items) {
+//            Item item_stored = itemRepository.findByName(item.getItem());
+//            if (order_old.isPointOfDeparture() &&
+//                    item_stored.getQuantity() < item.getQuantity()) {
+//                throw new Exception("Недостаточно ресурсов");
+//            } else if (direction) {
+//                item_stored.setQuantity(item_stored.getQuantity() - item.getQuantity());
+//                itemRepository.save(item_stored);
+//            }
+//            OrderItem d_o = new OrderItem();
+//            d_o.setOrder(order);
+//            d_o.setQuantity(item.getQuantity());
+//            d_o.setItem(item_stored);
+//            orderItemRepository.save(d_o);
+//        }
+//
+//        String message = "Вам назначен новый заказ";
+//        sendAlertMessage(courier.getUser(), message, TypeOfMessage.NOTIFICATION);
+//        orderRepository.save(order);
+//        courierRepository.save(courier);
+//
+//        return "redirect:/delivery";
+//    }
 
     @RequestMapping(value = "/changeState", consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('delivery:read')")
@@ -209,7 +277,6 @@ public class OrderController {
             }
             Courier courier = courierRepository.findByOrderId(order.getId());
             courier.setOrder(null);
-            courier.setWorking(false);
             orderRepository.delete(order);
         }
 
@@ -242,5 +309,15 @@ public class OrderController {
         alertMessages.setType_of_message(type);
 
         alertsRepository.save(alertMessages);
+    }
+
+    private List<OrderItemUtility> compare(List<OrderItem> Old, List<OrderItemUtility> New) {
+        List<OrderItemUtility> res = OrderItemUtility.toUtility(Old);
+        for (OrderItemUtility item : New) {
+            for (OrderItem item_ : Old) {
+
+            }
+        }
+        return res;
     }
 }

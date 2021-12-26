@@ -17,27 +17,39 @@
       <form th:method="POST" th:action="@{/users}" th:object="${user}">
         <div class="form-group">
           <label for="name">Имя</label>
-          <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="Имя">
+          <input type="text" id="name" th:field="*{name}"
+                 pattern="[а-яА-Я]{2,100}"
+                 class="form-control" placeholder="Имя">
         </div>
 
         <div class="form-group">
           <label for="surname">Фамилия</label>
-          <input type="text" id="surname" th:field="*{surname}" class="form-control" placeholder="Фамилия">
+          <input type="text" id="surname" th:field="*{surname}"
+                 pattern="[а-яА-Я]{2,100}"
+                 class="form-control" placeholder="Фамилия">
         </div>
 
         <div class="form-group">
           <label for="patronymic">Отчество</label>
-          <input type="text" id="patronymic" th:field="*{patronymic}" class="form-control" placeholder="Отчество">
+          <input type="text" id="patronymic" th:field="*{patronymic}"
+                 pattern="[а-яА-Я]{,100}"
+                 class="form-control" placeholder="Отчество">
         </div>
 
         <div class="form-group">
           <label for="login">Логин</label>
-          <input type="text" id="login" th:field="*{login}" class="form-control" placeholder="Логин">
+          <input type="text" id="login" th:field="*{login}"
+                 pattern="[a-z0-9]{4,20}"
+                 title="Логин может содержать латинские прописные буквы и цифры"
+                 class="form-control" placeholder="Логин">
         </div>
 
         <div class="form-group">
           <label for="password">Пароль</label>
-          <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="Пароль">
+          <input type="password" id="password" th:field="*{password}"
+                 pattern="(?=.*\d)(?=.*[A-Z]).{8,100}"
+                 title="Пароль должен содержать: одно число, одну заглавную букву, количество символов больше 8"
+                 class="form-control" placeholder="Пароль">
         </div>
 
         <div class="form-group">

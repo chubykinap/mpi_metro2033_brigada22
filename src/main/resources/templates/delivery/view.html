@@ -94,7 +94,8 @@
                     </div>
 
                     <div class="form-group">
-                        <input type="button" id="change" class="btn-primary btn" value="Сохранить"/>
+                        <input type="button" id="save" class="btn-primary btn" value="Сохранить"/>
+                        <!--<a th:href="@{/delivery/change/{id}(id=${order.id})}" sec:authorize="${hasAuthority('delivery:write')}" id="change" class="btn-primary btn">Изменить заказ</a>-->
                         <a th:href="@{/delivery/delete/{id}(id=${order.id})}" sec:authorize="${hasAuthority('delivery:write')}" id="delete" class="btn-primary btn">Удалить</a>
                     </div>
                     <a href="/delivery" class="btn-primary btn">Назад</a>
