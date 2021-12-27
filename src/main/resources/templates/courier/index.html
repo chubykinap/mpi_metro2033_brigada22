@@ -41,10 +41,13 @@
                         <td scope="row" th:text="${courier.user.surname}">surname</td>
                         <td scope="row" th:text="${courier.user.patronymic}">patronymic</td>
 
-                        <div th:switch="${courier.working}">
-                            <td th:case="true" scope="row" >Выполняет заказ</td>
-                            <td th:case="false" scope="row" >Свободен</td>
+                        <div th:if="${courier.order ne null}">
+                            <td>Выполняет заказ</td>
                         </div>
+                        <div th:unless="${courier.order ne null}">
+                            <td>Свободен</td>
+                        </div>
+
                         <td scope="row">
                             <div><a th:href="@{/courier/delete/{id}(id=${courier.id})}" class="btn-primary btn"
                                     id="delete"

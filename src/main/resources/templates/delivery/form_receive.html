@@ -5,7 +5,7 @@
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
-    <title id="pageTitle">Метро 2033 Военный персонал</title>
+    <title id="pageTitle">Метро 2033 Служба доставки</title>
 </head>
 <body>
 
@@ -16,9 +16,11 @@
             var $c_data = [];
             var $item_name = $(this).find('#t_name').text();
             var $item_quantity = $(this).find('#t_quantity').val();
-            $c_data.push($item_name);
-            $c_data.push($item_quantity);
-            $t_data.push($c_data);
+            if ($item_quantity > 0) {
+                $c_data.push($item_name);
+                $c_data.push($item_quantity);
+                $t_data.push($c_data);
+            }
         });
         return $t_data;
     }
@@ -26,8 +28,24 @@
     $(document).ready(function() {
         $(function() {
             $("#create").click(function() {
+                check = false;
+                $('#ajax_create_order *').filter(':input').each(function(){
+                    if($(this).val() == ''){
+                        check = true;
+                    }
+                });
+
+                if (check == true){
+                    alert("Не все данные заполнены!");
+                    return;
+                }
+
                 var items = getTableData('t_items');
                 console.log(items);
+                if (items.length < 1) {
+                    alert("Не добавлены предметы для доставки");
+                    return;
+                }
 
                 var order = {
                     "courier_id":$("#courier").val(),
@@ -51,6 +69,8 @@
             });
         })
     });
+
+
 </script>
 
 <div th:replace="fragments/fragment :: nav-all"></div>
@@ -61,54 +81,62 @@
         </div>
         <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
             <h1>Создание заказа на доставку ресурсов</h1>
-            <form th:method="POST" th:action="@{/delivery}" th:object="${order}">
-                <div class="form-group">
-                    <label for="station">Станция</label>
-                    <select id="station" class="custom-select" th:field="*{station}">
-                        <option value="">Выбрать станцию...</option>
-                        <option th:each="station : ${stations}" th:value=${station} th:text="${station}">Станция</option>
-                    </select>
-                </div>
+            <form th:method="POST" th:action="@{/delivery}" th:object="${order}" id="ajax_create_order">
+                <div th:if="${!#strings.equals(couriers, 'NoData')}">
+                    <div class="form-group">
+                        <label for="station">Станция</label>
+                        <select id="station" class="custom-select" th:field="*{station}">
+                            <option value="">Выбрать станцию...</option>
+                            <option th:each="station : ${stations}" th:value=${station} th:text="${station}">Станция
+                            </option>
+                        </select>
+                    </div>
 
-                <div class="form-group">
-                    <label for="date_select">Дата доставки</label>
-                    <input type="date" id="date_select" name="date_select"
-                           value="2033-01-01"
-                           min="2033-01-01" max="2100-12-31">
-                </div>
+                    <div class="form-group">
+                        <label for="date_select">Дата доставки</label>
+                        <input type="date" id="date_select" name="date_select"
+                               value="2033-01-01"
+                               min="2033-01-01" max="2100-12-31">
+                    </div>
 
-                <div class="form-group">
-                    <label for="courier">Курьер</label>
-                    <select id="courier" class="custom-select" th:field="*{courier}">
-                        <option value="">Выбрать курьера...</option>
-                        <option th:each="courier : ${couriers}" th:value=${courier.id} th:text="${courier.user.name}">Курьер</option>
-                    </select>
-                </div>
+                    <div class="form-group">
+                        <label for="courier">Курьер</label>
+                        <select id="courier" class="custom-select" th:field="*{courier}">
+                            <option value="">Выбрать курьера...</option>
+                            <option th:each="courier : ${couriers}" th:value=${courier.id}
+                                    th:text="${courier.user.name}">Курьер
+                            </option>
+                        </select>
+                    </div>
 
-                <div class="form-group">
-                    <label>Список предметов для заказа</label>
-                    <table id="t_items" class="table table-striped">
-                        <thead>
+                    <div class="form-group">
+                        <label>Список предметов для заказа</label>
+                        <table id="t_items" class="table table-striped">
+                            <thead>
                             <tr>
                                 <th scope="col">Предмет</th>
                                 <th scope="col">Количество</th>
                             </tr>
-                        <tbody>
-                        <tr th:each="item : ${items}">
-                            <td id="t_name" scope="row" th:utext="${item.name}"></td>
-                            <td scope="row">
-                                <input type="number" id="t_quantity" class="form-control" value="0"
-                                       placeholder="Количество" min="0">
-                            </td>
-                        </tr>
-                        </tbody>
-                        </thead>
-                    </table>
+                            <tbody>
+                            <tr th:each="item : ${items}">
+                                <td id="t_name" scope="row" th:utext="${item.name}"></td>
+                                <td scope="row">
+                                    <input type="number" id="t_quantity" class="form-control" value="0"
+                                           placeholder="Количество" min="0">
+                                </td>
+                            </tr>
+                            </tbody>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="form-group">
+                        <input type="button" id="create" class="btn-primary btn" value="Создать"/>
+                        <a href="/delivery" class="btn-primary btn">Назад</a>
+                    </div>
                 </div>
-
-                <div class="form-group">
-                    <input type="button" id="create" class="btn-primary btn" value="Создать"/>
-                    <a href="/delivery" class="btn-primary btn">Назад</a>
+                <div th:if="${#strings.equals(couriers, 'NoData')}">
+                    <h4>Нет свободных курьеров для создания заказа</h4>
+                    <a href="/delivery" class="btn-primary btn">Вернуться</a>
                 </div>
             </form>
         </div>

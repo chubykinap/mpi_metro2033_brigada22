@@ -1,9 +1,9 @@
 package b22.metro2033.Entity.Delivery;
 
 import b22.metro2033.Entity.User;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "courier")
@@ -16,9 +16,8 @@ public class Courier {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private boolean working;
-
-    @OneToOne
+    @Nullable
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")
     private DeliveryOrder order;
 
@@ -35,14 +34,6 @@ public class Courier {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public boolean isWorking() {
-        return working;
-    }
-
-    public void setWorking(boolean working) {
-        this.working = working;
     }
 
     public User getUser() {

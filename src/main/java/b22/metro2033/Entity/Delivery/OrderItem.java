@@ -1,7 +1,10 @@
 package b22.metro2033.Entity.Delivery;
 
+import b22.metro2033.Entity.Utility.OrderItemUtility;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 @Embeddable

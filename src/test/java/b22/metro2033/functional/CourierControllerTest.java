@@ -103,7 +103,7 @@ class CourierControllerTest {
         userRepository.save(user);
 
         Courier courier = new Courier();
-        courier.setWorking(false);
+        courier.setOrder(null);
         courier.setUser(user);
         courierRepository.save(courier);
 
