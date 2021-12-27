@@ -119,7 +119,7 @@ public class OrderController {
             order.setDate(date);
             orderRepository.save(order);
 
-        courier.setOrder(order);
+            courier.setOrder(order);
 
             for (OrderItemUtility item : items) {
                 Item item_stored = itemRepository.findByName(item.getItem());
