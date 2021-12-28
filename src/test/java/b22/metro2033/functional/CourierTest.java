@@ -260,7 +260,6 @@ public class CourierTest {
 
         Courier courier = createTestCourier(user);
         DeliveryOrder order = createOrderForCourier(courier);
-        System.out.println(order.getCourier().getUser().getName());
         mockMvc.perform(get("/delivery/view/" + order.getId()))
                 .andDo(print())
                 .andExpect(authenticated())
