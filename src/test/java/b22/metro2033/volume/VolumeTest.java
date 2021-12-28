@@ -377,7 +377,7 @@ public class VolumeTest {
     private static void appendToFile(String data) {
         try
         {
-            String filename= "/home/igorkinev/output.txt";
+            String filename= "output.txt";
             FileWriter fw = new FileWriter(filename,true); //the true will append the new data
             fw.write(data);//appends the string to the file
             fw.close();
