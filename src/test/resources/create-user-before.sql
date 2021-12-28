@@ -17,5 +17,9 @@ insert into metro_user(enabled, login, password, role) values
 (true, 'head_courier', '$2a$12$FEV9T2U5Fz/cDPJdSFNPBuz/SdUq0U7AwQnoG6ejHRthisSBXXDtC', 'HEAD_COURIER'),
 (true, 'c', '$2a$12$FEV9T2U5Fz/cDPJdSFNPBuz/SdUq0U7AwQnoG6ejHRthisSBXXDtC', 'COURIER');
 
+UPDATE metro_user
+	SET name='user', patronymic='UsEr', surname='USER'
+	WHERE login LIKE '%c%';
+
 
 

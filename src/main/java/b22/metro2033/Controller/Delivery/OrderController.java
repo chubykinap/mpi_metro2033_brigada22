@@ -156,7 +156,7 @@ public class OrderController {
         if (order == null) {
             return "/delivery";
         }
-
+        System.out.println(order.getCourier());
         model.addAttribute("courier", order.getCourier());
         model.addAttribute("order", new OrderUtility(order));
         model.addAttribute("states", DeliveryState.getHigher(order.getState()));

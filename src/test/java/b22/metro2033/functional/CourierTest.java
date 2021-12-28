@@ -257,10 +257,10 @@ public class CourierTest {
     @WithMockUser(username = "c", password = "ggg", authorities = "delivery:read")
     public void testOfShowingOrderByCourier() throws Exception{
         User user = userRepository.findByLogin("c").orElse(null);
-        if (user == null)
-            System.out.println(user.getName());
+
         Courier courier = createTestCourier(user);
         DeliveryOrder order = createOrderForCourier(courier);
+        System.out.println(order.getCourier().getUser().getName());
         mockMvc.perform(get("/delivery/view/" + order.getId()))
                 .andDo(print())
                 .andExpect(authenticated())
