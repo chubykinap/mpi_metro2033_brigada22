@@ -156,9 +156,7 @@ public class OrderController {
         if (order == null) {
             return "/delivery";
         }
-        Courier courier = courierRepository.findByOrderId(order.getId());
-        System.out.println(courier.getUser().getName());
-        model.addAttribute("courier", courier);
+        model.addAttribute("courier", order.getCourier());
         model.addAttribute("order", new OrderUtility(order));
         model.addAttribute("states", DeliveryState.getHigher(order.getState()));
         model.addAttribute("items", order.getOrderItems());

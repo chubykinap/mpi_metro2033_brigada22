@@ -264,7 +264,7 @@ public class CourierTest {
                 .andDo(print())
                 .andExpect(authenticated())
                 .andExpect(xpath("//*[@id=\"text_id\"]").string(Long.toString(order.getId())))
-                .andExpect(xpath("/html/body/div/div/div[2]/form/div/div[3]/select/option").string("RECEIVED"))
+                .andExpect(xpath("//*[@id=\"state\"]/option[1]").string("RECEIVED"))
                 .andExpect(status().isOk());
     }
 
