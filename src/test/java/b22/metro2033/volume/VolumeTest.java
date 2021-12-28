@@ -101,7 +101,7 @@ public class VolumeTest {
         List<Courier> couriers = new ArrayList<>();
         for (int i = 0; i < actual; i++) {
             Courier courier = new Courier();
-            courier.setWorking(false);
+            courier.setOrder(null);
             courier.setUser(users.get(i));
             couriers.add(courier);
         }
@@ -234,7 +234,7 @@ public class VolumeTest {
     }
 
     @org.junit.jupiter.api.Order(4)
-    @Test
+    //@Test
     void test2000000_users() {
         int actual = 2000000;
         createOnlyOrders(actual);
@@ -259,7 +259,7 @@ public class VolumeTest {
     }
 
     @org.junit.jupiter.api.Order(5)
-    @Test
+    //@Test
     void test3000000_users() {
         int actual = 3000000;
         createOnlyOrders(actual);
@@ -345,7 +345,7 @@ public class VolumeTest {
     }
 
     @org.junit.jupiter.api.Order(8)
-    @Test
+    //@Test
     void test1000000CreateOrderPipeline() {
         int actual = 1000000;
         createOrderPipeline(actual);
@@ -391,7 +391,7 @@ public class VolumeTest {
 
 
     @org.junit.jupiter.api.Order(9)
-    @Test
+    //@Test
     void test2000000CreateOrderPipeline() {
         int actual = 2000000;
         createOrderPipeline(actual);
@@ -421,7 +421,7 @@ public class VolumeTest {
     }
 
     @org.junit.jupiter.api.Order(10)
-    @Test
+    //@Test
     void test3000000CreateOrderPipeline() {
         int actual = 3000000;
         createOrderPipeline(actual);

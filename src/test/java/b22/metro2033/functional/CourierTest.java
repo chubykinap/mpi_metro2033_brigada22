@@ -1,20 +1,15 @@
 package b22.metro2033.functional;
 
 import b22.metro2033.Controller.Army.ArmyController;
-import b22.metro2033.Entity.Army.HealthState;
-import b22.metro2033.Entity.Army.Rank;
-import b22.metro2033.Entity.Army.Soldier;
 import b22.metro2033.Entity.Delivery.*;
 import b22.metro2033.Entity.Role;
 import b22.metro2033.Entity.User;
-import b22.metro2033.Entity.Utility.OrderItemUtility;
 import b22.metro2033.Repository.Army.*;
 import b22.metro2033.Repository.Delivery.CourierRepository;
 import b22.metro2033.Repository.Delivery.ItemRepository;
 import b22.metro2033.Repository.Delivery.OrderItemRepository;
 import b22.metro2033.Repository.Delivery.OrderRepository;
 import b22.metro2033.Repository.UserRepository;
-import org.checkerframework.checker.units.qual.C;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
@@ -32,8 +27,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Date;
 import java.util.List;
 
-import static b22.metro2033.Entity.Army.HealthState.CRITICAL;
-import static b22.metro2033.Entity.Army.Rank.MAJOR;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -264,9 +257,10 @@ public class CourierTest {
     @WithMockUser(username = "c", password = "ggg", authorities = "delivery:read")
     public void testOfShowingOrderByCourier() throws Exception{
         User user = userRepository.findByLogin("c").orElse(null);
+        if (user == null)
+            System.out.println(user.getName());
         Courier courier = createTestCourier(user);
         DeliveryOrder order = createOrderForCourier(courier);
-
         mockMvc.perform(get("/delivery/view/" + order.getId()))
                 .andDo(print())
                 .andExpect(authenticated())
