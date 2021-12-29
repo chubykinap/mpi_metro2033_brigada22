@@ -1,10 +1,7 @@
 package b22.metro2033.Entity.Army;
 
-import b22.metro2033.Entity.Engineering.Engineer;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "sensor_messages")

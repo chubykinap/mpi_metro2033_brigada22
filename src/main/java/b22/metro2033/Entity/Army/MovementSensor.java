@@ -1,7 +1,5 @@
 package b22.metro2033.Entity.Army;
 
-import b22.metro2033.Entity.Engineering.Request;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;

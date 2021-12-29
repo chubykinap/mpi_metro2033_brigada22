@@ -11,12 +11,9 @@ import java.util.stream.Collectors;
 public enum Role {
     ADMIN(SetOf(Permission.USERS_READ, Permission.USERS_CREATE,
                 Permission.USERS_WRITE, Permission.ARMY_READ, Permission.ARMY_WRITE,
-                Permission.DELIVERY_READ, Permission.DELIVERY_WRITE, Permission.ENGINEERING_WRITE,
-                Permission.ENGINEERING_READ)),
+                Permission.DELIVERY_READ, Permission.DELIVERY_WRITE)),
     GENERAL(SetOf(Permission.ARMY_READ, Permission.ARMY_WRITE)),
     SOLDIER(SetOf(Permission.ARMY_READ)),
-    HEAD_ENGINEER(SetOf(Permission.ENGINEERING_READ, Permission.ENGINEERING_WRITE)),
-    ENGINEER(SetOf(Permission.ENGINEERING_READ)),
     HEAD_COURIER(SetOf(Permission.DELIVERY_READ, Permission.DELIVERY_WRITE)),
     COURIER(SetOf(Permission.DELIVERY_READ)),
     GUEST(SetOf(Permission.GUEST_READ));
@@ -52,10 +49,6 @@ public enum Role {
                 return GENERAL;
             case "SOLDIER":
                 return SOLDIER;
-            case "HEAD_ENGINEER":
-                return HEAD_ENGINEER;
-            case "ENGINEER":
-                return ENGINEER;
             case "HEAD_COURIER":
                 return HEAD_COURIER;
             case "COURIER":

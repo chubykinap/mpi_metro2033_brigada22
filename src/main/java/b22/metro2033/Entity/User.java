@@ -1,12 +1,9 @@
 package b22.metro2033.Entity;
 
 import b22.metro2033.Entity.Alerts.AlertMessages;
-import b22.metro2033.Entity.Army.SensorMessages;
 import b22.metro2033.Entity.Army.Soldier;
 import b22.metro2033.Entity.Delivery.Courier;
-import b22.metro2033.Entity.Engineering.Engineer;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -45,9 +42,6 @@ public class User {
 
     @OneToOne(mappedBy = "user")
     private Soldier soldier;
-
-    @OneToOne(mappedBy = "user")
-    private Engineer engineer;
 
     @OneToOne(mappedBy = "user")
     private Courier courier;
@@ -129,14 +123,6 @@ public class User {
         this.soldier = soldier;
     }
 
-    public Engineer getEngineer() {
-        return engineer;
-    }
-
-    public void setEngineer(Engineer engineer) {
-        this.engineer = engineer;
-    }
-
     public Courier getCourier() {
         return courier;
     }
@@ -153,7 +139,7 @@ public class User {
         this.enabled = enabled;
     }
 
-    public User(int id, String login, String password, String name, String surname, String patronymic, Role role, Soldier soldier, Engineer engineer, Courier courier, boolean enabled) {
+    public User(int id, String login, String password, String name, String surname, String patronymic, Role role, Soldier soldier, Courier courier, boolean enabled) {
         this.id = id;
         this.login = login;
         this.password = password;
@@ -162,7 +148,6 @@ public class User {
         this.patronymic = patronymic;
         this.role = role;
         this.soldier = soldier;
-        this.engineer = engineer;
         this.courier = courier;
         this.enabled = enabled;
     }

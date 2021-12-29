@@ -1,8 +1,5 @@
 package b22.metro2033.Controller;
 
-import b22.metro2033.Entity.Alerts.AlertMessages;
-import b22.metro2033.Entity.Army.MovementSensor;
-import b22.metro2033.Entity.Army.SensorStatus;
 import b22.metro2033.Entity.Role;
 import b22.metro2033.Entity.User;
 import b22.metro2033.Entity.Utility.UserUtility;
@@ -27,7 +24,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Controller
@@ -70,7 +66,6 @@ public class UsersController {
         switch (user.getRole()){
             case ADMIN:
                 roles = Stream.of(Role.ADMIN, Role.GENERAL, Role.SOLDIER,
-                        Role.HEAD_ENGINEER, Role.ENGINEER,
                         Role.HEAD_COURIER, Role.COURIER).collect(Collectors.toList());
                 break;
         }
@@ -216,8 +211,7 @@ public class UsersController {
         switch (user.getRole()){
             case ADMIN:
                 roles = Stream.of(Role.ADMIN, Role.GENERAL, Role.SOLDIER,
-                                    Role.HEAD_COURIER, Role.COURIER,
-                                    Role.HEAD_ENGINEER, Role.ENGINEER).collect(Collectors.toList());
+                                    Role.HEAD_COURIER, Role.COURIER).collect(Collectors.toList());
                 break;
         }
 

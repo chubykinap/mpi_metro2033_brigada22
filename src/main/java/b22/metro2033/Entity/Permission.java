@@ -9,8 +9,6 @@ public enum Permission {
     ARMY_WRITE("army:write"),
     DELIVERY_READ("delivery:read"),
     DELIVERY_WRITE("delivery:write"),
-    ENGINEERING_READ("engineering:read"),
-    ENGINEERING_WRITE("engineering:write"),
     GUEST_READ("guest:read");
 
     private final String permission;
