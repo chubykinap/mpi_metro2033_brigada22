@@ -1,10 +1,16 @@
 package b22.metro2033.Controller;
 
+import b22.metro2033.Entity.Army.Rank;
 import b22.metro2033.Entity.Role;
 import b22.metro2033.Entity.User;
 import b22.metro2033.Repository.Army.PostRepository;
 import b22.metro2033.Repository.UserRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -51,12 +57,6 @@ public class AuthController {
         model.addAttribute("user", new User());
         model.addAttribute("action", "Create");
         model.addAttribute("roles", getRoles());
-
-        /*Post post = new Post();
-        post.setLocation("Moscow Station");
-        post.setName("MSK");
-
-        postRepository.save(post);*/
 
         return "auth/register";
     }

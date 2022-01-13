@@ -7,6 +7,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -19,25 +20,26 @@ public class User {
     private long id;
 
     @Column(unique = true)
-    @NotEmpty(message = "Login should not be empty")
+    @NotEmpty(message = "Логин не должен быть пустым")
     private String login;
 
-    @NotEmpty(message = "Password should not be empty")
+    @NotEmpty(message = "Пароль не должен быть пустым")
     private String password;
 
-    @NotEmpty(message = "Name should not be empty")
-    @Size(min = 2, max = 30, message = "Name should be between 2 and 30 characters")
+    @NotEmpty(message = "Имя не должен быть пустым")
+    @Size(min = 2, max = 100, message = "Имя должно иметь от 2 до 100 символов и содержать только русские буквы")
     private String name;
 
-    @NotEmpty(message = "Surname should not be empty")
-    @Size(min = 2, max = 30, message = "Surname should be between 2 and 30 characters")
+    @NotEmpty(message = "Фамилия не должен быть пустым")
+    @Size(min = 2, max = 100, message = "Фамилия должна иметь от 2 до 100 символов и содержать только русские буквы")
     private String surname;
 
-    @NotEmpty(message = "Patronymic should not be empty")
-    @Size(min = 2, max = 30, message = "Surname should be between 2 and 30 characters")
+    @NotEmpty(message = "Отчество не должен быть пустым")
+    @Size(min = 2, max = 100, message = "Отчество должно иметь от 2 до 100 символов и содержать только русские буквы")
     private String patronymic;
 
     @Enumerated(value = EnumType.STRING)
+    @NotNull(message = "Необходимо выбрать роль пользователя")
     private Role role;
 
     @OneToOne(mappedBy = "user")
