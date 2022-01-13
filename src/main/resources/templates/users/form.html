@@ -4,6 +4,8 @@
   <div th:replace="fragments/fragment :: head"></div>
 
   <title id="pageTitle">Метро 2033 пользователи</title>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script src="/js/metro_users/validation.js"></script>
 </head>
 <body>
 <div th:replace="fragments/fragment :: nav-all"></div>
@@ -14,42 +16,39 @@
     </div>
     <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
       <h1>Создание пользователя станции</h1>
-      <form th:method="POST" th:action="@{/users}" th:object="${user}">
+      <form id="register_form" th:method="POST" th:action="@{/users}" th:object="${user}">
         <div class="form-group">
           <label for="name">Имя</label>
-          <input type="text" id="name" th:field="*{name}"
-                 pattern="[а-яА-Я]{2,100}"
-                 class="form-control" placeholder="Имя">
+          <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="Имя">
+          <div id="name_validation"></div>
         </div>
 
         <div class="form-group">
           <label for="surname">Фамилия</label>
-          <input type="text" id="surname" th:field="*{surname}"
-                 pattern="[а-яА-Я]{2,100}"
-                 class="form-control" placeholder="Фамилия">
+          <input type="text" id="surname" th:field="*{surname}" class="form-control" placeholder="Фамилия">
+          <div id="surname_validation"></div>
         </div>
 
         <div class="form-group">
           <label for="patronymic">Отчество</label>
-          <input type="text" id="patronymic" th:field="*{patronymic}"
-                 pattern="[а-яА-Я]{,100}"
-                 class="form-control" placeholder="Отчество">
+          <input type="text" id="patronymic" th:field="*{patronymic}"  class="form-control" placeholder="Отчество">
+          <div id="patronymic_validation"></div>
         </div>
 
         <div class="form-group">
           <label for="login">Логин</label>
           <input type="text" id="login" th:field="*{login}"
-                 pattern="[a-z0-9]{4,20}"
-                 title="Логин может содержать латинские прописные буквы и цифры"
+                 title="Логин может содержать латинские прописные буквы"
                  class="form-control" placeholder="Логин">
+          <div id="login_validation"></div>
         </div>
 
         <div class="form-group">
           <label for="password">Пароль</label>
           <input type="password" id="password" th:field="*{password}"
-                 pattern="(?=.*\d)(?=.*[A-Z]).{8,100}"
-                 title="Пароль должен содержать: одно число, одну заглавную букву, количество символов больше 8"
+                 title="Пароль должен быть написан на английском языке, содержать минимум одну заглавную и прописную буквы, один спец символ, одну цифру и должен быть длинее 8 символов"
                  class="form-control" placeholder="Пароль">
+          <div id="password_validation"></div>
         </div>
 
         <div class="form-group">
@@ -58,16 +57,18 @@
             <option value="">Выбрать...</option>
             <option th:each="role : ${roles}" th:value="${role}" th:text="${role.name()}">Роль</option>
           </select>
+          <div id="role_validation"></div>
         </div>
 
         <div class="form-group">
           <input type="hidden" name="action" th:value="${action}">
-          <button type="submit" class="btn-primary btn">Сохранить</button>
+          <button id="button" type="submit" class="btn-primary btn">Сохранить</button>
           <a href="/users" class="btn-primary btn">Назад</a>
         </div>
       </form>
     </div>
   </div>
 </div>
+
 </body>
 </html>
