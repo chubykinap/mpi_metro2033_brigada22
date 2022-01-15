@@ -6,7 +6,7 @@ $(document).ready(function() {
 
       var name = $("#name").val();
       if (name == '') {
-          $( "#name_validation" ).text("Введите название поста");
+          $( "#name_validation" ).text("Введите название датчика");
           check = true;
       }
 
@@ -16,8 +16,12 @@ $(document).ready(function() {
 
       var location = $("#location").val();
       if (location == '') {
-          $( "#location_validation" ).text("Введите местоположение поста");
+          $( "#location_validation" ).text("Введите местоположение датчика");
           check = true;
+      }
+
+      if (validate_post()) {
+        check = true;
       }
 
       if (validate_location()){
@@ -56,6 +60,17 @@ $(document).ready(function() {
        }
     }
 
+    function validate_post(){
+        var post = $("#post").val();
+        if (post == '') {
+            $( "#post_validation" ).text("Выбирете роль пользователя");
+            return true;
+        }else{
+            $( "#post_validation" ).text("");
+            return false;
+        }
+    }
+
     $("#name").on('keyup', function(){
        event.preventDefault();
        validate_name();
@@ -64,6 +79,12 @@ $(document).ready(function() {
     $("#location").on('keyup', function(){
        event.preventDefault();
        validate_location();
+    });
+
+    $( "#post" )
+      .change(function() {
+       event.preventDefault();
+       validate_post();
     });
 
 });

@@ -265,6 +265,7 @@ public class PostController {
         }
 
         movementSensor.setPost(post);
+        movementSensor.setSensorStatus(SensorStatus.NORMAL);
         movementSensorRepository.save(movementSensor);
 
         return "redirect:/posts/show_sensors/" + post_id;

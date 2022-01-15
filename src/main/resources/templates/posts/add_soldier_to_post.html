@@ -4,52 +4,10 @@
     <div th:replace="fragments/fragment :: head"></div>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
+    <script src="/js/posts/add_soldier_to_post.js"></script>
     <title id="pageTitle">Метро 2033 Военный персонал</title>
 </head>
 <body>
-
-<script type="application/javascript">
-        $(document).ready(function() {
-            $(function(){
-
-                $("#change").click(function(){
-
-                  check = false;
-
-                  $('#ajax_change_post *').filter(':input').each(function(){
-                      if($(this).val() == ''){
-                        check = true;
-                      }
-                  });
-
-                  if (check == true){
-                    alert("Не все данные заполнены!");
-                    return;
-                  }
-
-                  var add_soldier_to_post = {
-                    "post_id":$("#post_id").val(),
-                    "soldier_id":$("#soldier").val()
-                  };
-
-                  $.ajax({
-                    type: "POST",
-                    url: "/posts/add_soldier_to_post",
-                    contentType: "application/json",
-                    data: JSON.stringify(add_soldier_to_post),
-                    // dataType: "dataType",
-                    success: function (data) {
-                      console.log("success");
-                      console.log(data);
-                      window.location.href = '/posts';
-                    }
-                  });
-                  console.log(add_soldier_to_post);
-                });
-            })
-        });
-</script>
 
 <div th:replace="fragments/fragment :: nav-all"></div>
 <div class="container-fluid">
