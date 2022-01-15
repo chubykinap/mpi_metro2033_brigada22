@@ -4,74 +4,11 @@
     <div th:replace="fragments/fragment :: head"></div>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="/js/delivery/create_order.js" type="application/javascript"></script>
 
     <title id="pageTitle">Метро 2033 Служба доставки</title>
 </head>
 <body>
-
-<script type="application/javascript">
-    function getTableData(id) {
-        var $t_data = [];
-        $("#t_items tbody tr").each(function(i) {
-            var $c_data = [];
-            var $item_name = $(this).find('#t_name').text();
-            var $item_quantity = $(this).find('#t_quantity').val();
-            if ($item_quantity > 0) {
-                $c_data.push($item_name);
-                $c_data.push($item_quantity);
-                $t_data.push($c_data);
-            }
-        });
-        return $t_data;
-    }
-
-    $(document).ready(function() {
-        $(function() {
-            $("#create").click(function() {
-                check = false;
-                $('#ajax_create_order *').filter(':input').each(function(){
-                    if($(this).val() == ''){
-                        check = true;
-                    }
-                });
-
-                if (check == true){
-                    alert("Не все данные заполнены!");
-                    return;
-                }
-
-                var items = getTableData('t_items');
-                console.log(items);
-                if (items.length < 1) {
-                    alert("Не добавлены предметы для доставки");
-                    return;
-                }
-
-                var order = {
-                    "courier_id":$("#courier").val(),
-                    "station":$("#station").val(),
-                    "direction":false,
-                    "date":$('#date_select').val(),
-                    "items":items
-                };
-
-                $.ajax({
-                    type: "POST",
-                    url: "/delivery",
-                    contentType: "application/json",
-                    data: JSON.stringify(order),
-                    success: function (data) {
-                      console.log("success");
-                      console.log(data);
-                      window.location.href = '/delivery';
-                    }
-                });
-            });
-        })
-    });
-
-
-</script>
 
 <div th:replace="fragments/fragment :: nav-all"></div>
 <div class="container-fluid">
@@ -81,6 +18,7 @@
         </div>
         <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
             <h1>Создание заказа на доставку ресурсов</h1>
+            <label hidden="hidden" id="direction">false</label>
             <form th:method="POST" th:action="@{/delivery}" th:object="${order}" id="ajax_create_order">
                 <div th:if="${!#strings.equals(couriers, 'NoData')}">
                     <div class="form-group">
@@ -90,13 +28,14 @@
                             <option th:each="station : ${stations}" th:value=${station} th:text="${station}">Станция
                             </option>
                         </select>
+                        <div id="station_validation"></div>
                     </div>
 
                     <div class="form-group">
                         <label for="date_select">Дата доставки</label>
                         <input type="date" id="date_select" name="date_select"
-                               value="2033-01-01"
                                min="2033-01-01" max="2100-12-31">
+                        <div id="date_validation"></div>
                     </div>
 
                     <div class="form-group">
@@ -107,10 +46,12 @@
                                     th:text="${courier.user.name}">Курьер
                             </option>
                         </select>
+                        <div id="courier_validation"></div>
                     </div>
 
                     <div class="form-group">
                         <label>Список предметов для заказа</label>
+                        <div id="item_validation"></div>
                         <table id="t_items" class="table table-striped">
                             <thead>
                             <tr>

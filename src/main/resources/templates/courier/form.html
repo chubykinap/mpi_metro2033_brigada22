@@ -5,43 +5,11 @@
     <div th:replace="fragments/fragment :: head"></div>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="/js/courier/form.js" type="application/javascript"></script>
 
-    <title id="pageTitle">Метро 2033 Военный персонал</title>
+    <title id="pageTitle">Метро 2033 Курерскяа служба</title>
 </head>
 <body>
-
-<script type="application/javascript">
-    $(document).ready(function() {
-            $(function(){
-                $("#create").click(function(){
-                  if ($("#user")[0].selectedIndex <= 0) {
-                      alert("Не все данные заполнены!");
-                      return;
-                  }
-
-                  console.log($("#user").val());
-
-                  var courier = {
-                    "user_id":$("#user").val()
-                  };
-
-                  $.ajax({
-                    type: "POST",
-                    url: "/courier",
-                    contentType: "application/json",
-                    data: JSON.stringify(courier),
-                    success: function (data) {
-                      console.log("success");
-                      console.log(data);
-                      window.location.href = '/courier';
-                    }
-                  });
-                });
-            })
-        });
-
-</script>
-
 <div th:replace="fragments/fragment :: nav-all"></div>
 <div class="container-fluid">
     <div class="row">
@@ -50,25 +18,32 @@
         </div>
         <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
             <h1>Добавление нового курьера</h1>
-            <form th:method="POST" th:action="@{/courier}" th:object="${courier}" id="ajax_create_courier">
-                <div class="form-group">
-                    <label for="user">Пользователь</label>
-                    <select id="user" class="custom-select" th:field="*{user}">
-                        <option value="">Выбрать пользователя...</option>
-                        <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}">
-                            Пользователь
-                        </option>
-                    </select>
-                </div>
+            <div th:if="${!#strings.equals(users, 'NoData')}">
+                <form th:method="POST" th:action="@{/courier}" th:object="${courier}" id="ajax_create_courier">
+                    <div class="form-group">
+                        <label for="user">Пользователь</label>
+                        <select id="user" class="custom-select" th:field="*{user}">
+                            <option value="">Выбрать пользователя...</option>
+                            <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}">
+                                Пользователь
+                            </option>
+                        </select>
+                        <div id="user_validation"></div>
+                    </div>
 
-                <div class="form-group">
-                    <input type="button" id="create" class="btn-primary btn" value="Создать"/>
-                </div>
+                    <div class="form-group">
+                        <input type="button" id="create" class="btn-primary btn" value="Создать"/>
+                    </div>
 
-                <div class="form-group">
-                    <a href="/courier" class="btn-primary btn">Назад</a>
-                </div>
-            </form>
+                    <div class="form-group">
+                        <a href="/courier" class="btn-primary btn">Назад</a>
+                    </div>
+                </form>
+            </div>
+            <div th:if="${#strings.equals(users, 'NoData')}">
+                <h4>Нет пользователей для назначения</h4>
+                <a href="/courier" class="btn-primary btn">Вернуться</a>
+            </div>
         </div>
     </div>
 </div>

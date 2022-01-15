@@ -1,19 +1,10 @@
 package b22.metro2033.Controller.Delivery;
 
-import b22.metro2033.Entity.Army.*;
 import b22.metro2033.Entity.Delivery.Courier;
-import b22.metro2033.Entity.Delivery.DeliveryOrder;
-import b22.metro2033.Entity.Delivery.DeliveryState;
-import b22.metro2033.Entity.Delivery.OrderItem;
 import b22.metro2033.Entity.Role;
 import b22.metro2033.Entity.User;
-import b22.metro2033.Entity.Utility.OrderUtility;
-import b22.metro2033.Entity.Utility.SoldierUtility;
 import b22.metro2033.Repository.Delivery.CourierRepository;
-import b22.metro2033.Repository.Delivery.OrderItemRepository;
-import b22.metro2033.Repository.Delivery.OrderRepository;
 import b22.metro2033.Repository.UserRepository;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -65,8 +56,10 @@ public class CourierController {
         model.addAttribute("courier", new Courier());
         model.addAttribute("action", "Create");
         List<User> users = userRepository.findFreeCourier();
-        if (users.size() == 0)
-            return "redirect:/courier";
+        if (users.size() == 0){
+            model.addAttribute("users", "NoData");
+            return "courier/form";
+        }
         model.addAttribute("users", users);
 
         return "courier/form";

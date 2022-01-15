@@ -63,7 +63,7 @@ $(document).ready(function() {
     function validate_post(){
         var post = $("#post").val();
         if (post == '') {
-            $( "#post_validation" ).text("Выбирете роль пользователя");
+            $( "#post_validation" ).text("Выберите роль пользователя");
             return true;
         }else{
             $( "#post_validation" ).text("");

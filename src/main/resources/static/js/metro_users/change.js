@@ -37,7 +37,7 @@ $(document).ready(function() {
         var role = $("#role").val();
         console.log(role);
         if (role == '') {
-            $( "#role_validation" ).text("Выбирете роль пользователя");
+            $( "#role_validation" ).text("Выберите роль пользователя");
             check = true;
         }else{
             $( "#role_validation" ).text('');

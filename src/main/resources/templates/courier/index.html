@@ -6,7 +6,7 @@
 
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="/js/courier.js" type="application/javascript"></script>
+    <script src="/js/courier/courier.js" type="application/javascript"></script>
     <title id="pageTitle">Метро 2033 Курьерская служба</title>
 </head>
 <body>
@@ -37,6 +37,7 @@
                     <tbody>
                     <tr th:each="courier : ${couriers}">
                         <th scope="row"></th>
+                        <td scope="row" hidden="hidden" th:text="${courier.id}">id</td>
                         <td scope="row" th:text="${courier.user.name}">name</td>
                         <td scope="row" th:text="${courier.user.surname}">surname</td>
                         <td scope="row" th:text="${courier.user.patronymic}">patronymic</td>
@@ -49,9 +50,13 @@
                         </div>
 
                         <td scope="row">
-                            <div><a th:href="@{/courier/delete/{id}(id=${courier.id})}" class="btn-primary btn"
+                            <!--
+                            <div><a class="btn-primary btn"
                                     id="delete"
                                     sec:authorize="${hasAuthority('delivery:write')}">Удалить</a></div>
+                            -->
+                            <input type="button" id="delete" class="btn-primary btn" value="Удалить"
+                                   sec:authorize="${hasAuthority('delivery:write')}"/>
                         </td>
                     </tr>
                     </tbody>
