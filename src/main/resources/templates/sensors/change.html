@@ -2,6 +2,8 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <div th:replace="fragments/fragment :: head"></div>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="/js/sensors/change.js"></script>
 
     <title id="pageTitle">Метро 2033 Датчики</title>
 </head>
@@ -14,7 +16,7 @@
         </div>
         <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
             <h1>Изменение датчика</h1>
-            <form th:method="POST" th:action="@{/sensors/change}" th:object="${sensor}">
+            <form id="change_form" th:method="POST" th:action="@{/sensors/change}" th:object="${sensor}">
 
                 <div class="form-group">
                     <input type="hidden" id="sensor_id" th:field="${sensor.id}" class="form-control" placeholder="Sensor id">
@@ -23,11 +25,13 @@
                 <div class="form-group">
                     <label for="name">Название</label>
                     <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="Название">
+                    <div id="name_validation"></div>
                 </div>
 
                 <div class="form-group">
-                    <label for="surname">Местоположение</label>
-                    <input type="text" id="surname" th:field="*{location}" class="form-control" placeholder="Местоположение">
+                    <label for="location">Местоположение</label>
+                    <input type="text" id="location" th:field="*{location}" class="form-control" placeholder="Местоположение">
+                    <div id="location_validation"></div>
                 </div>
 
                 <div class="form-group">
@@ -37,11 +41,12 @@
                         <option th:each="post : ${posts}" th:value="${post.id}"
                                 th:text="${post.name}">Post</option>
                     </select>
+                    <div id="post_validation"></div>
                 </div>
 
                 <div class="form-group">
                     <input type="hidden" name="action" th:value="${action}">
-                    <button type="submit" class="btn-primary btn">Сохранить</button>
+                    <button id="button" type="submit" class="btn-primary btn">Сохранить</button>
                     <a href="/sensors" class="btn-primary btn">Назад</a>
                 </div>
             </form>

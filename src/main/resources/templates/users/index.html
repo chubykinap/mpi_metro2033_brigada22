@@ -83,14 +83,14 @@
                     <td th:text="${user.role}">role</td>
 
                     <div th:if="${!#strings.equals(user.role, 'ADMIN')}">
-                        <td scope="row"><div><a th:href="@{/users/change/{id}(id=${user.id})}" class="btn-primary btn" id="change" sec:authorize="${hasAuthority('army:write')}">Изменить</a></div></td>
+                        <td scope="row"><div><a th:href="@{/users/change/{id}(id=${user.id})}" class="btn-primary btn" id="change" sec:authorize="${hasAuthority('users:write')}">Изменить</a></div></td>
                     </div>
                     <div th:unless="${!#strings.equals(user.role, 'ADMIN')}">
                         <td scope="row"></td>
                     </div>
 
                     <div th:if="${!#strings.equals(user.role, 'ADMIN')}">
-                        <td scope="row"><div><a th:href="@{/users/delete/{id}(id=${user.id})}" class="btn-primary btn" id="delete" sec:authorize="${hasAuthority('army:write')}">Удалить</a></div></td>
+                        <td scope="row"><div><a th:href="@{/users/delete/{id}(id=${user.id})}" class="btn-primary btn" id="delete" sec:authorize="${hasAuthority('users:write')}">Удалить</a></div></td>
                     </div>
                     <div th:unless="${!#strings.equals(user.role, 'ADMIN')}">
                         <td scope="row"></td>

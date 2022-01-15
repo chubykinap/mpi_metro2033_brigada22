@@ -2,6 +2,8 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <div th:replace="fragments/fragment :: head"></div>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="/js/sensors/form.js"></script>
 
     <title id="pageTitle">Метро 2033 Датчики</title>
 </head>
@@ -14,15 +16,17 @@
         </div>
         <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
             <h1>Добавление датчика</h1>
-            <form th:method="POST" th:action="@{/sensors}" th:object="${sensor}">
+            <form id="create" th:method="POST" th:action="@{/sensors}" th:object="${sensor}">
                 <div class="form-group">
                     <label for="name">Название</label>
                     <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="Sensor name">
+                    <div id="name_validation"></div>
                 </div>
 
                 <div class="form-group">
-                    <label for="surname">Местоположение</label>
-                    <input type="text" id="surname" th:field="*{location}" class="form-control" placeholder="Sensor location">
+                    <label for="location">Местоположение</label>
+                    <input type="text" id="location" th:field="*{location}" class="form-control" placeholder="Sensor location">
+                    <div id="location_validation"></div>
                 </div>
 
                 <div class="form-group">
@@ -32,11 +36,12 @@
                         <option th:each="post : ${posts}" th:value="${post.id}"
                                 th:text="${post.name}">Post</option>
                     </select>
+                    <div id="post_validation"></div>
                 </div>
 
                 <div class="form-group">
                     <input type="hidden" name="action" th:value="${action}">
-                    <button type="submit" class="btn-primary btn">Save</button>
+                    <button id="button" type="submit" class="btn-primary btn">Save</button>
                     <a href="/sensors" class="btn-primary btn">Cancel</a>
                 </div>
             </form>

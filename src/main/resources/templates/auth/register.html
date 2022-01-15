@@ -8,33 +8,39 @@
 <body>
 <div th:replace="fragments/fragment :: nav-login"></div>
 <div class="container">
-    <form class="form-signin" th:method="POST" th:action="@{/auth/register}" th:object="${user}">
+    <form id="register_form" class="form-signin" th:method="POST" th:action="@{/auth/register}" th:object="${user}">
         <h2 class="form-signin-heading text-center">Регистрация нового пользователя</h2>
         <div th:if="${success == null || success == false}">
             <div class="form-group">
                 <label for="login">Логин</label>
                 <input type="text" id="login" th:field="*{login}" class="form-control" placeholder="Логин">
                 <label th:if="${#fields.hasErrors('login')}" th:errors="*{login}">Login</label>
+                <div id="login_validation"></div>
+
             </div>
             <div class="form-group">
                 <label for="name" >Имя</label>
                 <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="Имя">
                 <label th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name</label>
+                <div id="name_validation"></div>
             </div>
             <div class="form-group">
                 <label for="surname">Фамилия</label>
                 <input type="text" id="surname" th:field="*{surname}" class="form-control" placeholder="Фамилия">
                 <label th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}">Name</label>
+                <div id="surname_validation"></div>
             </div>
             <div class="form-group">
                 <label for="patronymic">Отчество</label>
                 <input type="text" id="patronymic" th:field="*{patronymic}" class="form-control" placeholder="Отчество">
                 <label th:if="${#fields.hasErrors('patronymic')}" th:errors="*{patronymic}">Name</label>
+                <div id="patronymic_validation"></div>
             </div>
             <div class="form-group">
                 <label for="password">Пароль</label>
                 <input type="password" id="password" th:field="*{password}" class="form-control" placeholder="Пароль">
                 <label th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Name</label>
+                <div id="password_validation"></div>
             </div>
 
             <div class="form-group">
@@ -45,9 +51,10 @@
                             th:text="${role.name}">Role</option>
                 </select>
                 <label th:if="${#fields.hasErrors('role')}" th:errors="*{role}">Name</label>
+                <div id="role_validation"></div>
             </div>
 
-            <button class="btn btn-lg btn-primary btn-block mb-3" type="submit">Регистрация</button>
+            <button id="button" class="btn btn-lg btn-primary btn-block mb-3" type="submit">Регистрация</button>
         </div>
         <div class="alert alert-success" role="alert" th:if="${success != null && success == true}">Аккаунт создан</div>
         <div class="text-center">
@@ -55,5 +62,8 @@
         </div>
     </form>
 </div>
+
+<script src="/js/registration/validation.js"></script>
+
 </body>
 </html>

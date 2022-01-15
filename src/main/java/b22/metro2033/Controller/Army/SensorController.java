@@ -182,7 +182,10 @@ public class SensorController {
         }
 
         if (movementSensor.getPost() != null){
-            change_sensor.setSensorStatus(SensorStatus.NORMAL);
+
+            if(change_sensor.getPost().getId() != movementSensor.getPost().getId()){
+                change_sensor.setSensorStatus(SensorStatus.NORMAL);
+            }
         }
 
         change_sensor.setPost(movementSensor.getPost());

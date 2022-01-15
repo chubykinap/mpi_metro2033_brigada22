@@ -4,94 +4,10 @@
     <div th:replace="fragments/fragment :: head"></div>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
+    <script src="/js/army/change.js"></script>
     <title id="pageTitle">Метро 2033 Военный персонал</title>
 </head>
 <body>
-
-<script type="application/javascript">
-        $(document).ready(function() {
-            $(function(){
-
-                $("#change").click(function(){
-
-                  check = false;
-                  /*if ($("#user")[0].selectedIndex <= 0) {
-                      check = true;
-                  }*/
-
-                  check_post = false;
-
-                  $('#ajax_create_soldier *').filter(':input').each(function(){
-                      if($(this).val() == ''){
-                        if ($(this)[0].getAttribute('id') == 'post' && $(this)[0].selectedIndex <= 0){
-                            check_post = true;
-                        }else{
-                            check = true;
-                        }
-                      }
-                  });
-
-                  if (check == true){
-                    alert("Не все данные заполнены!");
-                    return;
-                  }
-
-                  if ($("#agility").val() < 0 || $("#agility").val() > 100) {
-                    alert("Ловкость должна быть в границах от 0 до 100");
-                    return;
-                  }
-                  if ($("#strength").val() < 0 || $("#strength").val() > 100) {
-                    alert("Сила должна быть в границах от 0 до 100");
-                    return;
-                  }
-                  if ($("#stamina").val() < 0 || $("#stamina").val() > 100) {
-                    alert("Выносливость должна быть в границах от 0 до 100");
-                    return;
-                  }
-
-                  console.log($("#user").val());
-                  console.log($("#post").val());
-                  console.log($("#rank").val());
-                  console.log($("#health_state").val());
-                  console.log($("#agility").val());
-                  console.log($("#strength").val());
-                  console.log($("#stamina").val());
-
-                  post = -1;
-                  if (check_post == false){
-                    post = $("#post").val();
-                  }
-
-                  var new_soldier = {
-                    "soldier_id":$("#soldier_id").val(),
-                    "user_id":$("#user").val(),
-                    "post_id":post,
-                    "rank": $("#rank").val(),
-                    "health_state": $("#health_state").val(),
-                    "agility": $("#agility").val(),
-                    "strength": $("#strength").val(),
-                    "stamina": $("#stamina").val()
-                  };
-
-                  $.ajax({
-                    type: "POST",
-                    url: "/army/change",
-                    contentType: "application/json",
-                    data: JSON.stringify(new_soldier),
-                    // dataType: "dataType",
-                    success: function (data) {
-                      console.log("success");
-                      console.log(data);
-                      window.location.href = '/army';
-                    }
-                  });
-                  console.log(new_soldier);
-                });
-            })
-        });
-</script>
-
 
 <div th:replace="fragments/fragment :: nav-all"></div>
 <div class="container-fluid">
@@ -116,6 +32,7 @@
                         <option th:each="post : ${posts}" th:value="${post.id}"
                                 th:text="${post.name}">Post</option>
                     </select>
+                    <div id="post_validation"></div>
                 </div>
 
                 <div class="form-group">
@@ -124,6 +41,7 @@
                         <option value="">Выбрать звание...</option>
                         <option th:each="rank : ${ranks}" th:value="${rank}" th:text="${rank}">Звание</option>
                     </select>
+                    <div id="rank_validation"></div>
                 </div>
 
                 <div class="form-group">
@@ -132,21 +50,25 @@
                         <option value="">Состояние здоровья солдата...</option>
                         <option th:each="state : ${health}" th:value="${state}" th:text="${state}">Здоровье</option>
                     </select>
+                    <div id="health_validation"></div>
                 </div>
 
                 <div class="form-group">
                     <label for="agility">Ловкость</label>
-                    <input type="number" id="agility"  th:field="${soldier.agility}" class="form-control" placeholder="Agility">
+                    <input type="number" id="agility"  th:field="${soldier.agility}" class="form-control" placeholder="Agility" min="0" step="1" max="100">
+                    <div id="agility_validation"></div>
                 </div>
 
                 <div class="form-group">
                     <label for="strength">Сила</label>
-                    <input type="number" id="strength" th:field="${soldier.strength}" class="form-control" placeholder="Strength">
+                    <input type="number" id="strength" th:field="${soldier.strength}" class="form-control" placeholder="Strength" min="0" step="1" max="100">
+                    <div id="strength_validation"></div>
                 </div>
 
                 <div class="form-group">
                     <label for="stamina">Выносливость</label>
-                    <input type="number" id="stamina" th:field="${soldier.stamina}" class="form-control" placeholder="Stamina">
+                    <input type="number" id="stamina" th:field="${soldier.stamina}" class="form-control" placeholder="Stamina" min="0" step="1" max="100">
+                    <div id="stamina_validation"></div>
                 </div>
 
                 <div class="form-group">

@@ -138,7 +138,7 @@ public class UsersController {
     }
 
     @GetMapping("/change/{id}")
-    @PreAuthorize("hasAuthority('users:write')")
+    @PreAuthorize("hasAuthority('army:write')")
     public String changeForm(Model model, Authentication authentication, @PathVariable Long id){
 
         User user = userRepository.findById(id).orElse(null);
