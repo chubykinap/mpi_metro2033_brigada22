@@ -6,35 +6,11 @@
 
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="/js/delivery/view.js" type="application/javascript"></script>
 
     <title id="pageTitle">Метро 2033 Список полученных заказов</title>
 </head>
 <body>
-<script type="application/javascript">
-    $(document).ready(function() {
-        $(function() {
-            $("#save").click(function() {
-                var send_state = {
-                    "id":$("#order_id").val(),
-                    "state":$("#state").val()
-                };
-                console.log($("#state").html());
-                $.ajax({
-                    type: "POST",
-                    url: "/delivery/changeState",
-                    contentType: "application/json",
-                    data: JSON.stringify(send_state),
-                    // dataType: "dataType",
-                    success: function (data) {
-                      console.log("success");
-                      window.location.href = '/delivery';
-                    }
-                });
-            });
-        })
-    });
-
-</script>
 <div th:replace="fragments/fragment :: nav-all"></div>
 <div class="container-fluid">
     <div class="row">
@@ -46,7 +22,7 @@
             <form th:method="POST" th:action="@{changeState}" th:object="${order}">
                 <div class="form-group">
                     <label>Номер заказа:</label><label id="text_id" th:text="*{id}"></label>
-                    <input type="hidden" id="order_id" th:field="*{id}"></input>
+                    <input type="hidden" id="order_id" th:value="*{id}"></input>
 
                     <div class="form-group">
                         <h4>Тип заказа:</h4>
@@ -96,7 +72,7 @@
                     <div class="form-group">
                         <input type="button" id="save" class="btn-primary btn" value="Сохранить"></input>
                         <!--<a th:href="@{/delivery/change/{id}(id=${order.id})}" sec:authorize="${hasAuthority('delivery:write')}" id="change" class="btn-primary btn">Изменить заказ</a>-->
-                        <a th:href="@{/delivery/delete/{id}(id=${order.id})}" sec:authorize="${hasAuthority('delivery:write')}" id="delete" class="btn-primary btn">Удалить</a>
+                        <a id="delete" class="btn-primary btn">Удалить</a>
                     </div>
                     <a href="/delivery" class="btn-primary btn">Назад</a>
                 </div>

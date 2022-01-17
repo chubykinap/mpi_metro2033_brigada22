@@ -21,11 +21,14 @@
         <div class="form-group">
           <label for="name">Наименование</label>
           <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="Наименование">
+          <div id="name_validation"></div>
         </div>
 
         <div class="form-group">
           <label for="quantity">Количество</label>
-          <input type="text" id="quantity" th:field="*{quantity}" class="form-control" placeholder="Количество">
+          <input type="number" id="quantity" value="0" min="0"
+                 th:field="*{quantity}" class="form-control" placeholder="Количество">
+          <div id="quantity_validation"></div>
         </div>
 
         <div class="form-group">

@@ -4,53 +4,11 @@
     <div th:replace="fragments/fragment :: head"></div>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="/js/storage/change.js" type="application/javascript"></script>
 
     <title id="pageTitle">Метро 2033 Склад</title>
 </head>
 <body>
-
-<script type="application/javascript">
-        $(document).ready(function() {
-            $(function(){
-
-                $("#change").click(function(){
-
-                  check = false;
-
-                  $('#ajax_change_item *').filter(':input').each(function(){
-                      if($(this).val() == ''){
-                        check = true;
-                      }
-                  });
-
-                  if (check == true){
-                    alert("Не все данные заполнены!");
-                    return;
-                  }
-
-                  var item = {
-                    "item_id":$("#item_id").val(),
-                    "name":$("#name").val(),
-                    "quantity":$("#quantity").val()
-                  };
-
-                  $.ajax({
-                    type: "POST",
-                    url: "/storage/change",
-                    contentType: "application/json",
-                    data: JSON.stringify(item),
-                    // dataType: "dataType",
-                    success: function (data) {
-                      console.log("success");
-                      console.log(data);
-                      window.location.href = '/storage';
-                    }
-                  });
-                  console.log(item);
-                });
-            })
-        });
-</script>
 
 <div th:replace="fragments/fragment :: nav-all"></div>
 <div class="container-fluid">
@@ -65,11 +23,14 @@
                 <div class="form-group">
                     <label for="name">Наименование</label>
                     <input type="text" id="name"  th:field="${item.name}" class="form-control" placeholder="Name">
+                    <div id="name_validation"></div>
                 </div>
 
                 <div class="form-group">
                     <label for="quantity">Количество на складе</label>
-                    <input type="text" id="quantity"  th:field="${item.quantity}" class="form-control" placeholder="Quantity">
+                    <input type="text" id="quantity"  th:field="${item.quantity}" value="0" min="0"
+                           class="form-control" placeholder="Quantity">
+                    <div id="quantity_validation"></div>
                 </div>
 
                 <div class="form-group">

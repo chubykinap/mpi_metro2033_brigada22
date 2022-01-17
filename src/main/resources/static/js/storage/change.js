@@ -1,6 +1,8 @@
 $(document).ready(function() {
-    $(function() {
-        $("#create").click(function() {
+    $(function(){
+
+        $("#change").click(function(){
+
             var check = false;
 
             check = validate_name();
@@ -8,7 +10,28 @@ $(document).ready(function() {
 
             if (check){
                 alert("Ошибка в заполнении полей.");
+                return;
             }
+
+            var item = {
+                "item_id":$("#item_id").val(),
+                "name":$("#name").val(),
+                "quantity":$("#quantity").val()
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/storage/change",
+                contentType: "application/json",
+                data: JSON.stringify(item),
+                // dataType: "dataType",
+                success: function (data) {
+                  console.log("success");
+                  console.log(data);
+                  window.location.href = '/storage';
+                }
+            });
+            console.log(item);
         });
 
         $("#name").on('keyup', function(event){

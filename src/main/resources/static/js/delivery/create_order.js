@@ -1,20 +1,13 @@
 $(document).ready(function() {
-
-        $("#create").submit(function(event) {
+    $(function() {
+        $("#create").click(function(event) {
             event.preventDefault();
             check = false;
 
             check = validate_courier();
-            console.log(check);
-
             check = validate_station();
-            console.log(check);
-
             check = validate_date();
-            console.log(check);
-
             check = validate_items();
-            console.log(check);
 
             if (check == true){
                 alert("Не все данные заполнены!");
@@ -45,26 +38,28 @@ $(document).ready(function() {
             });
         });
 
-        $("courier").keyup(function(){
+        $("#courier").on("change", function(){
             event.preventDefault()
             validate_courier();
         });
 
-        $("station").keyup(function(){
+        $("#station").on("change", function(){
             event.preventDefault()
             validate_station();
         });
 
-        $("date").keyup(function(){
+        $("#date_select").on("change", function(){
             event.preventDefault()
             validate_date();
         });
 
-        $("t_items").change(function(){
+        // ХЗ работает, но не так
+        // Не выдает сообщение при смене значения в строке
+        $("#t_items").change(function(){
             event.preventDefault()
             validate_date();
         });
-
+    })
 });
 
 function getTableData() {
@@ -117,7 +112,6 @@ function validate_date(){
 
 function validate_items(){
     var items = getTableData();
-    console.log(items);
     if (items.length < 1) {
         $( "#item_validation" ).text("Не добавлены предметы для заказа");
         return true;

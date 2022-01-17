@@ -259,7 +259,7 @@ public class OrderController {
         return "redirect:/delivery";
     }
 
-    @RequestMapping(value = "/delete/{id}")
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('delivery:write')")
     public String deleteOrder(@PathVariable Long id) {
         DeliveryOrder order = orderRepository.findById(id).orElse(null);
