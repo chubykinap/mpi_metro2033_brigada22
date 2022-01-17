@@ -1,59 +1,27 @@
-function getTableData(id) {
-    var $t_data = [];
-    $("#t_items tbody tr").each(function(i) {
-        var $c_data = [];
-        var $item_name = $(this).find('#t_name').text();
-        var $item_quantity = $(this).find('#t_quantity').val();
-        if ($item_quantity > 0) {
-            $c_data.push($item_name);
-            $c_data.push($item_quantity);
-            $t_data.push($c_data);
-        }
-    });
-    return $t_data;
-}
-
 $(document).ready(function() {
-    $(function() {
-        $("#create").click(function() {
+
+        $("#create").submit(function(event) {
+            event.preventDefault();
             check = false;
 
-            var courier = $("#courier").val();
-            if (courier == '') {
-                $( "#courier_validation" ).text("Выберите курьера");
-                check = true;
-            }else{
-                $( "#courier_validation" ).text("");
-            }
+            check = validate_courier();
+            console.log(check);
 
-            var station = $("#station").val();
-            if (station == '') {
-                $( "#station_validation" ).text("Выберите станцию");
-                check = true;
-            }else{
-                $( "#station_validation" ).text("");
-            }
+            check = validate_station();
+            console.log(check);
 
-            var date = $("#date_select").val();
-            if (date == '') {
-                $( "#date_validation" ).text("Выберите дату доставки");
-                check = true;
-            }else{
-                $( "#date_validation" ).text("");
-            }
+            check = validate_date();
+            console.log(check);
 
-            var items = getTableData('t_items');
-            console.log(items);
-            if (items.length < 1) {
-                $( "#item_validation" ).text("Не добавлены предметы для заказа");
-                return;
-            }else{
-                $( "#item_validation" ).text("");
-            }
+            check = validate_items();
+            console.log(check);
 
             if (check == true){
                 alert("Не все данные заполнены!");
                 return;
+            }
+            else {
+                $(this).unbind('submit').submit()
             }
 
             var order = {
@@ -61,7 +29,7 @@ $(document).ready(function() {
                 "station":$("#station").val(),
                 "direction":$("#direction").text(),
                 "date":$('#date_select').val(),
-                "items":items
+                "items":getTableData()
             };
 
             $.ajax({
@@ -76,5 +44,85 @@ $(document).ready(function() {
                 }
             });
         });
-    })
+
+        $("courier").keyup(function(){
+            event.preventDefault()
+            validate_courier();
+        });
+
+        $("station").keyup(function(){
+            event.preventDefault()
+            validate_station();
+        });
+
+        $("date").keyup(function(){
+            event.preventDefault()
+            validate_date();
+        });
+
+        $("t_items").change(function(){
+            event.preventDefault()
+            validate_date();
+        });
+
 });
+
+function getTableData() {
+    var $t_data = [];
+    $("#t_items tbody tr").each(function(i) {
+        var $c_data = [];
+        var $item_name = $(this).find('#t_name').text();
+        var $item_quantity = $(this).find('#t_quantity').val();
+        if ($item_quantity > 0) {
+            $c_data.push($item_name);
+            $c_data.push($item_quantity);
+            $t_data.push($c_data);
+        }
+    });
+    return $t_data;
+}
+
+function validate_courier(){
+    var courier = $("#courier").val();
+    if (courier == '') {
+        $( "#courier_validation" ).text("Выберите курьера");
+        return true;
+    }else{
+        $( "#courier_validation" ).text("");
+        return false;
+    }
+}
+
+function validate_station(){
+    var station = $("#station").val();
+    if (station == '') {
+        $( "#station_validation" ).text("Выберите станцию");
+        return true;
+    }else{
+        $( "#station_validation" ).text("");
+        return false;
+    }
+}
+
+function validate_date(){
+    var date = $("#date_select").val();
+    if (date == '') {
+        $( "#date_validation" ).text("Выберите дату доставки");
+        return true;
+    }else{
+        $( "#date_validation" ).text("");
+        return false;
+    }
+}
+
+function validate_items(){
+    var items = getTableData();
+    console.log(items);
+    if (items.length < 1) {
+        $( "#item_validation" ).text("Не добавлены предметы для заказа");
+        return true;
+    }else{
+        $( "#item_validation" ).text("");
+        return false;
+    }
+}
