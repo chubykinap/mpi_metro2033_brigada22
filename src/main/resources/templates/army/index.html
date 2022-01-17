@@ -20,7 +20,7 @@
         <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
             <h1>Военный персонал</h1>
             <a href="/army/create" class="btn btn-primary my-3" sec:authorize="${hasAuthority('army:write')}">Добавить нового военного</a>
-
+            <div id="notification" style="background-color:#8ebf42"></div>
             <div>
                 <span>
                     <a class="page-link svg-icon"  th:if="${soldiersPage.totalPages > 0 and start_page - number_of_pages > 0}"
@@ -81,7 +81,9 @@
                                                'Выносливость: ' + soldier.stamina}">characteristics</td>
                         <td scope="row" th:text="${soldier.health_state}">health</td>
                         <td scope="row"><div><a th:href="@{/army/change/{id}(id=${soldier.id})}" class="btn-primary btn" sec:authorize="${hasAuthority('army:write')}">Изменить</a></div></td>
-                        <td scope="row"><div><a th:href="@{/army/delete/{id}(id=${soldier.id})}" class="btn-primary btn" id="delete" sec:authorize="${hasAuthority('army:write')}">Удалить</a></div></td>
+                        <td scope="row"><div><a class="btn-primary btn"
+                                                th:value="${soldier.id}" id="delete" sec:authorize="${hasAuthority('army:write')}"
+                                                >Удалить</a></div></td>
                     </tr>
                     </tbody>
                 </table>
@@ -91,5 +93,7 @@
         </div>
     </div>
 </div>
+
+<script src="/js/army/index.js"></script>
 </body>
 </html>

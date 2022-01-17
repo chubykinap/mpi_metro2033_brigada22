@@ -13,4 +13,5 @@ public interface SensorMessagesRepository extends JpaRepository<SensorMessages, 
     Optional<SensorMessages> findById(long id);
     List<SensorMessages> findAllByMovementSensor(MovementSensor movementSensor);
     List<SensorMessages> findAllByMovementSensorId(long id);
+    List<SensorMessages> findByMovementSensorOrderByIdDesc(MovementSensor movementSensor);
 }

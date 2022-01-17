@@ -1,8 +1,14 @@
 $(document).ready(function() {
 
-    $("#change_form").submit(function(e) {
-      e.preventDefault();
+    $(document).on('click', '#button', function(e) {
+       e.preventDefault();
       var check = false;
+
+      var sensor_id = $("#sensor_id").attr("value");
+      if (sensor_id == '') {
+          alert("Произошла ошибка с id датчика");
+          check = true;
+      }
 
       var name = $("#name").val();
       if (name == '') {
@@ -20,6 +26,14 @@ $(document).ready(function() {
           check = true;
       }
 
+      var post_id = $("#post").val();
+      if (post_id == '') {
+          $( "#post_validation" ).text("Введи пост датчика");
+          check = true;
+      }else{
+          $( "#post_validation" ).text("");
+      }
+
       if (validate_post()) {
         check = true;
       }
@@ -29,12 +43,43 @@ $(document).ready(function() {
       }
 
       if (check == false){
-          $(this).unbind('submit').submit()
+        var sensor = {
+                 "name": name,
+                 "location" : location,
+                 "post_id" : post_id,
+                 "sensor_id" : sensor_id
+             };
+
+        $.ajax({
+             type: "POST",
+             url: "/sensors/change",
+             contentType: "application/json",
+             data: JSON.stringify(sensor),
+             success: function (data) {
+               console.log("success");
+               if (data.status == "Error"){
+                 alert(data.data);
+                 return;
+               }
+               else{
+                 show_notification(data.data);
+               }
+             },
+             error: function (e){
+                 console.log(e);
+             }
+         });
       }else{
         alert("Введите правильно данные");
       }
 
     });
+
+     function show_notification(info){
+        $('#notification').text("Данные датчика: " + info.name + " " + info.location + " изменены");
+        $('#notification').show();
+        $('#notification').delay(7000).hide(0);
+     }
 
     function validate_name(){
        var regExp = new RegExp("^(?=.{1,100}$)(?![_.])(?!.*[_.]{2})[a-zA-ZА-Яа-я0-9]+(?<![_.])$");
@@ -63,7 +108,7 @@ $(document).ready(function() {
     function validate_post(){
         var post = $("#post").val();
         if (post == '') {
-            $( "#post_validation" ).text("Выбирете роль пользователя");
+            $( "#post_validation" ).text("Выбирете пост");
             return true;
         }else{
             $( "#post_validation" ).text("");

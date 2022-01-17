@@ -14,6 +14,7 @@
         </div>
         <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
             <h1>Датчики поста: [[${post.name}]]</h1>
+            <div id="notification" style="background-color:#8ebf42"></div>
             <a href="/posts" class="btn btn-primary my-3">Назад</a>
             <a th:href="@{/posts/add_sensor_to_post/{id}(id=${post.id})}" class="btn-primary btn">Добавить сенсор на пост</a>
 
@@ -57,7 +58,8 @@
                     <tbody>
                     <tr th:each="sensor : ${sensorsPage}">
                         <div th:if="${#strings.equals(sensor.sensorStatus, 'ERROR')}">
-                            <th bgcolor="#FF0000" scope="row" th:text="${sensor.id}">id</th>
+                            <th bgcolor="#FF0000" scope="row"></th>
+<!--                            <th bgcolor="#FF0000" scope="row" th:text="${sensor.id}">id</th>-->
                             <td bgcolor="#FF0000" th:text="${sensor.name}">name</td>
                             <td bgcolor="#FF0000" :text="${sensor.location}">location</td>
 
@@ -71,7 +73,8 @@
                         </div>
 
                         <div th:if="${!#strings.equals(sensor.sensorStatus, 'ERROR')}">
-                            <th scope="row" th:text="${sensor.id}">id</th>
+                            <th scope="row"></th>
+<!--                            <th scope="row" th:text="${sensor.id}">id</th>-->
                             <td th:text="${sensor.name}">name</td>
                             <td :text="${sensor.location}">location</td>
                             <td scope="row" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
@@ -79,7 +82,9 @@
                         </div>
 
                         <td scope="row"><div><a th:href="@{/posts/show_sensor_messages/{id}(id=${sensor.id})}" class="btn-primary btn" id="messages">Показать сообщения</a></div></td>
-                        <td scope="row"><div><a th:href="@{/posts/delete_sensor_post/{id}(id=${sensor.id})}" class="btn-primary btn" id="delete" sec:authorize="${hasAuthority('army:write')}">Удалить</a></div></td>
+                        <td scope="row"><div><a class="btn-primary btn"
+                                                id="delete" sec:authorize="${hasAuthority('army:write')}"
+                                                th:value="${sensor.id}">Удалить</a></div></td>
 
                     </tr>
                     </tbody>
@@ -89,6 +94,6 @@
         </div>
     </div>
 </div>
-
+<script src="/js/posts/show_sensors.js"></script>
 </body>
 </html>

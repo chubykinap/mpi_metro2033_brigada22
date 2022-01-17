@@ -39,15 +39,30 @@ $(document).ready(function() {
             // dataType: "dataType",
             success: function (data) {
               console.log("success");
-              console.log(data);
-              window.location.href = '/posts';
-            }
+               if (data.status == "Error"){
+                 alert(data.data);
+                 return;
+               }
+               else{
+                 console.log(data);
+                 show_notification(data.data);
+               }
+            },
+             error: function (e){
+                 console.log(e);
+             }
           });
           console.log(change_post);
     }else{
         alert("Введите правильно данные");
     }
   });
+
+     function show_notification(info){
+        $('#notification').text("Данные поста: " + info.name + " " + info.location + " изменены");
+        $('#notification').show();
+        $('#notification').delay(7000).hide(0);
+     }
 
     function validate_name(){
        var regExp = new RegExp("^(?=.{1,100}$)(?![_.])(?!.*[_.]{2})[a-zA-ZА-Яа-я0-9]+(?<![_.])$");

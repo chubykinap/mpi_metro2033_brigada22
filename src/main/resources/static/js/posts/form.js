@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
-    $("#create").submit(function(e) {
-      e.preventDefault();
+    $(document).on('click', '#button', function(e) {
+       e.preventDefault();
       var check = false;
 
       var name = $("#name").val();
@@ -25,12 +25,42 @@ $(document).ready(function() {
       }
 
       if (check == false){
-          $(this).unbind('submit').submit()
+         var post = {
+                     "name": name,
+                     "location" : location
+                 };
+
+         $.ajax({
+             type: "POST",
+             url: "/posts/create",
+             contentType: "application/json",
+             data: JSON.stringify(post),
+             success: function (data) {
+               console.log("success");
+               if (data.status == "Error"){
+                 alert(data.data);
+                 return;
+               }
+               else{
+                 show_notification(data.data);
+               }
+             },
+             error: function (e){
+                 console.log(e);
+             }
+         });
+
       }else{
         alert("Введите правильно данные");
       }
 
     });
+
+     function show_notification(info){
+        $('#notification').text("Пост:  " + info.name + " " + info.location + " создан");
+        $('#notification').show();
+        $('#notification').delay(7000).hide(0);
+     }
 
     function validate_name(){
        var regExp = new RegExp("^(?=.{1,100}$)(?![_.])(?!.*[_.]{2})[a-zA-ZА-Яа-я0-9]+(?<![_.])$");

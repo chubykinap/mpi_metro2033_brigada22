@@ -20,7 +20,7 @@ public class SensorMessages {
         this.setMessages_date(LocalDateTime.now());
     }
 
-    /*@OneToMany(mappedBy = "messages", cascade = CascadeType.ALL, orphanRemoval = true)
+    /*@OneToMany(mappedBy = "messagess", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MovementSensor> sensors;*/
 
     @ManyToOne

@@ -49,6 +49,7 @@
                         </div>
 
                         <td scope="row">
+
                             <div><a th:href="@{/courier/delete/{id}(id=${courier.id})}" class="btn-primary btn"
                                     id="delete"
                                     sec:authorize="${hasAuthority('delivery:write')}">Удалить</a></div>

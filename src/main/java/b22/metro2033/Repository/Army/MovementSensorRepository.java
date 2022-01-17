@@ -25,4 +25,6 @@ public interface MovementSensorRepository extends JpaRepository<MovementSensor, 
     List<MovementSensor> findSensorsWithErrors();
     List<MovementSensor> findAllByPostIsNotNull();
     List<MovementSensor> findAllByPostIsNull();
+    Optional<MovementSensor> findByName(String name);
+
 }

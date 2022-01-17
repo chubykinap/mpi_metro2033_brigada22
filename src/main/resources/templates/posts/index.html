@@ -2,6 +2,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <div th:replace="fragments/fragment :: head"></div>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <title id="pageTitle">Метро 2033 посты</title>
 </head>
@@ -14,6 +15,7 @@
         </div>
         <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
             <h1>Посты</h1>
+            <div id="notification" style="background-color:#8ebf42"></div>
             <a href="/posts/create" class="btn btn-primary my-3" sec:authorize="${hasAuthority('army:write')}">Создать</a>
             <div>
                  <span>
@@ -55,13 +57,16 @@
                     </thead>
                     <tbody>
                     <tr th:each="post : ${postsPage}">
-                        <th scope="row" th:text="${post.id}">id</th>
+                        <th scope="row"></th>
+<!--                        <th scope="row" th:text="${post.id}">id</th>-->
                         <td th:text="${post.name}">name</td>
                         <td th:text="${post.location}">location</td>
                         <td scope="row"><div><a th:href="@{/posts/change/{id}(id=${post.id})}" class="btn-primary btn" id="change" sec:authorize="${hasAuthority('army:write')}">Изменить</a></div></td>
                         <td scope="row"><div><a th:href="@{/posts/show_soldiers/{id}(id=${post.id})}" class="btn-primary btn" id="show_soldiers" sec:authorize="${hasAuthority('army:write')}">Солдаты</a></div></td>
                         <td scope="row"><div><a th:href="@{/posts/show_sensors/{id}(id=${post.id})}" class="btn-primary btn" id="show_sensors" sec:authorize="${hasAuthority('army:write')}">Датчики</a></div></td>
-                        <td scope="row"><div><a th:href="@{/posts/delete/{id}(id=${post.id})}" class="btn-primary btn" id="delete" sec:authorize="${hasAuthority('army:write')}">Удалить</a></div></td>
+                        <td scope="row"><div><a class="btn-primary btn"
+                                                id="delete" sec:authorize="${hasAuthority('army:write')}"
+                                                th:value="${post.id}">Удалить</a></div></td>
                     </tr>
                     </tbody>
                 </table>
@@ -69,5 +74,7 @@
         </div>
     </div>
 </div>
+
+<script src="/js/posts/index.js"></script>
 </body>
 </html>

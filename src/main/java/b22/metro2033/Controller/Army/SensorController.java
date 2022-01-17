@@ -122,28 +122,28 @@ public class SensorController {
         return modelAndView;
     }
 
-    @PostMapping
-    @PreAuthorize("hasAuthority('army:write')")
-    public String create(@ModelAttribute("sensor") @Valid MovementSensor movementSensor, BindingResult bindingResult,
-                         Model model, Authentication authentication, @RequestParam("action") String action){
-        if(bindingResult.hasErrors()) {
-            model.addAttribute("action", action);
-            model.addAttribute("sensors", movementSensorRepository.findAll());
-            return "sensors/form";
-        }
-        movementSensor.setSensorStatus(SensorStatus.NORMAL);
-        movementSensorRepository.save(movementSensor);
+//    @PostMapping
+//    @PreAuthorize("hasAuthority('army:write')")
+//    public String create(@ModelAttribute("sensor") @Valid MovementSensor movementSensor, BindingResult bindingResult,
+//                         Model model, Authentication authentication, @RequestParam("action") String action){
+//        if(bindingResult.hasErrors()) {
+//            model.addAttribute("action", action);
+//            model.addAttribute("sensors", movementSensorRepository.findAll());
+//            return "sensors/form";
+//        }
+//        movementSensor.setSensorStatus(SensorStatus.NORMAL);
+//        movementSensorRepository.save(movementSensor);
+//
+//        return "redirect:/sensors";
+//    }
 
-        return "redirect:/sensors";
-    }
-
-    @GetMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority('army:write')")
-    public String delete(@PathVariable Long id) {
-        movementSensorRepository.findById(id).ifPresent(movementSensor -> movementSensorRepository.deleteById(id));
-        return "redirect:/sensors";
-    }
-
+//    @GetMapping("/delete/{id}")
+//    @PreAuthorize("hasAuthority('army:write')")
+//    public String delete(@PathVariable Long id) {
+//        movementSensorRepository.findById(id).ifPresent(movementSensor -> movementSensorRepository.deleteById(id));
+//        return "redirect:/sensors";
+//    }
+//
     @GetMapping("/change/{id}")
     @PreAuthorize("hasAuthority('army:write')")
     public String changeForm(Model model, Authentication authentication, @PathVariable Long id){
@@ -164,38 +164,38 @@ public class SensorController {
         return "sensors/change";
     }
 
-    @PreAuthorize("hasAuthority('army:write')")
-    @RequestMapping(value = "/change", method = RequestMethod.POST)
-    public String change(@ModelAttribute("sensor") @Valid MovementSensor movementSensor, BindingResult bindingResult,
-                         Model model, Authentication authentication, @RequestParam("action") String action){
-        if(bindingResult.hasErrors()) {
-            model.addAttribute("action", action);
-            model.addAttribute("sensors", movementSensorRepository.findAll());
-            return "sensors/form";
-        }
-
-        //Переделать в 1 запрос
-        MovementSensor change_sensor = movementSensorRepository.findById(movementSensor.getId()).orElse(null);
-
-        if(change_sensor == null){
-            return "redirect:/sensors";
-        }
-
-        if (movementSensor.getPost() != null){
-
-            if(change_sensor.getPost().getId() != movementSensor.getPost().getId()){
-                change_sensor.setSensorStatus(SensorStatus.NORMAL);
-            }
-        }
-
-        change_sensor.setPost(movementSensor.getPost());
-        change_sensor.setLocation(movementSensor.getLocation());
-        change_sensor.setName(movementSensor.getName());
-
-        movementSensorRepository.save(change_sensor);
-
-        return "redirect:/sensors";
-    }
+//    @PreAuthorize("hasAuthority('army:write')")
+//    @RequestMapping(value = "/change", method = RequestMethod.POST)
+//    public String change(@ModelAttribute("sensor") @Valid MovementSensor movementSensor, BindingResult bindingResult,
+//                         Model model, Authentication authentication, @RequestParam("action") String action){
+//        if(bindingResult.hasErrors()) {
+//            model.addAttribute("action", action);
+//            model.addAttribute("sensors", movementSensorRepository.findAll());
+//            return "sensors/form";
+//        }
+//
+//        //Переделать в 1 запрос
+//        MovementSensor change_sensor = movementSensorRepository.findById(movementSensor.getId()).orElse(null);
+//
+//        if(change_sensor == null){
+//            return "redirect:/sensors";
+//        }
+//
+//        if (movementSensor.getPost() != null){
+//
+//            if(change_sensor.getPost().getId() != movementSensor.getPost().getId()){
+//                change_sensor.setSensorStatus(SensorStatus.NORMAL);
+//            }
+//        }
+//
+//        change_sensor.setPost(movementSensor.getPost());
+//        change_sensor.setLocation(movementSensor.getLocation());
+//        change_sensor.setName(movementSensor.getName());
+//
+//        movementSensorRepository.save(change_sensor);
+//
+//        return "redirect:/sensors";
+//    }
 
     @GetMapping("/messages/{id}")
     @PreAuthorize("hasAuthority('army:read')")
@@ -219,7 +219,7 @@ public class SensorController {
             return "redirect:/sensors";
         }
 
-        List<SensorMessages> sensorMessages = movementSensor.getSensorMessages();
+        List<SensorMessages> sensorMessages = sensorMessagesRepository.findByMovementSensorOrderByIdDesc(movementSensor);
 
         Page<SensorMessages> messagesPage = PaginatedService.findPaginated(PageRequest.of(currentPage - 1, pageSize), sensorMessages);
 
@@ -250,20 +250,20 @@ public class SensorController {
         return "sensors/messages";
     }
 
-    @GetMapping("/done/{id}")
-    @PreAuthorize("hasAuthority('army:write')")
-    public String problemDone(@PathVariable Long id) {
-
-        MovementSensor movementSensor = movementSensorRepository.findById(id).orElse(null);
-        if(movementSensor == null){
-            return "redirect:/sensors";
-        }
-
-        movementSensor.setSensorStatus(SensorStatus.NORMAL);
-        movementSensorRepository.save(movementSensor);
-
-        return "redirect:/sensors";
-    }
+//    @GetMapping("/done/{id}")
+//    @PreAuthorize("hasAuthority('army:write')")
+//    public String problemDone(@PathVariable Long id) {
+//
+//        MovementSensor movementSensor = movementSensorRepository.findById(id).orElse(null);
+//        if(movementSensor == null){
+//            return "redirect:/sensors";
+//        }
+//
+//        movementSensor.setSensorStatus(SensorStatus.NORMAL);
+//        movementSensorRepository.save(movementSensor);
+//
+//        return "redirect:/sensors";
+//    }
 
     public void createMessage(){
         Random random = new Random();
@@ -278,7 +278,7 @@ public class SensorController {
                     int index = random.nextInt(movementSensors.size());
                     sensorService.createError(movementSensors.get(index));
                 }
-                Thread.sleep(5000);
+                Thread.sleep(1000);
             }
         }).start();
     }

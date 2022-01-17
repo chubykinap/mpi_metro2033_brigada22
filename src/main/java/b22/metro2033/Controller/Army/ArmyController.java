@@ -126,38 +126,38 @@ public class ArmyController {
         return "army/form";
     }
 
-    @PreAuthorize("hasAuthority('army:write')")
-    @RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
-    public String create(@RequestBody @Valid String response) throws Exception { //ParesException type?
-
-        JSONObject json = new JSONObject(response);
-
-        Rank rank = Rank.findState(json.getString("rank"));
-        HealthState health_state = HealthState.findState(json.getString("health_state"));
-        long user_id = Long.parseLong(json.getString("user_id"));
-        long post_id = Long.parseLong(json.getString("post_id"));
-        int agility = Integer.parseInt(json.getString("agility"));
-        int strength = Integer.parseInt(json.getString("strength"));
-        int stamina = Integer.parseInt(json.getString("stamina"));
-
-        Soldier soldier = new Soldier();
-
-        User user = userRepository.findById(user_id).orElse(null);
-        Post post = postRepository.findById(post_id).orElse(null);
-
-        Characteristics characteristics = new Characteristics(agility, strength, stamina);
-
-        soldier.setUser(user);
-        soldier.setPost(post);
-        soldier.setRank(rank);
-        soldier.setHealth_state(health_state);
-        soldierRepository.save(soldier);
-
-        characteristics.setSoldier(soldier);
-        characteristicsRepository.save(characteristics);
-
-        return "redirect:/army";
-    }
+//    @PreAuthorize("hasAuthority('army:write')")
+//    @RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
+//    public String create(@RequestBody @Valid String response) throws Exception { //ParesException type?
+//
+//        JSONObject json = new JSONObject(response);
+//
+//        Rank rank = Rank.findState(json.getString("rank"));
+//        HealthState health_state = HealthState.findState(json.getString("health_state"));
+//        long user_id = Long.parseLong(json.getString("user_id"));
+//        long post_id = Long.parseLong(json.getString("post_id"));
+//        int agility = Integer.parseInt(json.getString("agility"));
+//        int strength = Integer.parseInt(json.getString("strength"));
+//        int stamina = Integer.parseInt(json.getString("stamina"));
+//
+//        Soldier soldier = new Soldier();
+//
+//        User user = userRepository.findById(user_id).orElse(null);
+//        Post post = postRepository.findById(post_id).orElse(null);
+//
+//        Characteristics characteristics = new Characteristics(agility, strength, stamina);
+//
+//        soldier.setUser(user);
+//        soldier.setPost(post);
+//        soldier.setRank(rank);
+//        soldier.setHealth_state(health_state);
+//        soldierRepository.save(soldier);
+//
+//        characteristics.setSoldier(soldier);
+//        characteristicsRepository.save(characteristics);
+//
+//        return "redirect:/army";
+//    }
 
     @GetMapping("/change/{id}")
     @PreAuthorize("hasAuthority('army:write')")
@@ -178,107 +178,107 @@ public class ArmyController {
         return "army/change";
     }
 
-    @PreAuthorize("hasAuthority('army:write')")
-    @RequestMapping(value = "/change", consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
-    public String change(@RequestBody String response) throws Exception { //ParesException type?
+//    @PreAuthorize("hasAuthority('army:write')")
+//    @RequestMapping(value = "/change", consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
+//    public String change(@RequestBody String response) throws Exception { //ParesException type?
+//
+//        JSONObject json = new JSONObject(response);
+//
+//        Rank rank = Rank.findState(json.getString("rank"));
+//        HealthState health_state = HealthState.findState(json.getString("health_state"));
+//        long soldier_id = Long.parseLong(json.getString("soldier_id"));
+//        long user_id = Long.parseLong(json.getString("user_id"));
+//        long post_id = Long.parseLong(json.getString("post_id"));
+//        int agility = Integer.parseInt(json.getString("agility"));
+//        int strength = Integer.parseInt(json.getString("strength"));
+//        int stamina = Integer.parseInt(json.getString("stamina"));
+//
+//        System.out.print(stamina);
+//
+//        //Переделать в 1 запрос (хз как)
+//        Soldier soldier = soldierRepository.findById(soldier_id).orElse(null);
+//        if (soldier == null) {
+//            return "redirect:/army";
+//        }
+//
+//        User user = userRepository.findById(user_id).orElse(null);
+//        if (user == null) {
+//            return "redirect:/army";
+//        }
+//
+//        soldier.setUser(user);
+//
+//        //Проверить на пустоту
+//        if (post_id == -1){
+//            soldier.setPost(null);
+//            String message = "Вас сняли с поста";
+//            sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
+//        }else{
+//            Post post = postRepository.findById(post_id).orElse(null);
+//
+//            if (post != null && soldier.getPost() != null){
+//                if (!soldier.getPost().equals(post)){
+//                    String message = "Вы назначены на новый пост: " + post.getName() + " " + post.getLocation();
+//                    sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
+//                }
+//                soldier.setPost(post);
+//            }else if(post != null && soldier.getPost() == null) {
+//                String message = "Вы назначены на новый пост: " + post.getName() + " " + post.getLocation();
+//                sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
+//                soldier.setPost(post);
+//            }
+//        }
+//
+//        if (!soldier.getRank().equals(rank)){
+//            String message = "Вам изменили звание: " + rank.toString();
+//            sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
+//        }
+//        soldier.setRank(rank);
+//
+//        if (!soldier.getHealth_state().equals(health_state)){
+//            String message = "Вам изменили состояние здоровья: " + health_state;
+//            sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
+//        }
+//        soldier.setHealth_state(health_state);
+//
+//        soldierRepository.save(soldier);
+//
+//        Characteristics characteristics = characteristicsRepository.findBySoldier_id(soldier_id).orElse(null);
+//        if (characteristics == null){
+//            return "redirect:/army";
+//        }
+//
+//        if (characteristics.getAgility() != agility ||
+//                characteristics.getStamina() != stamina ||
+//                characteristics.getStrength() != strength) {
+//            String message = "Вам изменили характеристики";
+//            sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
+//        }
+//
+//        characteristics.setAgility(agility);
+//        characteristics.setStamina(stamina);
+//        characteristics.setStrength(strength);
+//        characteristicsRepository.save(characteristics);
+//        return "redirect:/army";
+//    }
 
-        JSONObject json = new JSONObject(response);
-
-        Rank rank = Rank.findState(json.getString("rank"));
-        HealthState health_state = HealthState.findState(json.getString("health_state"));
-        long soldier_id = Long.parseLong(json.getString("soldier_id"));
-        long user_id = Long.parseLong(json.getString("user_id"));
-        long post_id = Long.parseLong(json.getString("post_id"));
-        int agility = Integer.parseInt(json.getString("agility"));
-        int strength = Integer.parseInt(json.getString("strength"));
-        int stamina = Integer.parseInt(json.getString("stamina"));
-
-        System.out.print(stamina);
-
-        //Переделать в 1 запрос (хз как)
-        Soldier soldier = soldierRepository.findById(soldier_id).orElse(null);
-        if (soldier == null) {
-            return "redirect:/army";
-        }
-
-        User user = userRepository.findById(user_id).orElse(null);
-        if (user == null) {
-            return "redirect:/army";
-        }
-
-        soldier.setUser(user);
-
-        //Проверить на пустоту
-        if (post_id == -1){
-            soldier.setPost(null);
-            String message = "Вас сняли с поста";
-            sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
-        }else{
-            Post post = postRepository.findById(post_id).orElse(null);
-
-            if (post != null && soldier.getPost() != null){
-                if (!soldier.getPost().equals(post)){
-                    String message = "Вы назначены на новый пост: " + post.getName() + " " + post.getLocation();
-                    sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
-                }
-                soldier.setPost(post);
-            }else if(post != null && soldier.getPost() == null) {
-                String message = "Вы назначены на новый пост: " + post.getName() + " " + post.getLocation();
-                sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
-                soldier.setPost(post);
-            }
-        }
-
-        if (!soldier.getRank().equals(rank)){
-            String message = "Вам изменили звание: " + rank.toString();
-            sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
-        }
-        soldier.setRank(rank);
-
-        if (!soldier.getHealth_state().equals(health_state)){
-            String message = "Вам изменили состояние здоровья: " + health_state;
-            sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
-        }
-        soldier.setHealth_state(health_state);
-
-        soldierRepository.save(soldier);
-
-        Characteristics characteristics = characteristicsRepository.findBySoldier_id(soldier_id).orElse(null);
-        if (characteristics == null){
-            return "redirect:/army";
-        }
-
-        if (characteristics.getAgility() != agility ||
-                characteristics.getStamina() != stamina ||
-                characteristics.getStrength() != strength) {
-            String message = "Вам изменили характеристики";
-            sendAlertMessage(user, message, TypeOfMessage.NOTIFICATION);
-        }
-
-        characteristics.setAgility(agility);
-        characteristics.setStamina(stamina);
-        characteristics.setStrength(strength);
-        characteristicsRepository.save(characteristics);
-        return "redirect:/army";
-    }
-
-    @GetMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority('army:write')")
-    public String enable(@PathVariable Long id) {
-
-        Soldier soldier = soldierRepository.findById(id).orElse(null);
-
-        if(soldier != null){
-            Characteristics characteristics = characteristicsRepository.findBySoldier_id(id).orElse(null);
-            if(characteristics != null){
-                characteristicsRepository.delete(characteristics);
-            }
-
-            soldierRepository.deleteById(id);
-        }
-        //soldierRepository.findById(id).ifPresent(soldierRepository::delete);
-        return "redirect:/army";
-    }
+//    @GetMapping("/delete/{id}")
+//    @PreAuthorize("hasAuthority('army:write')")
+//    public String enable(@PathVariable Long id) {
+//
+//        Soldier soldier = soldierRepository.findById(id).orElse(null);
+//
+//        if(soldier != null){
+//            Characteristics characteristics = characteristicsRepository.findBySoldier_id(id).orElse(null);
+//            if(characteristics != null){
+//                characteristicsRepository.delete(characteristics);
+//            }
+//
+//            soldierRepository.deleteById(id);
+//        }
+//        //soldierRepository.findById(id).ifPresent(soldierRepository::delete);
+//        return "redirect:/army";
+//    }
 
     public void sendAlertMessage(User user, String message, TypeOfMessage type){
         AlertMessages alertMessages = new AlertMessages();
