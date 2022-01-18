@@ -4,18 +4,14 @@ import b22.metro2033.Entity.Role;
 import b22.metro2033.Entity.User;
 import b22.metro2033.Repository.UserRepository;
 import b22.metro2033.domain.Response;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -88,6 +84,11 @@ public class RestUsersController {
             return new Response("Error", "Пользователь не найден!");
         }
 
+        if ((role == Role.SOLDIER && user.getCourier() != null) ||
+                (role == Role.COURIER &&user.getSoldier() != null)){
+            return new Response("Error", "Нельзя изменить пользователя, пока он выполняет свою роль");
+        }
+
         if (!Objects.equals(login, user.getLogin())){
             if (userRepository.findByLogin(login).isPresent()){
                 return new Response("Error", "Пользователь с таким логином уже существует!");
@@ -132,8 +133,6 @@ public class RestUsersController {
             return new Response("Error", "Пользователь не найден");
         }
     }
-
-
 
 }
 
