@@ -17,7 +17,8 @@
     </div>
     <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
       <h1>Добавление нового предмета на склад</h1>
-      <form th:method="POST" th:action="@{/storage}" th:object="${item}">
+      <div id="notification" style="background-color:#8ebf42"></div>
+      <form id="create_form" th:method="POST" th:action="@{/storage}" th:object="${item}">
         <div class="form-group">
           <label for="name">Наименование</label>
           <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="Наименование">

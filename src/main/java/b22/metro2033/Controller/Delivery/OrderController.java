@@ -4,14 +4,18 @@ import b22.metro2033.Entity.Delivery.*;
 import b22.metro2033.Entity.Role;
 import b22.metro2033.Entity.User;
 import b22.metro2033.Entity.Utility.OrderUtility;
+import b22.metro2033.Entity.Utility.SoldierUtility;
 import b22.metro2033.Repository.Alerts.AlertsRepository;
 import b22.metro2033.Repository.Delivery.CourierRepository;
 import b22.metro2033.Repository.Delivery.ItemRepository;
 import b22.metro2033.Repository.Delivery.OrderItemRepository;
 import b22.metro2033.Repository.Delivery.OrderRepository;
 import b22.metro2033.Repository.UserRepository;
+import b22.metro2033.Service.PaginatedService;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -19,7 +23,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/delivery")
@@ -51,7 +57,20 @@ public class OrderController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('delivery:read')")
-    public String index(Model model, Authentication authentication) {
+    public String index(Model model, Authentication authentication,
+                        @RequestParam("page") Optional<Integer> page,
+                        @RequestParam("size") Optional<Integer> size,
+                        @RequestParam("start_page") Optional<Integer> start_page,
+                        @RequestParam("number_of_pages") Optional<Integer> number_of_pages) {
+
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(10);
+        int startPage = start_page.orElse(1);
+        int numberOfPages = number_of_pages.orElse(10);
+
+        if (startPage < 0) startPage = 1;
+        if (currentPage < 0) currentPage = 1;
+
         User user = userRepository.findByLogin(authentication.getName()).orElse(null);
         if (user == null) {
             return "redirect:/auth/login";
@@ -59,10 +78,32 @@ public class OrderController {
         List<DeliveryOrder> orders;
         if (user.getRole() == Role.COURIER) {
             orders = orderRepository.findAllByCourierId(user.getCourier().getId());
-
         } else
             orders = orderRepository.findAll();
-        model.addAttribute("orders", OrderUtility.toOrderUtility(orders));
+
+        //Page<DeliveryOrder> ordersPage = PaginatedService.findPaginated(PageRequest.of(currentPage - 1, pageSize), orders);
+
+        List<OrderUtility> ordersUtility = OrderUtility.toOrderUtility(orders);
+
+        Page<OrderUtility> ordersPage = PaginatedService.findPaginated(PageRequest.of(currentPage - 1, pageSize), ordersUtility);
+
+        model.addAttribute("ordersPage", ordersPage);
+        model.addAttribute("start_page", startPage);
+        model.addAttribute("number_of_pages", numberOfPages);
+        model.addAttribute("current_page", currentPage);
+
+        int totalPages = ordersPage.getTotalPages();
+
+        if (totalPages > 0) {
+
+            List<Integer> pageNumbers = new ArrayList<>();
+            for (int i = startPage; i < startPage + numberOfPages; i++){
+                if (i > totalPages) break;
+                pageNumbers.add(i);
+            }
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+
         return "delivery/index";
     }
 

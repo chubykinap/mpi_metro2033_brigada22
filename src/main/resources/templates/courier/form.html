@@ -18,32 +18,39 @@
         </div>
         <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
             <h1>Добавление нового курьера</h1>
-            <div th:if="${!#strings.equals(users, 'NoData')}">
-                <form th:method="POST" th:action="@{/courier}" th:object="${courier}" id="ajax_create_courier">
-                    <div class="form-group">
-                        <label for="user">Пользователь</label>
-                        <select id="user" class="custom-select" th:field="*{user}">
-                            <option value="">Выбрать пользователя...</option>
-                            <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}">
-                                Пользователь
-                            </option>
-                        </select>
-                        <div id="user_validation"></div>
-                    </div>
+            <div id="notification" style="background-color:#8ebf42"></div>
+            <div id="create_courier_form">
+                <div th:if="${!#strings.equals(users, 'NoData')}">
+                    <form th:method="POST" th:action="@{/courier}" th:object="${courier}" id="ajax_create_courier">
+                        <div class="form-group">
+                            <label for="user">Пользователь</label>
+                            <select id="user" class="custom-select" th:field="*{user}">
+                                <option value="">Выбрать пользователя...</option>
+                                <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}">
+                                    Пользователь
+                                </option>
+                            </select>
+                            <div id="user_validation"></div>
+                        </div>
 
-                    <div class="form-group">
-                        <input type="button" id="create" class="btn-primary btn" value="Создать"/>
-                    </div>
+                        <div class="form-group">
+                            <a type="button" id="create" class="btn-primary btn" value="Создать">Создать</a>
+                        </div>
 
-                    <div class="form-group">
-                        <a href="/courier" class="btn-primary btn">Назад</a>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
+
+            <div class="form-group">
+                <a href="/courier" class="btn-primary btn">Назад</a>
+            </div>
+
             <div th:if="${#strings.equals(users, 'NoData')}">
                 <h4>Нет пользователей для назначения</h4>
-                <a href="/courier" class="btn-primary btn">Вернуться</a>
             </div>
+
+            <div id="no_users_div" style="visibility: hidden;"></div>
+
         </div>
     </div>
 </div>

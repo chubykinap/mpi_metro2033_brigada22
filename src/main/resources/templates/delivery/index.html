@@ -21,6 +21,34 @@
             <h1>Заказы на доставку</h1>
             <a href="/delivery/create/receive" class="btn btn-primary my-3" sec:authorize="${hasAuthority('delivery:write')}">Создать новый заказ на поставку</a>
             <a href="/delivery/create/send" class="btn btn-primary my-3" sec:authorize="${hasAuthority('delivery:write')}">Создать новый заказ на отправку</a>
+
+            <div>
+                <span>
+                    <a class="page-link svg-icon"  th:if="${ordersPage.totalPages > 0 and start_page - number_of_pages > 0}"
+                       th:href="@{delivery(size=${ordersPage.size}, page=${start_page - number_of_pages}, start_page=${start_page - number_of_pages})}"
+                       th:class="${start_page} ? active">[<<]
+                    </a>
+                </span>
+
+                <span class="page-item" th:if="${ordersPage.totalPages > 0}"
+                      th:each="pageNumber : ${pageNumbers}">
+                    <a class="page-link svg-icon" th:href="@{delivery(size=${ordersPage.size}, page=${pageNumber}, start_page=${start_page})}"
+                       th:text=${pageNumber}
+                       th:class="${pageNumber==ordersPage.number + 1} ? active">
+                    </a>
+                </span>
+
+                <div id="page_size" hidden>[[${ordersPage.size}]]</div>
+                <div id="start_page" hidden>[[${current_page}]]</div>
+
+                <span>
+                    <a class="page-link svg-icon" th:if="${ordersPage.totalPages > 0 and start_page + number_of_pages <= ordersPage.totalPages}"
+                       th:href="@{delivery(size=${ordersPage.size}, page=${start_page + number_of_pages}, start_page=${start_page + number_of_pages})}"
+                       th:class="${start_page + number_of_pages} ? active">[>>]
+                    </a>
+                </span>
+            </div>
+
             <table class="table table-striped">
                 <thead>
                     <tr>
@@ -33,7 +61,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr th:each="order : ${orders}">
+                    <tr th:each="order : ${ordersPage}">
                         <th scope="row"></th>
                         <td scope="row" th:text="${order.date}">date</td>
                         <div th:switch="${order.isPointOfDeparture}">

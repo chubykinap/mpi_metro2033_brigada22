@@ -1,4 +1,5 @@
 $(document).ready(function() {
+
     $(function() {
         $("#save").click(function() {
             var send_state = {

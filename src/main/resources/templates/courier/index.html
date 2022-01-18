@@ -20,8 +20,36 @@
             </div>
             <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
                 <h1>Курьеры станции</h1>
+                <div id="notification" style="background-color:#8ebf42"></div>
                 <a href="/courier/create" class="btn btn-primary my-3"
                    sec:authorize="${hasAuthority('delivery:write')}">Добавить нового курьера</a>
+
+                <div>
+                <span>
+                    <a class="page-link svg-icon"  th:if="${courierPage.totalPages > 0 and start_page - number_of_pages > 0}"
+                       th:href="@{courier(size=${courierPage.size}, page=${start_page - number_of_pages}, start_page=${start_page - number_of_pages})}"
+                       th:class="${start_page} ? active">[<<]
+                    </a>
+                </span>
+
+                    <span class="page-item" th:if="${courierPage.totalPages > 0}"
+                          th:each="pageNumber : ${pageNumbers}">
+                    <a class="page-link svg-icon" th:href="@{courier(size=${courierPage.size}, page=${pageNumber}, start_page=${start_page})}"
+                       th:text=${pageNumber}
+                       th:class="${pageNumber==courierPage.number + 1} ? active">
+                    </a>
+                </span>
+
+                    <div id="page_size" hidden>[[${courierPage.size}]]</div>
+                    <div id="start_page" hidden>[[${current_page}]]</div>
+
+                    <span>
+                    <a class="page-link svg-icon" th:if="${courierPage.totalPages > 0 and start_page + number_of_pages <= courierPage.totalPages}"
+                       th:href="@{courier(size=${courierPage.size}, page=${start_page + number_of_pages}, start_page=${start_page + number_of_pages})}"
+                       th:class="${start_page + number_of_pages} ? active">[>>]
+                    </a>
+                </span>
+                </div>
 
                 <table class="table table-striped">
                     <thead>
@@ -35,7 +63,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="courier : ${couriers}">
+                    <tr th:each="courier : ${courierPage}">
                         <th scope="row"></th>
                         <td scope="row" hidden="hidden" th:text="${courier.id}">id</td>
                         <td scope="row" th:text="${courier.user.name}">name</td>
@@ -55,8 +83,8 @@
                                     id="delete"
                                     sec:authorize="${hasAuthority('delivery:write')}">Удалить</a></div>
                             -->
-                            <input type="button" id="delete" class="btn-primary btn" value="Удалить"
-                                   sec:authorize="${hasAuthority('delivery:write')}"/>
+                            <a type="button" id="delete" class="btn-primary btn" th:value="${courier.id}"
+                                   sec:authorize="${hasAuthority('delivery:write')}">Удалить</a>
                         </td>
                     </tr>
                     </tbody>

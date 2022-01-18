@@ -17,7 +17,36 @@
         </div>
         <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
             <h1>Количество предметов на складе</h1>
+            <div id="notification" style="background-color:#8ebf42"></div>
             <a href="/storage/create" class="btn btn-primary my-3" sec:authorize="${hasAuthority('delivery:write')}">Добавить предмет</a>
+
+            <div>
+                <span>
+                    <a class="page-link svg-icon"  th:if="${itemsPage.totalPages > 0 and start_page - number_of_pages > 0}"
+                       th:href="@{storage(size=${itemsPage.size}, page=${start_page - number_of_pages}, start_page=${start_page - number_of_pages})}"
+                       th:class="${start_page} ? active">[<<]
+                    </a>
+                </span>
+
+                <span class="page-item" th:if="${itemsPage.totalPages > 0}"
+                      th:each="pageNumber : ${pageNumbers}">
+                    <a class="page-link svg-icon" th:href="@{storage(size=${itemsPage.size}, page=${pageNumber}, start_page=${start_page})}"
+                       th:text=${pageNumber}
+                       th:class="${pageNumber==itemsPage.number + 1} ? active">
+                    </a>
+                </span>
+
+                <div id="page_size" hidden>[[${itemsPage.size}]]</div>
+                <div id="start_page" hidden>[[${current_page}]]</div>
+
+                <span>
+                    <a class="page-link svg-icon" th:if="${itemsPage.totalPages > 0 and start_page + number_of_pages <= itemsPage.totalPages}"
+                       th:href="@{storage(size=${itemsPage.size}, page=${start_page + number_of_pages}, start_page=${start_page + number_of_pages})}"
+                       th:class="${start_page + number_of_pages} ? active">[>>]
+                    </a>
+                </span>
+            </div>
+
             <table class="table table-striped">
                 <thead>
                 <tr>
@@ -30,14 +59,15 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="item : ${items}">
-                    <td scope="row" hidden="hidden" th:text="${item.id}">id</td>
-                    <th scope="row" id="item_id" th:text="${item.id}">id</th>
+                <tr th:each="item : ${itemsPage}">
+                    <th scope="row"></th>
+<!--                    <td scope="row" hidden="hidden" th:text="${item.id}">id</td>-->
+<!--                    <th scope="row" id="item_id" th:text="${item.id}">id</th>-->
                     <td scope="row" th:text="${item.name}">name</td>
                     <td scope="row" th:text="${item.quantity_in_storage}">quantity_in_storage</td>
                     <td scope="row" th:text="${item.weight}">weight</td>
                     <td scope="row"><div><a th:href="@{/storage/change/{id}(id=${item.id})}" class="btn-primary btn">Изменить</a></div></td>
-                    <td scope="row"><button id="delete" class="btn-primary btn">Удалить</button></td>
+                    <td scope="row"><a id="delete" th:value="${item.id}" class="btn-primary btn">Удалить</a></td>
                 </tr>
                 </tbody>
             </table>

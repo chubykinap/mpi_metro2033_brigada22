@@ -11,6 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+
 @RestController
 @RequestMapping(value = "/storage", produces = MediaType.APPLICATION_JSON_VALUE)
 public class RestStorageController {
@@ -43,7 +45,10 @@ public class RestStorageController {
 
         itemRepository.save(item);
 
-        return new Response("Done", "");
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("name", name);
+
+        return new Response("Done", hashMap);
     }
 
     @PreAuthorize("hasAuthority('delivery:write')")
@@ -69,23 +74,37 @@ public class RestStorageController {
         item.setWeight(json.getInt("weight"));
         itemRepository.save(item);
 
-        return new Response("Done", "");
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("name", json.getString("name"));
+
+        return new Response("Done", hashMap);
     }
 
-    @GetMapping("/delete/{id}")
     @PreAuthorize("hasAuthority('delivery:write')")
-    public Response delete(@PathVariable Long id) {
+    @RequestMapping(value = "/delete", consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
+    public Response delete(@RequestBody String response) throws JSONException {
 
-        Item item = itemRepository.findById(id).orElse(null);
+        JSONObject json = new JSONObject(response);
 
-        if (item == null)
+        Long item_id = Long.parseLong(json.getString("item_id"));
+
+        Item item = itemRepository.findById(item_id).orElse(null);
+
+        if (item == null){
             return new Response("Error", "Предмет не найден");
+        }
 
-        if (orderItemRepository.findAllByIdItemId(item.getId()).size() > 0)
+        if (orderItemRepository.findAllByIdItemId(item.getId()).size() > 0){
             return new Response("Error", "Нельзя удалить предмет, пока он есть в заказе");
+        }
 
-        itemRepository.deleteById(id);
+        String name = item.getName();
 
-        return new Response("Done", "");
+        itemRepository.deleteById(item_id);
+
+        HashMap<String, String> hashMap = new HashMap<>();
+        hashMap.put("name", name);
+
+        return new Response("Done", hashMap);
     }
 }

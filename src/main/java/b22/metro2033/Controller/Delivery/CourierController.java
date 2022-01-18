@@ -3,10 +3,15 @@ package b22.metro2033.Controller.Delivery;
 import b22.metro2033.Entity.Delivery.Courier;
 import b22.metro2033.Entity.Role;
 import b22.metro2033.Entity.User;
+import b22.metro2033.Entity.Utility.SoldierUtility;
 import b22.metro2033.Repository.Delivery.CourierRepository;
 import b22.metro2033.Repository.UserRepository;
+import b22.metro2033.Service.PaginatedService;
+import b22.metro2033.domain.Response;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -16,7 +21,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,13 +42,44 @@ public class CourierController {
 
     @GetMapping
     @PreAuthorize("hasAuthority('delivery:write')")
-    public String index(Model model, Authentication authentication){
+    public String index(Model model, Authentication authentication,
+                        @RequestParam("page") Optional<Integer> page,
+                        @RequestParam("size") Optional<Integer> size,
+                        @RequestParam("start_page") Optional<Integer> start_page,
+                        @RequestParam("number_of_pages") Optional<Integer> number_of_pages) {
+
+        int currentPage = page.orElse(1);
+        int pageSize = size.orElse(10);
+        int startPage = start_page.orElse(1);
+        int numberOfPages = number_of_pages.orElse(10);
+
+        if (startPage < 0) startPage = 1;
+        if (currentPage < 0) currentPage = 1;
+
         User user = userRepository.findByLogin(authentication.getName()).orElse(null);
         if(user == null){
             return "redirect:/auth/login";
         }
+
         List<Courier> couriers = courierRepository.findAll();
-        model.addAttribute("couriers", couriers);
+        Page<Courier> courierPage = PaginatedService.findPaginated(PageRequest.of(currentPage - 1, pageSize), couriers);
+
+        model.addAttribute("courierPage", courierPage);
+        model.addAttribute("start_page", startPage);
+        model.addAttribute("number_of_pages", numberOfPages);
+        model.addAttribute("current_page", currentPage);
+
+        int totalPages = courierPage.getTotalPages();
+
+        if (totalPages > 0) {
+
+            List<Integer> pageNumbers = new ArrayList<>();
+            for (int i = startPage; i < startPage + numberOfPages; i++){
+                if (i > totalPages) break;
+                pageNumbers.add(i);
+            }
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
 
         return "courier/index";
     }
@@ -65,32 +103,46 @@ public class CourierController {
         return "courier/form";
     }
 
-    @PreAuthorize("hasAuthority('delivery:write')")
-    @RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
-    public String create(@RequestBody @Valid String response) throws Exception {
-        JSONObject json = new JSONObject(response);
+//    @PostMapping("/create")
+//    @PreAuthorize("hasAuthority('delivery:write')")
+//    @RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
+//    public Response create(@RequestBody String response) throws Exception {
+//        JSONObject json = new JSONObject(response);
+//
+//        long user_id = Long.parseLong(json.getString("user_id"));
+//        Courier courier = new Courier();
+//        User user = userRepository.findById(user_id).orElse(null);
+//
+//        if (user == null){
+//            return new Response("Error", "Пользователь не найден!");
+//        }
+//
+//        if (user.getCourier() != null || user.getSoldier() != null){
+//            return new Response("Error", "Пользователь уже назначен!");
+//        }
+//
+//        courier.setUser(user);
+//        courierRepository.save(courier);
+//
+//        HashMap<String, String> hashMap = new HashMap<>();
+//        hashMap.put("login", user.getLogin());
+//        hashMap.put("name", user.getName());
+//        hashMap.put("surname", user.getSurname());
+//
+//        return new Response("Done", hashMap);
+//    }
 
-        long user_id = Long.parseLong(json.getString("user_id"));
-        Courier courier = new Courier();
-        User user = userRepository.findById(user_id).orElse(null);
-
-        courier.setUser(user);
-        courierRepository.save(courier);
-
-        return "redirect:/";
-    }
-
-    @GetMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority('delivery:write')")
-    public String remove(@PathVariable Long id) {
-
-        Courier courier = courierRepository.findById(id).orElse(null);
-
-        if(courier != null)
-            courierRepository.deleteById(id);
-
-        return "redirect:/courier";
-    }
+//    @GetMapping("/delete/{id}")
+//    @PreAuthorize("hasAuthority('delivery:write')")
+//    public String remove(@PathVariable Long id) {
+//
+//        Courier courier = courierRepository.findById(id).orElse(null);
+//
+//        if(courier != null)
+//            courierRepository.deleteById(id);
+//
+//        return "redirect:/courier";
+//    }
 
     private List<Role> getRolesForSelect(Authentication authentication){
         User user = userRepository.findByLogin(authentication.getName()).orElse(null);
