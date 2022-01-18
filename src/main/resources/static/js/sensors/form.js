@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
-    $("#create").submit(function(e) {
-      e.preventDefault();
+    $(document).on('click', '#button', function(e) {
+       e.preventDefault();
       var check = false;
 
       var name = $("#name").val();
@@ -20,21 +20,59 @@ $(document).ready(function() {
           check = true;
       }
 
-      if (validate_post()) {
-        check = true;
-      }
-
       if (validate_location()){
         check = true;
       }
 
+      var post_id = $("#post").val();
+      if (post_id == '') {
+          $( "#post_validation" ).text("Введи пост датчика");
+          check = true;
+      }else{
+          $( "#post_validation" ).text("");
+      }
+
+      if (validate_post()) {
+          check = true;
+      }
+
       if (check == false){
-          $(this).unbind('submit').submit()
+         var sensor = {
+                     "name": name,
+                     "location" : location,
+                     "post_id" : post_id
+                 };
+
+         $.ajax({
+             type: "POST",
+             url: "/sensors/create",
+             contentType: "application/json",
+             data: JSON.stringify(sensor),
+             success: function (data) {
+               console.log("success");
+               if (data.status == "Error"){
+                 alert(data.data);
+                 return;
+               }
+               else{
+                 show_notification(data.data);
+               }
+             },
+             error: function (e){
+                 console.log(e);
+             }
+         });
       }else{
         alert("Введите правильно данные");
       }
-
     });
+
+     function show_notification(info){
+//        $('#notification').text("Данные датчика " + info.name + " " + info.location + " изменены");
+        $('#notification').text("Датчик:  " + info.name + " " + info.location + " создан");
+        $('#notification').show();
+        $('#notification').delay(7000).hide(0);
+     }
 
     function validate_name(){
        var regExp = new RegExp("^(?=.{1,100}$)(?![_.])(?!.*[_.]{2})[a-zA-ZА-Яа-я0-9]+(?<![_.])$");

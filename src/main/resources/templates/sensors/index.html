@@ -2,6 +2,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
   <div th:replace="fragments/fragment :: head"></div>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
   <title id="pageTitle">Метро 2033 датчики</title>
 </head>
@@ -15,6 +16,7 @@
     <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
       <h1>Датчики</h1>
       <a href="/sensors/create" class="btn btn-primary my-3" sec:authorize="${hasAuthority('army:write')}">Создать</a>
+      <div id="notification" style="background-color:#8ebf42"></div>
       <div>
           <span>
               <a class="page-link svg-icon"  th:if="${sensorsPage.totalPages > 0 and start_page - number_of_pages > 0}"
@@ -30,6 +32,9 @@
                  th:class="${pageNumber==sensorsPage.number + 1} ? active">
               </a>
           </span>
+
+        <div id="page_size" hidden>[[${sensorsPage.size}]]</div>
+        <div id="start_page" hidden>[[${current_page}]]</div>
 
         <span>
               <a class="page-link svg-icon" th:if="${sensorsPage.totalPages > 0 and start_page + number_of_pages <= sensorsPage.totalPages}"
@@ -55,15 +60,23 @@
           <tbody>
           <tr th:each="sensor : ${sensorsPage}">
             <div th:if="${#strings.equals(sensor.sensorStatus, 'ERROR')}">
-              <th bgcolor="#FF0000" scope="row" th:text="${sensor.id}">id</th>
+              <th scope="row" bgcolor="#FF0000" ></th>
+<!--              <th bgcolor="#FF0000" scope="row" th:text="${sensor.id}">id</th>-->
               <td bgcolor="#FF0000" th:text="${sensor.name}">name</td>
               <td bgcolor="#FF0000" th:text="${sensor.location}">location</td>
-              <td bgcolor="#FF0000" scope="row" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
+              <div th:if="${sensor.post ne null}">
+                <td bgcolor="#FF0000" scope="row" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
                                                'Расположение: ' + sensor.post.location + '</br>'}">post</td>
+              </div>
+              <div th:unless="${sensor.post ne null}">
+                <td bgcolor="#FF0000" scope="row" >Не находится на посту</td>
+              </div>
+
             </div>
 
             <div th:if="${!#strings.equals(sensor.sensorStatus, 'ERROR')}">
-              <th scope="row" th:text="${sensor.id}">id</th>
+              <th scope="row"></th>
+<!--              <th scope="row" th:text="${sensor.id}">id</th>-->
               <td th:text="${sensor.name}">name</td>
               <td th:text="${sensor.location}">location</td>
 
@@ -78,7 +91,9 @@
 
             <td scope="row"><div><a th:href="@{/sensors/messages/{id}(id=${sensor.id})}" class="btn-primary btn" id="messages">Показать сообщения</a></div></td>
             <td scope="row"><div><a th:href="@{/sensors/change/{id}(id=${sensor.id})}" class="btn-primary btn" id="change" sec:authorize="${hasAuthority('army:write')}"> Изменить</a></div></td>
-            <td scope="row"><div><a th:href="@{/sensors/delete/{id}(id=${sensor.id})}" class="btn-primary btn" id="delete" sec:authorize="${hasAuthority('army:write')}">Удалить</a></div></td>
+            <td scope="row"><div><a class="btn-primary btn"
+                                    id="delete" sec:authorize="${hasAuthority('army:write')}"
+                                    th:value="${sensor.id}">Удалить</a></div></td>
 
           </tr>
           </tbody>
@@ -91,6 +106,7 @@
 
 
 <script type="application/javascript">
+
       /*$(document).ready(function() {
 
           var delay = 1000;
@@ -113,6 +129,7 @@
       });*/
 </script>
 
+<script src="/js/sensors/index.js"></script>
 
 </body>
 </html>

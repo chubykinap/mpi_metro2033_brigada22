@@ -48,12 +48,20 @@ $(document).ready(function() {
              $( "#agility_validation" ).text("");
         }
 
+        if (validate_agility()){
+            check = true;
+        }
+
         var strength = $("#strength").val();
         if (strength == '') {
             $( "#strength_validation" ).text("Заполните параметр силы");
             check = true;
         }else{
              $( "#strength_validation" ).text("");
+        }
+
+        if (validate_strength()){
+            check = true;
         }
 
         var stamina = $("#stamina").val();
@@ -64,6 +72,9 @@ $(document).ready(function() {
              $( "#stamina_validation" ).text("");
         }
 
+        if (validate_stamina()){
+            check = true;
+        }
 
           /*$('#ajax_create_soldier *').filter(':input').each(function(){
               if($(this).val() == ''){
@@ -72,6 +83,7 @@ $(document).ready(function() {
           });*/
 
           if (check == true){
+            alert("Введите правильно данные");
             return;
           }
 
@@ -87,102 +99,128 @@ $(document).ready(function() {
 
           $.ajax({
             type: "POST",
-            url: "/army",
+            url: "/army/create",
             contentType: "application/json",
             data: JSON.stringify(new_soldier),
             // dataType: "dataType",
             success: function (data) {
               console.log("success");
-              console.log(data);
-              window.location.href = '/army';
+              if (data.status == "Error"){
+                alert(data.data);
+                return;
+              }
+             else{
+                show_notification(data.data);
+              }
+            },
+            error: function (e){
+                console.log(e);
             }
           });
-          console.log(new_soldier);
         });
     })
 
+     function show_notification(info){
+        $('#notification').text("Солдат " + info.login + " " + info.name + " " + info.surname + " " + info.rank + " создан");
+        $('#notification').show();
+        $('#notification').delay(7000).hide(0);
+     }
+
+    function validate_agility(){
+        var value = $("#agility").val();
+
+        var check = false;
+        var regExp = /\d+/g;
+        var OK = regExp.exec(value);
+        console.log(value)
+        console.log(OK)
+        if (!OK){
+        console.log("!OK")
+        check = true;
+        }
+
+        if (value < 0 || value > 100){
+        console.log("value < 0 ")
+        check = true;
+        }
+
+        if(check){
+         $( "#agility_validation" ).text("Не правильно задан параметр ловкость. Он должен быть целым числом от 0 до 100");
+         return true;
+        }else{
+          $( "#agility_validation" ).text("");
+          return false;
+        }
+    }
+
     $("#agility").on('keyup', function(){
-
-            var value = $("#agility").val();
-
-              var check = false;
-              var regExp = /\d+/g;
-              var OK = regExp.exec(value);
-              console.log(value)
-              console.log(OK)
-              if (!OK){
-               console.log("!OK")
-                check = true;
-              }
-
-              if (value < 0 || value > 100){
-                console.log("value < 0 ")
-                check = true;
-              }
-
-               if(check){
-                 $( "#agility_validation" ).text("Не правильно задан параметр ловкость. Он должен быть целым числом от 0 до 100");
-                 $("#change").prop("disabled",true);
-               }else{
-                  $( "#agility_validation" ).text("");
-                  $("#change").prop("disabled",false);
-               }
+        event.preventDefault();
+        validate_agility();
     })
+
+    function validate_strength(){
+        var value = $("#strength").val();
+
+        var check = false;
+        var regExp = /\d+/g;
+        var OK = regExp.exec(value);
+        console.log(value)
+        console.log(OK)
+        if (!OK){
+        console.log("!OK")
+        check = true;
+        }
+
+        if (value < 0 || value > 100){
+        console.log("value < 0 ")
+        check = true;
+        }
+
+        if(check){
+         $( "#strength_validation" ).text("Не правильно задан параметр сила. Он должен быть целым числом от 0 до 100");
+         return true;
+        }else{
+          $( "#strength_validation" ).text("");
+          return false;
+        }
+    }
 
     $("#strength").on('keyup', function(){
-
-            var value = $("#strength").val();
-
-              var check = false;
-              var regExp = /\d+/g;
-              var OK = regExp.exec(value);
-              console.log(value)
-              console.log(OK)
-              if (!OK){
-               console.log("!OK")
-                check = true;
-              }
-
-              if (value < 0 || value > 100){
-                console.log("value < 0 ")
-                check = true;
-              }
-
-               if(check){
-                 $( "#strength_validation" ).text("Не правильно задан параметр сила. Он должен быть целым числом от 0 до 100");
-                 $("#change").prop("disabled",true);
-               }else{
-                  $( "#strength_validation" ).text("");
-                  $("#change").prop("disabled",false);
-               }
+        event.preventDefault();
+        validate_strength();
     })
 
+    function validate_stamina(){
+        var value = $("#stamina").val();
+
+        var check = false;
+        var regExp = /\d+/g;
+        var OK = regExp.exec(value);
+        console.log(value)
+        console.log(OK)
+        if (!OK){
+        console.log("!OK")
+        check = true;
+        }
+
+        if (value < 0 || value > 100){
+        console.log("value < 0 ")
+        check = true;
+        }
+
+        if(check){
+         $( "#stamina_validation" ).text("Не правильно задан параметр выносливость. Он должен быть целым числом от 0 до 100");
+         return true;
+        }else{
+          $( "#stamina_validation" ).text("");
+          return false;
+        }
+
+    }
+
     $("#stamina").on('keyup', function(){
-
-            var value = $("#stamina").val();
-
-              var check = false;
-              var regExp = /\d+/g;
-              var OK = regExp.exec(value);
-              console.log(value)
-              console.log(OK)
-              if (!OK){
-               console.log("!OK")
-                check = true;
-              }
-
-              if (value < 0 || value > 100){
-                console.log("value < 0 ")
-                check = true;
-              }
-
-               if(check){
-                 $( "#stamina_validation" ).text("Не правильно задан параметр выносливость. Он должен быть целым числом от 0 до 100");
-                 $("#change").prop("disabled",true);
-               }else{
-                  $( "#stamina_validation" ).text("");
-                  $("#change").prop("disabled",false);
-               }
+        event.preventDefault();
+        validate_stamina();
     })
 
 });

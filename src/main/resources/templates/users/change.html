@@ -19,6 +19,7 @@
         </div>
         <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
             <h1>Изменение пользователя</h1>
+            <div id="notification" style="background-color:#8ebf42"></div>
             <form th:method="POST" th:action="@{/users/change}" th:object="${user}" id="ajax_create_soldier">
 
                 <div class="form-group">

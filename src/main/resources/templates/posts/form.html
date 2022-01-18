@@ -15,6 +15,7 @@
         </div>
         <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
             <h1>Добавление поста</h1>
+            <div id="notification" style="background-color:#8ebf42"></div>
             <form id="create" th:method="POST" th:action="@{/posts}" th:object="${post}">
                 <div class="form-group">
                     <label for="name">Название</label>
@@ -28,9 +29,11 @@
                     <div id="location_validation"></div>
                 </div>
 
+<!--                <div hidden id="post_id" th:value="${post.id}"> </div>-->
+
                 <div class="form-group">
                     <input type="hidden" name="action" th:value="${action}">
-                    <button id="button" type="submit" class="btn-primary btn">Сохранить</button>
+                    <button id="button" class="btn-primary btn">Сохранить</button>
                     <a href="/posts" class="btn-primary btn">Назад</a>
                 </div>
             </form>

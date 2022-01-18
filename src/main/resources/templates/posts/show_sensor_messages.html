@@ -2,6 +2,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <div th:replace="fragments/fragment :: head"></div>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <title id="pageTitle">Метро 2033 датчики</title>
 </head>
@@ -29,16 +30,18 @@
                 <tr>
 
                     <div th:if="${#strings.equals(sensor.sensorStatus, 'ERROR')}">
-                        <th scope="row" th:text="${sensor.id}" bgcolor="#FF0000">id</th>
-                        <td th:text="${sensor.name}" bgcolor="#FF0000">name</td>
-                        <td th:text="${sensor.location}" bgcolor="#FF0000">location</td>
-                        <td scope="row" bgcolor="#FF0000" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
+                        <th id="table_sensor_id" scope="row" bgcolor="#FF0000"></th>
+<!--                        <th scope="row" th:text="${sensor.id}" bgcolor="#FF0000">id</th>-->
+                        <td id="table_name" th:text="${sensor.name}" bgcolor="#FF0000">name</td>
+                        <td id="table_location" th:text="${sensor.location}" bgcolor="#FF0000">location</td>
+                        <td id="table_post" scope="row" bgcolor="#FF0000" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
                                                'Расположение: ' + sensor.post.location + '<br>'}">post</td>
-                        <td bgcolor="#FF0000" th:text="${sensor.sensorStatus}">location</td>
+                        <td id="table_status" bgcolor="#FF0000" th:text="${sensor.sensorStatus}">status</td>
                     </div>
 
                     <div th:if="${!#strings.equals(sensor.sensorStatus, 'ERROR')}">
-                        <th scope="row" th:text="${sensor.id}">id</th>
+                        <th scope="row"></th>
+<!--                        <th scope="row" th:text="${sensor.id}">id</th>-->
                         <td th:text="${sensor.name}">name</td>
                         <td th:text="${sensor.location}">location</td>
                         <td scope="row" th:utext="'Название: ' + ${sensor.post.name + '<br>' +
@@ -50,7 +53,8 @@
                 </tbody>
             </table>
 
-            <a th:href="@{/posts/done/{id}(id=${sensor.id})}" class="btn btn-primary my-3" th:if="${#strings.equals(sensor.sensorStatus, 'ERROR')}" sec:authorize="${hasAuthority('army:write')}">Проблема решена</a>
+            <div id="sensor_id" hidden th:value="${sensor.id}"></div>
+            <a id="problem_button" class="btn btn-primary my-3" th:if="${#strings.equals(sensor.sensorStatus, 'ERROR')}" sec:authorize="${hasAuthority('army:write')}">Проблема решена</a>
             <h3>Сообщения</h3>
 
             <div>
@@ -68,6 +72,9 @@
                        th:class="${pageNumber==messagesPage.number + 1} ? active">
                     </a>
                 </span>
+
+                <div id="page_size" hidden>[[${messagesPage.size}]]</div>
+                <div id="start_page" hidden>[[${current_page}]]</div>
 
                 <span>
                     <a class="page-link svg-icon" th:if="${messagesPage.totalPages > 0 and start_page + number_of_pages <= messagesPage.totalPages}"
@@ -89,14 +96,16 @@
                     <tbody>
                     <tr th:each="sensorMessage : ${messagesPage}">
                         <div th:if="${sensorMessage.error}">
-                            <th scope="row" th:text="${sensorMessage.id}" bgcolor="#FF0000">id</th>
-                            <td th:text="${sensorMessage.messages_date}" bgcolor="#FF0000">date</td>
+                            <th scope="row" bgcolor="#FF0000"></th>
+<!--                            <th scope="row" th:text="${sensorMessage.id}" bgcolor="#FF0000">id</th>-->
+                            <td class="message_date_table" th:text="${sensorMessage.messages_date}" bgcolor="#FF0000">date</td>
                             <td th:text="${sensorMessage.messages}" bgcolor="#FF0000">messages</td>
                         </div>
 
                         <div th:if="${!sensorMessage.error}">
-                            <th scope="row" th:text="${sensorMessage.id}">id</th>
-                            <td th:text="${sensorMessage.messages_date}">date</td>
+                            <th scope="row"></th>
+<!--                            <th scope="row" th:text="${sensorMessage.id}">id</th>-->
+                            <td  class="message_date_table" th:text="${sensorMessage.messages_date}">date</td>
                             <td th:text="${sensorMessage.messages}">messages</td>
                         </div>
                     </tr>
@@ -107,5 +116,7 @@
         </div>
     </div>
 </div>
+<script src="/js/posts/show_sensor_messages.js"></script>
+
 </body>
 </html>

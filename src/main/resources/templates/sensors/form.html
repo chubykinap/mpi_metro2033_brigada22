@@ -3,7 +3,6 @@
 <head>
     <div th:replace="fragments/fragment :: head"></div>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script src="/js/sensors/form.js"></script>
 
     <title id="pageTitle">Метро 2033 Датчики</title>
 </head>
@@ -16,6 +15,7 @@
         </div>
         <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
             <h1>Добавление датчика</h1>
+            <div id="notification" style="background-color:#8ebf42"></div>
             <form id="create" th:method="POST" th:action="@{/sensors}" th:object="${sensor}">
                 <div class="form-group">
                     <label for="name">Название</label>
@@ -39,15 +39,19 @@
                     <div id="post_validation"></div>
                 </div>
 
+                <div hidden id="sensor_id" th:value="${sensor.id}"> </div>
+
                 <div class="form-group">
                     <input type="hidden" name="action" th:value="${action}">
-                    <button id="button" type="submit" class="btn-primary btn">Save</button>
-                    <a href="/sensors" class="btn-primary btn">Cancel</a>
+                    <button id="button" type="button" class="btn-primary btn">Сохранить</button>
+                    <a href="/sensors" class="btn-primary btn">Назад</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<script src="/js/sensors/form.js"></script>
 
 </body>
 </html>

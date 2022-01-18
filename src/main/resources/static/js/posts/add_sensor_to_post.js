@@ -12,7 +12,7 @@ $(document).ready(function() {
           });
 
           if (check == true){
-            alert("Не все данные заполнены!");
+            alert("Виберите датчик!");
             return;
           }
 
@@ -29,11 +29,27 @@ $(document).ready(function() {
             // dataType: "dataType",
             success: function (data) {
               console.log("success");
-              console.log(data);
-              window.location.href = '/posts/show_sensors/' + $("#post_id").val();
-            }
+              if (data.status == "Error"){
+                alert(data.data);
+                return;
+              }
+              else{
+                show_notification(data.data);
+              }
+//              window.location.href = '/posts/show_sensors/' + $("#post_id").val();
+            },
+             error: function (e){
+                 console.log(e);
+             }
           });
           console.log(add_sensor_to_post);
         });
     })
+
+     function show_notification(info){
+        $('#notification').text("Датчик:  " + info.name + " " + info.location + " добавлен на пост");
+        $('#notification').show();
+        $('#notification').delay(7000).hide(0);
+     }
+
 });

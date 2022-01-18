@@ -19,6 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -77,6 +78,7 @@ public class UsersController {
         model.addAttribute("usersPage", bookPage);
         model.addAttribute("start_page", startPage);
         model.addAttribute("number_of_pages", numberOfPages);
+        model.addAttribute("current_page", currentPage);
 
         int totalPages = bookPage.getTotalPages();
         if (totalPages > 0) {
@@ -102,35 +104,42 @@ public class UsersController {
         return "users/form";
     }
 
-    @PostMapping
-    @PreAuthorize("hasAuthority('users:create')")
-    public String create(@ModelAttribute("user") @Valid User user, BindingResult bindingResult,
-                        Model model, Authentication authentication,  @RequestParam("action") String action){
-        if(bindingResult.hasErrors()) {
-            model.addAttribute("action", action);
-            model.addAttribute("roles", getRolesForSelect(authentication));
-            return "users/form";
-        }
-
-        if (userRepository.findByLogin(user.getLogin()).isPresent()){
-            model.addAttribute("error", "Пользователь с таким логином уже существует!");
-            return "error";
-        }
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        userRepository.save(user);
-
-        return "redirect:/users";
-    }
+//    @PostMapping
+//    @PreAuthorize("hasAuthority('users:create')")
+//    public String create(@ModelAttribute("user") @Valid User user, BindingResult bindingResult,
+//                        Model model, Authentication authentication,  @RequestParam("action") String action){
+//        if(bindingResult.hasErrors()) {
+//            model.addAttribute("action", action);
+//            model.addAttribute("roles", getRolesForSelect(authentication));
+//            return "users/form";
+//        }
+//
+//        if (userRepository.findByLogin(user.getLogin()).isPresent()){
+//            model.addAttribute("error", "Пользователь с таким логином уже существует!");
+//            return "error";
+//        }
+//
+//        user.setPassword(passwordEncoder.encode(user.getPassword()));
+//
+//        userRepository.save(user);
+//
+//        return "redirect:/users";
+//    }
 
     @GetMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority('army:write')")
+    //@PreAuthorize("hasAuthority('army:write')")
     public String enable(@PathVariable Long id) {
 
         User user = userRepository.findById(id).orElse(null);
 
         if(user != null){
+
+            if (user.getSoldier() != null ||
+                user.getCourier() != null){
+                //TODO вернуть ответ об ошибке
+                return "error";
+            }
+
             userRepository.deleteById(id);
         }
 
@@ -158,46 +167,46 @@ public class UsersController {
         return "users/change";
     }
 
-    @PreAuthorize("hasAuthority('users:write')")
-    @RequestMapping(value = "/change", consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
-    public String change(@RequestBody String response) throws Exception { //ParesException type?
-
-        JSONObject json = new JSONObject(response);
-
-        boolean change_pass = true;
-
-        long user_id = Long.parseLong(json.getString("user_id"));
-        String login = json.getString("login");
-
-        String password = json.getString("password");
-        if (password.equals("")) change_pass = false;
-
-        String encoded_password = passwordEncoder.encode(password);
-        String name = json.getString("name");
-        String surname = json.getString("surname");
-        String patronymic = json.getString("patronymic");
-        Role role = Role.findState(json.getString("role"));
-
-        //Переделать в 1 запрос (хз как)
-        User user = userRepository.findById(user_id).orElse(null);
-        if(user == null) {
-            return "redirect:/users";
-        }
-
-        if(change_pass){
-            user.setPassword(encoded_password);
-        }
-
-        user.setLogin(login);
-        user.setName(name);
-        user.setSurname(surname);
-        user.setPatronymic(patronymic);
-        user.setRole(role);
-
-        userRepository.save(user);
-
-        return "redirect:/users";
-    }
+//    @PreAuthorize("hasAuthority('users:write')")
+//    @RequestMapping(value = "/change", consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
+//    public String change(@RequestBody String response) throws Exception { //ParesException type?
+//
+//        JSONObject json = new JSONObject(response);
+//
+//        boolean change_pass = true;
+//
+//        long user_id = Long.parseLong(json.getString("user_id"));
+//        String login = json.getString("login");
+//
+//        String password = json.getString("password");
+//        if (password.equals("")) change_pass = false;
+//
+//        String encoded_password = passwordEncoder.encode(password);
+//        String name = json.getString("name");
+//        String surname = json.getString("surname");
+//        String patronymic = json.getString("patronymic");
+//        Role role = Role.findState(json.getString("role"));
+//
+//        //Переделать в 1 запрос (хз как)
+//        User user = userRepository.findById(user_id).orElse(null);
+//        if(user == null) {
+//            return "redirect:/users";
+//        }
+//
+//        if(change_pass){
+//            user.setPassword(encoded_password);
+//        }
+//
+//        user.setLogin(login);
+//        user.setName(name);
+//        user.setSurname(surname);
+//        user.setPatronymic(patronymic);
+//        user.setRole(role);
+//
+//        userRepository.save(user);
+//
+//        return "redirect:/users";
+//    }
 
     private List<Role> getRolesForSelect(Authentication authentication){
         User user = userRepository.findByLogin(authentication.getName()).orElse(null);
@@ -224,3 +233,4 @@ public class UsersController {
     }
 
 }
+

@@ -9,39 +9,6 @@
     <title id="pageTitle">Метро 2033 Военный персонал</title>
 </head>
 <body>
-<script type="application/javascript">
-        $(document).ready(function() {
-            $(function(){
-                $(document).on('click', '#delete2', function(event)
-                {
-                    event.preventDefault();
-                    var tbl_row = $(this).closest('tr');
-                    var soldier_id = $(tbl_row).find("#soldier_id").text();
-
-                    //Проверить
-                    if (soldier_id == '') {
-                      alert("Не найден ID солдата");
-                    }
-
-                    var soldier = {
-                        "soldier_id":soldier_id
-                    };
-
-                    $.ajax({
-                        type: "POST",
-                        url: "/posts/remove_from_post",
-                        contentType: "application/json",
-                        data: JSON.stringify(soldier),
-                        success: function (data) {
-                          console.log("success");
-                          console.log(data);
-                          window.location.href = data;
-                        }
-                    });
-                });
-            })
-        });
-</script>
 
 
 <div th:replace="fragments/fragment :: nav-all"></div>
@@ -52,6 +19,7 @@
         </div>
         <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
             <h1>Военный персонал</h1>
+            <div id="notification" style="background-color:#8ebf42"></div>
             <a href="/posts" class="btn-primary btn">Назад</a>
             <a th:href="@{/posts/add_soldier_to_post/{id}(id=${post.id})}" class="btn-primary btn">Добавить солдата в данный пост</a>
 
@@ -70,6 +38,9 @@
                        th:class="${pageNumber==soldiersPage.number + 1} ? active">
                     </a>
                 </span>
+
+                <div id="page_size" hidden>[[${soldiersPage.size}]]</div>
+                <div id="start_page" hidden>[[${current_page}]]</div>
 
                 <span>
                     <a class="page-link svg-icon" th:if="${soldiersPage.totalPages > 0 and start_page + number_of_pages <= soldiersPage.totalPages}"
@@ -96,7 +67,8 @@
                     <tbody>
 
                     <tr th:each="soldier : ${soldiersPage}">
-                        <th scope="row" id="soldier_id" th:text="${soldier.id}">id</th>
+                        <th scope="row"></th>
+<!--                        <th scope="row" id="soldier_id" th:text="${soldier.id}">id</th>-->
                         <td scope="row" th:text="${soldier.user.name}">name</td>
                         <td scope="row" th:text="${soldier.user.surname}">surname</td>
                         <td scope="row" th:text="${soldier.user.patronymic}">patronymic</td>
@@ -106,7 +78,9 @@
                                                'Сила: ' + soldier.characteristics.strength + '<br>' +
                                                'Выносливость: ' + soldier.characteristics.stamina}">characteristics</td>
                         <td scope="row" th:text="${soldier.health_state}">health</td>
-                        <td scope="row"><div><a th:href="@{/posts/remove_from_post/{id}(id=${soldier.id})}" class="btn-primary btn" id="delete" sec:authorize="${hasAuthority('army:write')}">Удалить</a></div></td>
+                        <td scope="row"><div><a class="btn-primary btn"
+                                                id="delete" sec:authorize="${hasAuthority('army:write')}"
+                                                th:value="${soldier.id}">Удалить</a></div></td>
                     </tr>
                     </tbody>
                 </table>
@@ -115,5 +89,7 @@
         </div>
     </div>
 </div>
+<script src="/js/posts/show_soldiers.js"></script>
+
 </body>
 </html>

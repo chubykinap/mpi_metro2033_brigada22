@@ -15,5 +15,5 @@ public interface SoldierRepository extends JpaRepository<Soldier, Long> {
     Optional<Soldier> findById(long id);
     List<Soldier> findAllByPostIsNull();
     Optional<Soldier> findByUserId(long id);
-
+    List<Soldier> findAllByPost(Post post);
 }
