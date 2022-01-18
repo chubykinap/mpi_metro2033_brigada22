@@ -35,6 +35,11 @@ $(document).ready(function() {
               }
               else{
                 show_notification(data.data);
+                  $("#sensor option[value=" + $("#sensor").val() + "]").remove();
+                  console.log($("#sensor option").length);
+                  if($("#sensor option").length <= 1){
+                      fromReset();
+                  }
               }
 //              window.location.href = '/posts/show_sensors/' + $("#post_id").val();
             },
@@ -51,5 +56,13 @@ $(document).ready(function() {
         $('#notification').show();
         $('#notification').delay(7000).hide(0);
      }
+
+      function fromReset() {
+          document.getElementById("ajax_change_post").reset();
+          var elem = document.getElementById("create_div");
+          elem.parentNode.removeChild(elem);
+          document.getElementById("no_sensors_div").style.visibility = "visible";
+          $('#no_sensors_div').append("<h4>Нет не активных датчиков</h4>");
+      }
 
 });

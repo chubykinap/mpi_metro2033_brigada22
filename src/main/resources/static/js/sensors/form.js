@@ -56,6 +56,7 @@ $(document).ready(function() {
                }
                else{
                  show_notification(data.data);
+                 fromReset();
                }
              },
              error: function (e){
@@ -73,6 +74,10 @@ $(document).ready(function() {
         $('#notification').show();
         $('#notification').delay(7000).hide(0);
      }
+
+      function fromReset() {
+          document.getElementById("create").reset();
+      }
 
     function validate_name(){
        var regExp = new RegExp("^(?=.{1,100}$)(?![_.])(?!.*[_.]{2})[a-zA-ZА-Яа-я0-9]+(?<![_.])$");
