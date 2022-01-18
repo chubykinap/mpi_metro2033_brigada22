@@ -39,24 +39,6 @@ $(document).ready(function() {
             console.log(item);
         });
 
-        $("#delete").click(function(){
-            if (window.confirm("Удалить предмет?")){
-                $.ajax({
-                    type: "GET",
-                    url: "/storage/delete/" + $("#item_id").val(),
-                    success: function (data) {
-                      console.log("success");
-                      if (data.status == "Error"){
-                        alert(data.data);
-                        return;
-                      }
-                      console.log(data);
-                      window.location.href = '/storage';
-                    }
-                });
-            }
-        });
-
         $("#name").on('keyup', function(event){
             event.preventDefault();
             validate_name();
@@ -69,7 +51,7 @@ $(document).ready(function() {
 
         $("#weight").on('keyup', function(event){
             event.preventDefault();
-            validate_quantity();
+            validate_weight();
         });
     })
 });
@@ -98,8 +80,8 @@ function validate_quantity(){
 }
 
 function validate_weight(){
-    var quantity = $("#weight").val();
-    if (quantity < 0){
+    var weight = $("#weight").val();
+    if (weight < 0){
         $( "#weight_validation" ).text("Введите число большее нуля");
         return true;
     }else{
