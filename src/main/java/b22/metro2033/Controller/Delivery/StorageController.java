@@ -1,9 +1,5 @@
 package b22.metro2033.Controller.Delivery;
 
-import b22.metro2033.Entity.Army.HealthState;
-import b22.metro2033.Entity.Army.Post;
-import b22.metro2033.Entity.Army.Rank;
-import b22.metro2033.Entity.Army.Soldier;
 import b22.metro2033.Entity.Delivery.Item;
 import b22.metro2033.Entity.User;
 import b22.metro2033.Repository.Delivery.ItemRepository;
@@ -104,7 +100,7 @@ public class StorageController {
     }
 
     @GetMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority('army:write')")
+    @PreAuthorize("hasAuthority('delivery:write')")
     public String delete(@PathVariable Long id) {
 
         Item item = itemRepository.findById(id).orElse(null);

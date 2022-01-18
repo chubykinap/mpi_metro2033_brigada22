@@ -50,7 +50,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Список предметов для заказа</label>
+                        <label>Список предметов для заказа  </label>
                         <div id="item_validation"></div>
                         <table id="t_items" class="table table-striped">
                             <thead>
@@ -58,7 +58,17 @@
                                 <th scope="col">Предмет</th>
                                 <th scope="col">Количество</th>
                             </tr>
+                            </thead>
                             <tbody>
+                            <tr>
+                                <td id="search_name" scope="row">
+                                    <input type="text" id="search_text" class="form-control"
+                                           placeholder="Поиск">
+                                </td>
+                                <td>
+                                    <input type="button" id="search" class="btn-primary btn" value="Поиск"/>
+                                </td>
+                            </tr>
                             <tr th:each="item : ${items}">
                                 <td id="t_name" scope="row" th:utext="${item.name}"></td>
                                 <td scope="row">
@@ -67,7 +77,6 @@
                                 </td>
                             </tr>
                             </tbody>
-                            </thead>
                         </table>
                     </div>
                     <div class="form-group">

@@ -39,6 +39,20 @@ $(document).ready(function() {
             validate_name();
         });
 
+        $("#delete").click(function(){
+            if (window.confirm("Удалить предмет?")){
+                $.ajax({
+                    type: "GET",
+                    url: "/storage/delete/" + $("#item_id").val(),
+                    success: function (data) {
+                      console.log("success");
+                      console.log(data);
+                      window.location.href = '/storage';
+                    }
+                });
+            }
+        });
+
         $("#quantity").on('keyup', function(event){
             event.preventDefault();
             validate_quantity();

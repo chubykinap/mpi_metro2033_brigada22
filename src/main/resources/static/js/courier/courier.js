@@ -22,9 +22,6 @@ $(document).ready(function() {
                       alert("Курьер не найден");
                     }
 
-                    var courier = {
-                        "courier_id":courier_id
-                    };
                     $.ajax({
                         type: "GET",
                         url: "/courier/delete/" + courier_id,

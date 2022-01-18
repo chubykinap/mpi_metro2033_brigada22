@@ -38,6 +38,19 @@ $(document).ready(function() {
             });
         });
 
+        $("#search").click(function(event) {
+            event.preventDefault();
+            var search = $("#search_text").val();
+
+            $("#t_items tbody tr").each(function(i) {
+                var $item_name = $(this).find('#t_name').text();
+                if ($item_name != "" &&
+                    $item_name.indexOf(search) < 0) {
+                        $(this).hide();
+                    }
+            });
+        });
+
         $("#courier").on("change", function(){
             event.preventDefault()
             validate_courier();
@@ -55,9 +68,9 @@ $(document).ready(function() {
 
         // ХЗ работает, но не так
         // Не выдает сообщение при смене значения в строке
-        $("#t_items").change(function(){
+        $("#t_quantity").on("keyup", function(){
             event.preventDefault()
-            validate_date();
+            validate_items();
         });
     })
 });
