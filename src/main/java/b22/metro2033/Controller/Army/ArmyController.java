@@ -85,6 +85,7 @@ public class ArmyController {
         model.addAttribute("soldiersPage", soldiersPage);
         model.addAttribute("start_page", startPage);
         model.addAttribute("number_of_pages", numberOfPages);
+        model.addAttribute("current_page", currentPage);
 
         int totalPages = soldiersPage.getTotalPages();
 

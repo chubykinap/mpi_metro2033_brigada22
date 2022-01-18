@@ -79,6 +79,9 @@
             </a>
         </span>
 
+        <div id="page_size" hidden>[[${messagesPage.size}]]</div>
+        <div id="start_page" hidden>[[${current_page}]]</div>
+
         <span class="page-item" th:if="${messagesPage.totalPages > 0}"
               th:each="pageNumber : ${pageNumbers}">
                 <a class="page-link svg-icon" th:href="@{/sensors/messages/{id}(id=${sensor.id}, size=${messagesPage.size}, page=${pageNumber}, start_page=${start_page})}"

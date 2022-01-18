@@ -9,20 +9,6 @@
 </head>
 <body>
 
-<script type="application/javascript">
-        $(document).ready(function() {
-            $(function(){
-              var table = document.getElementsByTagName('table')[0],
-              rows = table.getElementsByTagName('tr'),
-              text = 'textContent' in document ? 'textContent' : 'innerText';
-
-              for (var i = 1, len = rows.length; i < len; i++) {
-                rows[i].children[0][text] = i + rows[i].children[0][text];
-              }
-            })
-        });
-</script>
-
 <div th:replace="fragments/fragment :: nav-all"></div>
 <div class="container-fluid">
     <li class="row">
@@ -49,6 +35,9 @@
                        th:class="${pageNumber==usersPage.number + 1} ? active">
                     </a>
                 </span>
+
+                <div id="page_size" hidden>[[${usersPage.size}]]</div>
+                <div id="start_page" hidden>[[${current_page}]]</div>
 
                 <span>
                     <a class="page-link svg-icon" th:if="${usersPage.totalPages > 0 and start_page + number_of_pages <= usersPage.totalPages}"

@@ -39,6 +39,9 @@
                     </a>
                 </span>
 
+                <div id="page_size" hidden>[[${soldiersPage.size}]]</div>
+                <div id="start_page" hidden>[[${current_page}]]</div>
+
                 <span>
                     <a class="page-link svg-icon" th:if="${soldiersPage.totalPages > 0 and start_page + number_of_pages <= soldiersPage.totalPages}"
                        th:href="@{/posts/show_soldiers/{id}(id=${post.id}, size=${soldiersPage.size}, page=${start_page + number_of_pages}, start_page=${start_page + number_of_pages})}"

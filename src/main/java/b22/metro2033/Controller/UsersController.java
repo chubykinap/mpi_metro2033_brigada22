@@ -78,6 +78,7 @@ public class UsersController {
         model.addAttribute("usersPage", bookPage);
         model.addAttribute("start_page", startPage);
         model.addAttribute("number_of_pages", numberOfPages);
+        model.addAttribute("current_page", currentPage);
 
         int totalPages = bookPage.getTotalPages();
         if (totalPages > 0) {

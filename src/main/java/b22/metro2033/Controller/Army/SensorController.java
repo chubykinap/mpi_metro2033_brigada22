@@ -79,6 +79,7 @@ public class SensorController {
         model.addAttribute("sensorsPage", sensorsPage);
         model.addAttribute("start_page", startPage);
         model.addAttribute("number_of_pages", numberOfPages);
+        model.addAttribute("current_page", currentPage);
 
         int totalPages = sensorsPage.getTotalPages();
         if (totalPages > 0) {
@@ -226,6 +227,7 @@ public class SensorController {
         model.addAttribute("messagesPage", messagesPage);
         model.addAttribute("start_page", startPage);
         model.addAttribute("number_of_pages", numberOfPages);
+        model.addAttribute("current_page", currentPage);
 
         int totalPages = messagesPage.getTotalPages();
         if (totalPages > 0) {

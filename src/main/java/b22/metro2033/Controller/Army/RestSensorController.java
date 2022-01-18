@@ -171,58 +171,48 @@ public class RestSensorController {
         }
     }
 
-    @PostMapping("/messages")
-    @PreAuthorize("hasAuthority('army:read')")
-    public String messages(Model model, Authentication authentication, @PathVariable Long id,
-                           @RequestParam("page") Optional<Integer> page,
-                           @RequestParam("size") Optional<Integer> size,
-                           @RequestParam("start_page") Optional<Integer> start_page,
-                           @RequestParam("number_of_pages") Optional<Integer> number_of_pages){
-
-        int currentPage = page.orElse(1);
-        int pageSize = size.orElse(10);
-        int startPage = start_page.orElse(1);
-        int numberOfPages = number_of_pages.orElse(10);
-
-        if (startPage < 0) startPage = 1;
-        if (currentPage < 0) currentPage = 1;
-
-
-        MovementSensor movementSensor = movementSensorRepository.findById(id).orElse(null);
-        if(movementSensor == null){
-            return "redirect:/sensors";
-        }
-
-        List<SensorMessages> sensorMessages = sensorMessagesRepository.findByMovementSensorOrderByIdDesc(movementSensor);
-
-        Page<SensorMessages> messagesPage = PaginatedService.findPaginated(PageRequest.of(currentPage - 1, pageSize), sensorMessages);
-
-        model.addAttribute("messagesPage", messagesPage);
-        model.addAttribute("start_page", startPage);
-        model.addAttribute("number_of_pages", numberOfPages);
-
-        int totalPages = messagesPage.getTotalPages();
-        if (totalPages > 0) {
-
-            List<Integer> pageNumbers = new ArrayList<>();
-            for (int i = startPage; i < startPage + numberOfPages; i++){
-                if (i > totalPages) break;
-                pageNumbers.add(i);
-            }
-            model.addAttribute("pageNumbers", pageNumbers);
-        }
-
-        model.addAttribute("sensor", movementSensor);
-        model.addAttribute("action", "change");
-        List<Post> posts = postRepository.findAll();
-        if (posts.size() == 0){
-            return "sensors/form";
-        }
-
-        model.addAttribute("posts", posts);
-
-        return "sensors/messages";
-    }
+//    @PostMapping("/messages")
+//    @PreAuthorize("hasAuthority('army:read')")
+//    public Response messages(@RequestBody String request) throws JSONException {
+//
+//        JSONObject JSON = new JSONObject(request);
+//        long sensor_id = Long.parseLong(JSON.getString("sensor_id"));
+//
+//        MovementSensor movementSensor = movementSensorRepository.findById(sensor_id).orElse(null);
+//        if(movementSensor == null){
+//            return new Response("Error", "Датчик не найден!");
+//        }
+//
+//        List<SensorMessages> sensorMessages = sensorMessagesRepository.findByMovementSensorOrderByIdDesc(movementSensor);
+//
+//        Page<SensorMessages> messagesPage = PaginatedService.findPaginated(PageRequest.of(currentPage - 1, pageSize), sensorMessages);
+//
+//        model.addAttribute("messagesPage", messagesPage);
+//        model.addAttribute("start_page", startPage);
+//        model.addAttribute("number_of_pages", numberOfPages);
+//
+//        int totalPages = messagesPage.getTotalPages();
+//        if (totalPages > 0) {
+//
+//            List<Integer> pageNumbers = new ArrayList<>();
+//            for (int i = startPage; i < startPage + numberOfPages; i++){
+//                if (i > totalPages) break;
+//                pageNumbers.add(i);
+//            }
+//            model.addAttribute("pageNumbers", pageNumbers);
+//        }
+//
+//        model.addAttribute("sensor", movementSensor);
+//        model.addAttribute("action", "change");
+//        List<Post> posts = postRepository.findAll();
+//        if (posts.size() == 0){
+//            return "sensors/form";
+//        }
+//
+//        model.addAttribute("posts", posts);
+//
+//        return "sensors/messages";
+//    }
 
 
 }
