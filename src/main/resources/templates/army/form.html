@@ -20,11 +20,11 @@
     <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
       <h1>Добавление нового военного</h1>
 
-      <div th:if="${!#strings.equals(users, 'NoData')}">
+      <div id="notification" style="background-color:#8ebf42"></div>
+      <div id="create_div" th:if="${!#strings.equals(users, 'NoData')}">
 
         <form th:method="POST" th:action="@{/army}" th:object="${soldier}" id="ajax_create_soldier">
           <div class="form-group">
-            <div id="notification" style="background-color:#8ebf42"></div>
             <label for="user">Пользователь</label>
 
 
@@ -91,9 +91,11 @@
         </form>
       </div>
 
-      <div th:unless="${!#strings.equals(users, 'NoData')}">
-        <h1>Нет пользователей с ролью военный</h1>
-      </div>
+        <div th:unless="${!#strings.equals(users, 'NoData')}">
+          <h1>Нет пользователей с ролью военный</h1>
+        </div>
+
+      <div id="no_users_div" style="visibility: hidden;"></div>
 
       <div class="form-group">
         <a href="/army" class="btn-primary btn">Назад</a>

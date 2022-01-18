@@ -35,6 +35,11 @@ $(document).ready(function() {
                 }
                 else{
                   show_notification(data.data);
+                  $("#soldier option[value=" + $("#soldier").val() + "]").remove();
+                  console.log($("#soldier option").length);
+                  if($("#soldier option").length <= 1){
+                      fromReset();
+                  }
                 }
               //window.location.href = '/posts';
             },
@@ -50,5 +55,13 @@ $(document).ready(function() {
         $('#notification').show();
         $('#notification').delay(7000).hide(0);
      }
+
+      function fromReset() {
+          document.getElementById("ajax_change_post").reset();
+          var elem = document.getElementById("create_div");
+          elem.parentNode.removeChild(elem);
+          document.getElementById("no_users_div").style.visibility = "visible";
+          $('#no_users_div').append("<h4>Нет свободных солдатов</h4>");
+      }
 
 });

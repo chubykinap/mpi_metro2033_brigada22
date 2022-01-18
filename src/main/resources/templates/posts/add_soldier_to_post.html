@@ -17,45 +17,51 @@
         </div>
         <div class="col-xs-12 col-sm-8 col-lg-9 col-md-8 py-3">
             <h1>Добавление солдата на пост</h1>
+
+            <div class="form-group">
+                <label>Название поста: [[${post.name}]]</label>
+            </div>
+
+            <div class="form-group">
+                <label>Местоположение: [[${post.location}]]</label>
+            </div>
+
             <div id="notification" style="background-color:#8ebf42"></div>
-            <form th:method="POST" th:action="@{/posts/change}" th:object="${post}" id="ajax_change_post">
 
-                <div class="form-group">
-                    <label>Название поста: [[${post.name}]]</label>
-                </div>
+            <div id="create_div">
+                <form th:method="POST" th:action="@{/posts/change}" th:object="${post}" id="ajax_change_post">
 
-                <div class="form-group">
-                    <label>Местоположение: [[${post.location}]]</label>
-                </div>
-
-                <div class="form-group">
-                    <input type="hidden" id="post_id" th:field="${post.id}" class="form-control" placeholder="Post id">
-                </div>
-
-                <div th:if="${!#strings.equals(soldiers, 'NoData')}">
                     <div class="form-group">
-                        <label for="soldier">Солдат</label>
-                        <select id="soldier" class="custom-select" th:field="*{soldier} ">
-                            <option value="">Выбрать солдата...</option>
-                            <option th:each="soldier : ${soldiers}" th:value="${soldier.id}"
-                                    th:text="${soldier.user.name} + ',' + ${soldier.user.surname} + ',' +
+                        <input type="hidden" id="post_id" th:field="${post.id}" class="form-control" placeholder="Post id">
+                    </div>
+
+                    <div th:if="${!#strings.equals(soldiers, 'NoData')}">
+                        <div class="form-group">
+                            <label for="soldier">Солдат</label>
+                            <select id="soldier" class="custom-select" th:field="*{soldier} ">
+                                <option value="">Выбрать солдата...</option>
+                                <option th:each="soldier : ${soldiers}" th:value="${soldier.id}"
+                                        th:text="${soldier.user.name} + ',' + ${soldier.user.surname} + ',' +
                                 ${soldier.user.patronymic} + ',' + ${soldier.rank}">Soldier</option>
-                        </select>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <a type="button" id="change"  class="btn-primary btn" value="Сохранить">Сохранить</a>
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <a type="button" id="change"  class="btn-primary btn" value="Сохранить">Сохранить</a>
+                    <div th:unless="${!#strings.equals(soldiers, 'NoData')}">
+                        <h4>Нет свободных солдатов</h4>
                     </div>
-                </div>
+                    <!--${soldier.user.surname}, ${soldier.user.patronymic}, ${soldier.rank}!-->
+                </form>
+            </div>
 
-                <div th:unless="${!#strings.equals(soldiers, 'NoData')}">
-                    <h4>Нет свободных солдатов</h4>
-                </div>
+            <div id="no_users_div" style="visibility: hidden;"></div>
 
-                <a th:href="@{/posts/show_soldiers/{id}(id=${post.id})}" class="btn-primary btn">Назад</a>
+            <a th:href="@{/posts/show_soldiers/{id}(id=${post.id})}" class="btn-primary btn">Назад</a>
 
-                <!--${soldier.user.surname}, ${soldier.user.patronymic}, ${soldier.rank}!-->
-            </form>
         </div>
     </div>
 </div>
