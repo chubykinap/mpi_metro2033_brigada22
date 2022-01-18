@@ -111,6 +111,11 @@ $(document).ready(function() {
               }
              else{
                 show_notification(data.data);
+                $("#user option[value=" + user + "]").remove();
+                console.log($("#user option").length);
+                if($("#user option").length <= 1){
+                    fromReset();
+                }
               }
             },
             error: function (e){
@@ -125,6 +130,14 @@ $(document).ready(function() {
         $('#notification').show();
         $('#notification').delay(7000).hide(0);
      }
+
+      function fromReset() {
+          document.getElementById("ajax_create_soldier").reset();
+          var elem = document.getElementById("create_div");
+          elem.parentNode.removeChild(elem);
+          document.getElementById("no_users_div").style.visibility = "visible";
+          $('#no_users_div').append("<h1>Нет пользователей с ролью военный</h1>");
+      }
 
     function validate_agility(){
         var value = $("#agility").val();

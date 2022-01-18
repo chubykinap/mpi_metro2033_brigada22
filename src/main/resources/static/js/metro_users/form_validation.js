@@ -88,6 +88,7 @@ $(document).ready(function() {
                }
                else{
                  show_notification(data.data);
+                 fromReset();
                }
              },
              error: function (e){
@@ -103,6 +104,10 @@ $(document).ready(function() {
         $('#notification').text("Пользователь " + login + " создан");
         $('#notification').show();
         $('#notification').delay(7000).hide(0);
+     }
+
+     function fromReset() {
+         document.getElementById("register_form").reset();
      }
 
     function validate_login(){
