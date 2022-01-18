@@ -31,9 +31,12 @@ $(document).ready(function() {
                 contentType: "application/json",
                 data: JSON.stringify(order),
                 success: function (data) {
-                  console.log("success");
-                  console.log(data);
-                  window.location.href = '/delivery';
+                    if (data.status == "Error"){
+                        alert(data.data);
+                        return;
+                    }
+                    console.log("success");
+                    window.location.href = '/delivery';
                 }
             });
         });
@@ -47,6 +50,8 @@ $(document).ready(function() {
                 if ($item_name != "" &&
                     $item_name.indexOf(search) < 0) {
                         $(this).hide();
+                    } else {
+                        $(this).show();
                     }
             });
         });
@@ -66,8 +71,6 @@ $(document).ready(function() {
             validate_date();
         });
 
-        // ХЗ работает, но не так
-        // Не выдает сообщение при смене значения в строке
         $("#t_quantity").on("keyup", function(){
             event.preventDefault()
             validate_items();

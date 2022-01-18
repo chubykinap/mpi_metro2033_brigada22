@@ -1,6 +1,7 @@
 $(document).ready(function() {
     $(function() {
-        $("#create").click(function() {
+        $("#create").click(function(e) {
+            e.preventDefault();
             var check = false;
 
             check = validate_name();
@@ -8,7 +9,30 @@ $(document).ready(function() {
 
             if (check){
                 alert("Ошибка в заполнении полей.");
+                return;
             }
+
+            var item = {
+                "name":$("#name").val(),
+                "quantity":$("#quantity").val(),
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/storage/create",
+                contentType: "application/json",
+                data: JSON.stringify(item),
+                success: function (response) {
+                    console.log("send");
+                    console.log(response.status);
+                    if (response.status == "Error"){
+                        alert(response.data);
+                        return;
+                    }
+                    console.log("success");
+                    window.location.href = '/storage';
+                }
+            });
         });
 
         $("#name").on('keyup', function(event){

@@ -26,9 +26,12 @@ $(document).ready(function() {
                 data: JSON.stringify(item),
                 // dataType: "dataType",
                 success: function (data) {
-                  console.log("success");
-                  console.log(data);
-                  window.location.href = '/storage';
+                    if (data.status == "Error"){
+                        alert(data.data);
+                        return;
+                    }
+                    console.log("success");
+                    window.location.href = '/storage';
                 }
             });
             console.log(item);
@@ -46,6 +49,10 @@ $(document).ready(function() {
                     url: "/storage/delete/" + $("#item_id").val(),
                     success: function (data) {
                       console.log("success");
+                      if (data.status == "Error"){
+                        alert(data.data);
+                        return;
+                      }
                       console.log(data);
                       window.location.href = '/storage';
                     }

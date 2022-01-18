@@ -46,7 +46,7 @@
       <a href="/storage"><span class="fas fa-cubes fa-fw"></span> Склад</a>
     </li>
     <li class="" sec:authorize="${hasAuthority('delivery:write')}">
-      <a href="/courier"><span class="fas fa-wheelchair-alt fa-fw"></span> Курьеры</a>
+      <a href="/courier"><span class="fa fa-id-badge fa-fw"></span> Курьеры</a>
     </li>
     <li class=""  sec:authorize="${hasAuthority('army:read')}">
       <a href="/army"><span class="fas fa-flag fa-fw"></span> Армия</a>
@@ -58,7 +58,7 @@
       <a href="/sensors"><span class="fas fa-wifi fa-fw"></span> Сенсоры</a>
     </li>
     <li class="" >
-      <a href="/about_me"><span class="fas fa-wifi fa-fw"></span> Обо мне</a>
+      <a href="/about_me"><span class="fas fa-user fa-fw"></span> Обо мне</a>
     </li>
   </ul>
 </div>

@@ -3,17 +3,16 @@ package b22.metro2033.Controller.Delivery;
 import b22.metro2033.Entity.Delivery.Item;
 import b22.metro2033.Entity.User;
 import b22.metro2033.Repository.Delivery.ItemRepository;
+import b22.metro2033.Repository.Delivery.OrderItemRepository;
 import b22.metro2033.Repository.UserRepository;
-import org.json.JSONObject;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -21,10 +20,14 @@ import java.util.List;
 public class StorageController {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final OrderItemRepository orderItemRepository;
 
-    public StorageController(ItemRepository itemRepository, UserRepository userRepository) {
+    public StorageController(ItemRepository itemRepository,
+                             UserRepository userRepository,
+                             OrderItemRepository orderItemRepository) {
         this.itemRepository = itemRepository;
         this.userRepository = userRepository;
+        this.orderItemRepository = orderItemRepository;
     }
 
     @GetMapping
@@ -50,27 +53,12 @@ public class StorageController {
         return "storage/form";
     }
 
-    @PostMapping
-    @PreAuthorize("hasAuthority('delivery:write')")
-    public String create(@ModelAttribute("item") @Valid Item item, BindingResult bindingResult,
-                         Model model, Authentication authentication, @RequestParam("action") String action){
-        if(bindingResult.hasErrors()) {
-            model.addAttribute("action", action);
-            model.addAttribute("items", itemRepository.findAll());
-            return "storage/form";
-        }
-
-        itemRepository.save(item);
-
-        return "redirect:/storage";
-    }
-
     @GetMapping("/change/{id}")
     @PreAuthorize("hasAuthority('delivery:write')")
-    public String changeForm(Model model, Authentication authentication, @PathVariable Long id){
+    public String changeForm(Model model, Authentication authentication, @PathVariable Long id) {
 
         Item item = itemRepository.findById(id).orElse(null);
-        if(item == null){
+        if (item == null) {
             return "redirect:/storage";
         }
 
@@ -78,37 +66,5 @@ public class StorageController {
         model.addAttribute("action", "change");
 
         return "storage/change";
-    }
-
-    @PreAuthorize("hasAuthority('delivery:write')")
-    @RequestMapping(value = "/change", consumes = MediaType.APPLICATION_JSON_VALUE, method = RequestMethod.POST)
-    public String change(@RequestBody String response) throws Exception { //ParesException type?
-
-        JSONObject json = new JSONObject(response);
-
-        long item_id = Long.parseLong(json.getString("item_id"));
-        Item item = itemRepository.findById(item_id);
-        if(item == null) {
-            return "redirect:/storage";
-        }
-
-        item.setName(json.getString("name"));
-        item.setQuantity(json.getInt("quantity"));
-        itemRepository.save(item);
-
-        return "redirect:/storage";
-    }
-
-    @GetMapping("/delete/{id}")
-    @PreAuthorize("hasAuthority('delivery:write')")
-    public String delete(@PathVariable Long id) {
-
-        Item item = itemRepository.findById(id).orElse(null);
-
-        if(item != null){
-            itemRepository.deleteById(id);
-        }
-
-        return "redirect:/storage";
     }
 }
