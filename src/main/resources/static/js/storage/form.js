@@ -49,7 +49,7 @@ $(document).ready(function() {
 
         $("#weight").on('keyup', function(event){
             event.preventDefault();
-            validate_quantity();
+            validate_weight();
         });
     })
 });
@@ -71,18 +71,25 @@ function validate_quantity(){
     if (quantity < 0){
         $( "#quantity_validation" ).text("Введите число большее нуля");
         return true;
-    }else{
+    }else if (quantity > 1000){
+        $( "#quantity_validation" ).text("Количество предметов на складе не может быть больше 1000");
+        return true;
+    } else{
         $( "#quantity_validation" ).text("");
         return false;
     }
 }
 
 function validate_weight(){
-    var quantity = $("#weight").val();
-    if (quantity < 0){
+    var weight = $("#weight").val();
+    if (weight < 0){
         $( "#weight_validation" ).text("Введите число большее нуля");
         return true;
-    }else{
+    }else if (weight > 60){
+        $( "#weight_validation" ).text("Вес предмета не может быть больше 60");
+        return true;
+    }
+    else{
         $( "#weight_validation" ).text("");
         return false;
     }
