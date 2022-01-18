@@ -7,6 +7,7 @@ $(document).ready(function() {
 
             check = validate_name();
             check = validate_quantity();
+            check = validate_weight();
 
             if (check){
                 alert("Ошибка в заполнении полей.");
@@ -16,7 +17,8 @@ $(document).ready(function() {
             var item = {
                 "item_id":$("#item_id").val(),
                 "name":$("#name").val(),
-                "quantity":$("#quantity").val()
+                "quantity":$("#quantity").val(),
+                "weight":$("#weight").val()
             };
 
             $.ajax({
@@ -37,11 +39,6 @@ $(document).ready(function() {
             console.log(item);
         });
 
-        $("#name").on('keyup', function(event){
-            event.preventDefault();
-            validate_name();
-        });
-
         $("#delete").click(function(){
             if (window.confirm("Удалить предмет?")){
                 $.ajax({
@@ -60,7 +57,17 @@ $(document).ready(function() {
             }
         });
 
+        $("#name").on('keyup', function(event){
+            event.preventDefault();
+            validate_name();
+        });
+
         $("#quantity").on('keyup', function(event){
+            event.preventDefault();
+            validate_quantity();
+        });
+
+        $("#weight").on('keyup', function(event){
             event.preventDefault();
             validate_quantity();
         });
@@ -86,6 +93,17 @@ function validate_quantity(){
         return true;
     }else{
         $( "#quantity_validation" ).text("");
+        return false;
+    }
+}
+
+function validate_weight(){
+    var quantity = $("#weight").val();
+    if (quantity < 0){
+        $( "#weight_validation" ).text("Введите число большее нуля");
+        return true;
+    }else{
+        $( "#weight_validation" ).text("");
         return false;
     }
 }

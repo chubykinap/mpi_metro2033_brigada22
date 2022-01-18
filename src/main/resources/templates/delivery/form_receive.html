@@ -52,11 +52,13 @@
                     <div class="form-group">
                         <label>Список предметов для заказа</label>
                         <div id="item_validation"></div>
+                        <div id="weight_validation"></div>
                         <table id="t_items" class="table table-striped">
                             <thead>
                             <tr>
                                 <th scope="col">Предмет</th>
                                 <th scope="col">Количество</th>
+                                <th scope="col">Суммарный вес</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -68,13 +70,16 @@
                                 <td>
                                     <input type="button" id="search" class="btn-primary btn" value="Поиск"/>
                                 </td>
+                                <td></td>
                             </tr>
                             <tr th:each="item : ${items}">
-                                <td id="t_name" scope="row" th:utext="${item.name}"></td>
+                                <td valign="center" id="t_name" scope="row" th:utext="${item.name}"></td>
                                 <td scope="row">
                                     <input type="number" id="t_quantity" class="form-control" value="0"
                                            placeholder="Количество" min="0">
                                 </td>
+                                <td id="t_weight" scope="row" text="0">0</td>
+                                <td id="t_one_weight" scope="row" hidden="hidden" th:utext="${item.weight}"></td>
                             </tr>
                             </tbody>
                         </table>

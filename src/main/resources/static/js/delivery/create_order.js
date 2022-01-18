@@ -4,17 +4,22 @@ $(document).ready(function() {
             event.preventDefault();
             check = false;
 
+            check = validate_items();
             check = validate_courier();
             check = validate_station();
             check = validate_date();
-            check = validate_items();
 
             if (check == true){
                 alert("Не все данные заполнены!");
                 return;
             }
-            else {
-                $(this).unbind('submit').submit()
+
+            if (check_weight_sum() > 60){
+                $( "#weight_validation" ).text("Превышение веса заказа");
+                alert("Превышен допустимый вес заказа");
+                return;
+            } else {
+                $( "#weight_validation" ).text("");
             }
 
             var order = {
@@ -57,29 +62,36 @@ $(document).ready(function() {
         });
 
         $("#courier").on("change", function(){
-            event.preventDefault()
+            event.preventDefault();
             validate_courier();
         });
 
         $("#station").on("change", function(){
-            event.preventDefault()
+            event.preventDefault();
             validate_station();
         });
 
         $("#date_select").on("change", function(){
-            event.preventDefault()
+            event.preventDefault();
             validate_date();
         });
-
-        $("#t_quantity").on("keyup", function(){
-            event.preventDefault()
-            validate_items();
-        });
     })
+
+    $(document).on('input','#t_quantity', function(event){
+        event.preventDefault();
+        calculate_weight($(this).closest("tr"));
+        validate_items();
+        if (check_weight_sum() > 60){
+            $( "#weight_validation" ).text("Превышение веса заказа");
+        } else {
+            $( "#weight_validation" ).text("");
+        }
+    });
 });
 
 function getTableData() {
     var $t_data = [];
+    var weight = 0;
     $("#t_items tbody tr").each(function(i) {
         var $c_data = [];
         var $item_name = $(this).find('#t_name').text();
@@ -91,6 +103,16 @@ function getTableData() {
         }
     });
     return $t_data;
+}
+
+function check_weight_sum() {
+    var weight = 0;
+    $("#t_items tbody tr").each(function(i) {
+        var val = parseInt($(this).find('#t_weight').text());
+        if (val >= 0)
+            weight += val;
+    });
+    return weight;
 }
 
 function validate_courier(){
@@ -135,4 +157,11 @@ function validate_items(){
         $( "#item_validation" ).text("");
         return false;
     }
+}
+
+function calculate_weight(tr){
+    var weight = tr.find('#t_one_weight').text();
+    var count = tr.find('#t_quantity').val();
+    var $sum = tr.find('#t_weight');
+    $sum.text(weight * count);
 }

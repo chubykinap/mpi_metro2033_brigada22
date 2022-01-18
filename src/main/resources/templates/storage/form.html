@@ -32,6 +32,13 @@
         </div>
 
         <div class="form-group">
+          <label for="weight">Вес за единицу</label>
+          <input type="number" id="weight" value="0" min="0"
+                 th:field="*{weight}" class="form-control" placeholder="Вес за единицу">
+          <div id="weight_validation"></div>
+        </div>
+
+        <div class="form-group">
           <input type="hidden" name="action" th:value="${action}">
           <input type="button" id="create" class="btn-primary btn" value="Сохранить">
           <a href="/storage" class="btn-primary btn">Назад</a>

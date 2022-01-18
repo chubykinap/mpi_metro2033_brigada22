@@ -6,6 +6,7 @@ $(document).ready(function() {
 
             check = validate_name();
             check = validate_quantity();
+            check = validate_weight();
 
             if (check){
                 alert("Ошибка в заполнении полей.");
@@ -15,6 +16,7 @@ $(document).ready(function() {
             var item = {
                 "name":$("#name").val(),
                 "quantity":$("#quantity").val(),
+                "weight":$("#weight").val()
             };
 
             $.ajax({
@@ -44,6 +46,11 @@ $(document).ready(function() {
             event.preventDefault();
             validate_quantity();
         });
+
+        $("#weight").on('keyup', function(event){
+            event.preventDefault();
+            validate_quantity();
+        });
     })
 });
 
@@ -66,6 +73,17 @@ function validate_quantity(){
         return true;
     }else{
         $( "#quantity_validation" ).text("");
+        return false;
+    }
+}
+
+function validate_weight(){
+    var quantity = $("#weight").val();
+    if (quantity < 0){
+        $( "#weight_validation" ).text("Введите число большее нуля");
+        return true;
+    }else{
+        $( "#weight_validation" ).text("");
         return false;
     }
 }

@@ -15,15 +15,18 @@ public class Item {
     private String name;
     @Min(value = 0,message = "value should not be less than 0")
     public int quantity_in_storage;
+    @Min(value = 0,message = "value should not be less than 0")
+    public int weight;
 
     @OneToMany(mappedBy = "id.item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItemList;
 
     public Item(){}
 
-    public Item(String name, int quantity_in_storage){
+    public Item(String name, int quantity_in_storage, int weight){
         this.name = name;
         this.quantity_in_storage = quantity_in_storage;
+        this.weight = weight;
     }
 
     public long getId() {
@@ -48,5 +51,13 @@ public class Item {
 
     public void setQuantity(int quantity_in_storage) {
         this.quantity_in_storage = quantity_in_storage;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
     }
 }

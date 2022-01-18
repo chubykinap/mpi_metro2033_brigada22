@@ -33,12 +33,13 @@ public class RestStorageController {
         JSONObject json = new JSONObject(response);
         String name = json.getString("name");
         int quantity = json.getInt("quantity");
+        int weight = json.getInt("weight");
 
         if (itemRepository.findByName(name).isPresent()) {
             return new Response("Error", "Уже есть такой предмет");
         }
 
-        Item item = new Item(name, quantity);
+        Item item = new Item(name, quantity, weight);
 
         itemRepository.save(item);
 
@@ -57,12 +58,15 @@ public class RestStorageController {
             return new Response("Error", "Предмет не найден");
         }
 
-        if (itemRepository.findByName(json.getString("name")).isPresent()) {
+        String new_name = json.getString("name");
+
+        if (!new_name.equals(item.getName()) && itemRepository.findByName(new_name).isPresent()) {
             return new Response("Error", "Уже есть такой предмет");
         }
 
         item.setName(json.getString("name"));
         item.setQuantity(json.getInt("quantity"));
+        item.setWeight(json.getInt("weight"));
         itemRepository.save(item);
 
         return new Response("Done", "");

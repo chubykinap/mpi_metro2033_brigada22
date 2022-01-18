@@ -24,6 +24,7 @@
                     <th scope="col">#</th>
                     <th scope="col">Предмет</th>
                     <th scope="col">Количество</th>
+                    <th scope="col">Вес за единицу</th>
                     <th scope="col">Изменить</th>
                 </tr>
                 </thead>
@@ -32,6 +33,7 @@
                     <th scope="row" id="item_id" th:text="${item.id}">id</th>
                     <td scope="row" th:text="${item.name}">name</td>
                     <td scope="row" th:text="${item.quantity_in_storage}">quantity_in_storage</td>
+                    <td scope="row" th:text="${item.weight}">weight</td>
                     <td scope="row"><div><a th:href="@{/storage/change/{id}(id=${item.id})}" class="btn-primary btn">Изменить</a></div></td>
                 </tr>
                 </tbody>
