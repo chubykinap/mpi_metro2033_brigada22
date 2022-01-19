@@ -4,7 +4,6 @@ import b22.metro2033.Entity.Delivery.*;
 import b22.metro2033.Entity.Role;
 import b22.metro2033.Entity.User;
 import b22.metro2033.Entity.Utility.OrderUtility;
-import b22.metro2033.Entity.Utility.SoldierUtility;
 import b22.metro2033.Repository.Alerts.AlertsRepository;
 import b22.metro2033.Repository.Delivery.CourierRepository;
 import b22.metro2033.Repository.Delivery.ItemRepository;
@@ -97,7 +96,7 @@ public class OrderController {
         if (totalPages > 0) {
 
             List<Integer> pageNumbers = new ArrayList<>();
-            for (int i = startPage; i < startPage + numberOfPages; i++){
+            for (int i = startPage; i < startPage + numberOfPages; i++) {
                 if (i > totalPages) break;
                 pageNumbers.add(i);
             }
@@ -166,6 +165,8 @@ public class OrderController {
                 itemRepository.save(item_stored);
             }
             state = DeliveryState.CLOSED;
+            Courier courier = order.getCourier();
+            courier.setOrder(null);
         }
 
         order.setState(state);
@@ -190,7 +191,8 @@ public class OrderController {
                 }
             }
             Courier courier = courierRepository.findByOrderId(order.getId());
-            courier.setOrder(null);
+            if (courier != null)
+                courier.setOrder(null);
             orderRepository.delete(order);
         }
 

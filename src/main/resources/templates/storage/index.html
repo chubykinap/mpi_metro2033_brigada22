@@ -54,8 +54,8 @@
                     <th scope="col">Предмет</th>
                     <th scope="col">Количество</th>
                     <th scope="col">Вес за единицу</th>
-                    <th scope="col">Изменить</th>
-                    <th scope="col">Удалить</th>
+                    <th scope="col" sec:authorize="${hasAuthority('delivery:write')}">Изменить</th>
+                    <th scope="col" sec:authorize="${hasAuthority('delivery:write')}">Удалить</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -66,8 +66,8 @@
                     <td scope="row" th:text="${item.name}">name</td>
                     <td scope="row" th:text="${item.quantity_in_storage}">quantity_in_storage</td>
                     <td scope="row" th:text="${item.weight}">weight</td>
-                    <td scope="row"><div><a th:href="@{/storage/change/{id}(id=${item.id})}" class="btn-primary btn">Изменить</a></div></td>
-                    <td scope="row"><a id="delete" th:value="${item.id}" class="btn-primary btn">Удалить</a></td>
+                    <td scope="row"><div><a th:href="@{/storage/change/{id}(id=${item.id})}" class="btn-primary btn" sec:authorize="${hasAuthority('delivery:write')}">Изменить</a></div></td>
+                    <td scope="row"><a id="delete" th:value="${item.id}" class="btn-primary btn" sec:authorize="${hasAuthority('delivery:write')}">Удалить</a></td>
                 </tr>
                 </tbody>
             </table>

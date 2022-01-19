@@ -66,7 +66,7 @@ $(document).ready(function() {
     });
 
     function show_notification(info){
-     $('#notification').text("Курьер: " + info.login + " " + info.name + " " + info.surname + " удален");
+     $('#notification').text("Предмет: "  + info.name +  " убран со склада");
      $('#notification').show();
      $('#notification').delay(7000).hide(0);
     }
